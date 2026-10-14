@@ -26,10 +26,10 @@ canvas{position:fixed;inset:0;display:block;width:100%;height:100%;touch-action:
   animation:rise .45s ease-out both}
 .panel:before{content:"";position:absolute;left:22px;right:22px;top:0;height:3px;border-radius:0 0 4px 4px;
   background:linear-gradient(90deg,var(--cyan),var(--mag))}
-h1,h2{margin:0 0 12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;line-height:.95;
+h1,h2{margin:0 0 12px;padding:0 .14em .06em;font-weight:900;text-transform:uppercase;letter-spacing:.05em;line-height:.95;
   background:linear-gradient(90deg,#8ff6ff,#ff7af0);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 0 14px rgba(25,240,255,.45))}
-h1{font-size:clamp(38px,11vw,64px)}
+h1{font-size:clamp(34px,10.5vw,48px)}
 h2{font-size:clamp(32px,9vw,50px)}
 h2.bad{background:linear-gradient(90deg,#ff9bb0,#ff3b5c);-webkit-background-clip:text;background-clip:text;
   filter:drop-shadow(0 0 14px rgba(255,59,92,.5))}
@@ -120,14 +120,15 @@ p{margin:6px 0}
   box-shadow:0 0 18px rgba(255,210,77,.6)}
 .row{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:16px}
 /* top-right icon buttons: HOME in the corner, PAUSE just left of it (both 44px, safe-area aware; the HUD row leaves room for both) */
-#btnPause,#btnHome{position:fixed;z-index:6;top:calc(8px + env(safe-area-inset-top));
+#btnPause,#btnHome,#btnFs{position:fixed;z-index:6;top:calc(8px + env(safe-area-inset-top));
   width:44px;height:44px;padding:0;border-radius:14px;cursor:pointer;touch-action:manipulation;color:#d8f9ff;
   background:rgba(8,4,28,.72);border:1.5px solid rgba(25,240,255,.7);display:flex;align-items:center;justify-content:center;gap:5px}
 #btnHome{right:calc(10px + env(safe-area-inset-right))}
 #btnPause{right:calc(62px + env(safe-area-inset-right))}
 #btnPause i{display:block;width:5px;height:16px;border-radius:2px;background:#d8f9ff}
-#btnHome:active,#btnPause:active{transform:scale(.94);background:rgba(25,240,255,.22)}
-#btnHome:focus-visible,#btnPause:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#btnFs{right:calc(114px + env(safe-area-inset-right))}                                  /* the JS moves it next to whichever of pause / home are showing */
+#btnHome:active,#btnPause:active,#btnFs:active{transform:scale(.94);background:rgba(25,240,255,.22)}
+#btnHome:focus-visible,#btnPause:focus-visible,#btnFs:focus-visible{outline:3px solid #fff;outline-offset:2px}
 /* Touch jump button: big, semi-transparent so it never hides a squad standing in the right-hand lane at the bottom */
 #btnJump{display:none;position:fixed;z-index:6;right:calc(12px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));
   width:calc(64px*var(--s));height:calc(64px*var(--s));padding:0;border-radius:50%;cursor:pointer;touch-action:manipulation;color:#eaffff;font:inherit;
@@ -169,6 +170,7 @@ p{margin:6px 0}
 <div id="safe"></div>
 <button id="btnPause" aria-label="Pause" style="visibility:hidden"><i></i><i></i></button>
 <button id="btnHome" aria-label="Home" title="Home (H)" style="visibility:hidden"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 3.2 2.8 11.4h2.6V20h4.9v-5.6h3.4V20h4.9v-8.6h2.6z" fill="currentColor"/></svg></button>
+<button id="btnFs" aria-label="Enter fullscreen" title="Enter fullscreen (F)" style="visibility:hidden"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path id="fsIcon" d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <button id="btnJump" aria-label="Jump" style="visibility:hidden"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 4 4 14h5v6h6v-6h5z" fill="currentColor"/></svg><span>JUMP</span></button>
 <div class="screen show" id="start">
   <div class="panel">
@@ -329,6 +331,30 @@ function readSafe() {
   SAFE.t = parseFloat(cs.paddingTop) || 0; SAFE.r = parseFloat(cs.paddingRight) || 0;
   SAFE.b = parseFloat(cs.paddingBottom) || 0; SAFE.l = parseFloat(cs.paddingLeft) || 0;
 }
+// ----- FULLSCREEN (laptops): button + F key. Hidden when the browser has no Fullscreen API (e.g. iPhone Safari). -----
+const fsRoot = () => document.documentElement;
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+function fsSupported() { const r = fsRoot(); return !!(r && (document.fullscreenEnabled || document.webkitFullscreenEnabled) && (r.requestFullscreen || r.webkitRequestFullscreen)); }
+function updateFs() {                                    // icon / label / position follow the real fullscreen state and whichever top-right buttons are showing
+  const b = $('btnFs'); if (!b) return;
+  const sup = fsSupported(), on = !!fsEl(), label = on ? 'Exit fullscreen' : 'Enter fullscreen';
+  b.style.visibility = sup ? 'visible' : 'hidden'; b.style.display = sup ? '' : 'none';
+  b.setAttribute && (b.setAttribute('aria-label', label), b.setAttribute('title', label + ' (F)'));
+  const ic = $('fsIcon'); if (ic && ic.setAttribute) ic.setAttribute('d', on ? 'M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5' : 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5');
+  let off = 10; if ($('btnHome').style.visibility === 'visible') off += 52; if ($('btnPause').style.visibility === 'visible') off += 52;
+  b.style.right = 'calc(' + off + 'px + env(safe-area-inset-right))';
+}
+function toggleFullscreen() {                            // rejected / unsupported requests are ignored quietly (no console errors)
+  if (!fsSupported()) return;
+  try {
+    const r = fsRoot(), p = fsEl() ? (document.exitFullscreen || document.webkitExitFullscreen).call(document) : (r.requestFullscreen || r.webkitRequestFullscreen).call(r);
+    if (p && p.catch) p.catch(() => { /* ignore */ });
+  } catch (e) { /* ignore */ }
+}
+function onFsChange() {                                  // after entering / leaving: re-measure everything (canvas size, DPR, layout; the background cache re-keys itself)
+  updateFs(); resize(); setTimeout(resize, 120);
+  if (!fsEl() && (G.state === 'play' || G.state === 'resume')) togglePause();       // left fullscreen (Esc is consumed by the browser): pause once so the layout change cannot cost soldiers. Entering never changes pause.
+}
 function layout() {
   const m = 10;
   UI.short = H < 520;
@@ -337,7 +363,7 @@ function layout() {
   UI.tipH = UI.short ? UI.banH : F(28);    // tips may wrap to 2 lines on narrow screens
   if (document.documentElement && document.documentElement.style && document.documentElement.style.setProperty) document.documentElement.style.setProperty('--s', UI.s);
   UI.x = SAFE.l + m; UI.y = SAFE.t + 8;
-  UI.w = Math.max(150, Math.min(520, W - SAFE.l - SAFE.r - 2 * m - 108));         // 108 = room for the pause + home buttons
+  UI.w = Math.max(150, Math.min(520, W - SAFE.l - SAFE.r - 2 * m - 108 - (fsSupported() ? 52 : 0)));         // 108 = room for the pause + home buttons (+52 for the fullscreen button when the browser has one)
   UI.pvW = Math.max(150, Math.min(420, W - SAFE.l - SAFE.r - 2 * m)); UI.pvX = W / 2 - UI.pvW / 2;
   UI.pvY = UI.y + UI.h + 8; UI.banY = UI.pvY + UI.pvH + 8; UI.tipY = UI.short ? UI.banY : UI.banY + UI.banH + 6;   // on short screens tips and banners share one row
   L.cx = W / 2;
@@ -353,19 +379,22 @@ function layout() {
 }
 const behind = n => Math.min(-n, G.pz - n);           // "n units behind the squad": removal and culling never happen before objects pass a backed-up squad
 function resize() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);                   // capped at 2: sharp enough, much cheaper on 3x phones
+  DPR = Math.min(window.devicePixelRatio || 1, 2);                   // capped at 2: sharp enough, much cheaper on 3x phones (measured: no adaptive scaling needed, see the perf notes)
   W = window.innerWidth; H = window.innerHeight;
   cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
   readSafe(); layout();
 }
 window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', resize);
+document.addEventListener('fullscreenchange', () => onFsChange());
+document.addEventListener('webkitfullscreenchange', () => onFsChange());
 
 // ===== STATE =====
 const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
 // ----- RUN STATS: plain counters only (a few additions per event, nothing per frame). G.rs = this run, G.ls = this level (for the level-complete row). -----
-// ACCURACY = main-laser bullets that hit something (enemy, boss, crate) / main-laser bullets fired. Each bullet counts once (a piercing pass is the same bullet).
-//   A bullet stopped by the boss shield is a miss ("blocked"). Wing shots (Spread) and BOOST shots are left out of BOTH numbers: they are not aimed.
+// ACCURACY = aimed projectiles that hit something (enemy, boss, crate) / aimed projectiles fired: every main-laser bullet and every rocket. Each projectile counts once
+//   (a piercing pass or a splash is never an extra hit), so it can never exceed 100%. A projectile stopped by the boss shield is a miss ("blocked").
+//   Wing shots (Spread) and BOOST lasers are left out of BOTH numbers: they are not aimed.
 // Soldiers lost are attributed to the cause that set G.cause just before the squad changed: enemy contact, red gates, pits, boss attacks, crates.
 const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate', 'lost_barrel', 'barrels', 'barrel_kills', 'rk_pick', 'rk_kills', 'rk_shots'];
 const newStats = () => { const o = { peak: 1, streak: 0, byType: {} }; for (const k of STAT_KEYS) o[k] = 0; return o; };
@@ -460,6 +489,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ControlLeft' || e.code === 'ControlRight') { e.preventDefault(); if (!e.repeat) { ctrlHeld = true; ctrlClean = true; } return; }   // armed: BOOST fires on key UP if Ctrl stayed alone
   if (e.ctrlKey || e.metaKey || e.altKey) { ctrlClean = false; return; }          // Ctrl / Cmd / Alt combinations are not game input (and they spoil a Ctrl tap)
   if (ctrlHeld) ctrlClean = false;
+  if (e.code === 'KeyF' && !e.repeat) { e.preventDefault(); toggleFullscreen(); return; }                 // F = fullscreen (not used by any other control)
   if (G.sumOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeSum(); return; }      // practice summary: Enter / Esc = dashboard
   if (G.diffOpen) {                                                                          // practice difficulty chooser: 1 / 2 / 3, Enter = Normal, Esc = back
     e.preventDefault();
@@ -545,6 +575,7 @@ function setScreen(name) {
   $('btnPause').style.visibility = (G.state === 'play' || G.state === 'pause' || G.state === 'resume') ? 'visible' : 'hidden';
   $('btnHome').style.visibility = G.state === 'start' ? 'hidden' : 'visible';                  // home icon: play, pause, level complete, game over
   $('btnJump').style.visibility = (G.state === 'play' || G.state === 'resume') ? 'visible' : 'hidden';
+  updateFs();
 }
 function startGame() {
   const now = performance.now();
@@ -626,10 +657,10 @@ const UPGRADES = {
              desc: () => 'Shot damage \u00d7' + G.dmgMul.toFixed(1) + ' \u2192 \u00d7' + (G.dmgMul + 0.2).toFixed(1) + ' (rockets too)',
              apply() { G.dmgMul += 0.2; } },
   pierce:  { name: 'Piercing core', ok: () => G.pierceN < 2,
-             desc: () => 'Shots pass through ' + G.pierceN + ' \u2192 ' + (G.pierceN + 1) + ' extra target' + (G.pierceN ? 's' : '') + ' (each pass keeps exactly 60% of the last damage; rockets never pierce)',
+             desc: () => 'Shots pass through ' + G.pierceN + ' \u2192 ' + (G.pierceN + 1) + ' extra target' + (G.pierceN ? 's' : '') + ' (each pass keeps exactly 60% of the last damage; rockets pass through too)',
              apply() { G.pierceN++; } },
   spread:  { name: 'Wider spread', ok: () => G.wings < 2,
-             desc: () => 'Side shots ' + G.wings * 2 + ' \u2192 ' + (G.wings + 1) * 2 + ' per volley: each is exactly 50% of a normal shot, reaching ' + (G.wings + 1) + ' lane' + (G.wings ? 's' : '') + ' either side (none while rockets are active)',
+             desc: () => 'Side shots ' + G.wings * 2 + ' \u2192 ' + (G.wings + 1) * 2 + ' per volley: each is exactly 50% of a normal shot, reaching ' + (G.wings + 1) + ' lane' + (G.wings ? 's' : '') + ' either side (rockets: wider splash)',
              apply() { G.wings++; } },
   shield:  { name: 'Shield', ok: () => G.shieldMax < 2,
              desc: () => 'Blocks enemy hits and slams each level (not pits or bad gates): ' + G.shieldMax + ' \u2192 ' + (G.shieldMax + 1) + ' charge' + (G.shieldMax ? 's' : ''),
@@ -687,6 +718,7 @@ function continueFromComplete() {
   startLevel(G.level + 1); setScreen(null);
 }
 $('btnJump').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); jump(); });
+$('btnFs').addEventListener('click', e => { e.currentTarget.blur(); toggleFullscreen(); });
 $('btnPause').addEventListener('click', e => { e.currentTarget.blur(); togglePause(); });
 $('btnMute').addEventListener('click', e => { e.currentTarget.blur(); toggleMute(); });
 $('btnMusic').addEventListener('click', e => { e.currentTarget.blur(); toggleMusic(); });
@@ -1440,15 +1472,20 @@ function updatePlayer(dt) {
 //  * Rare pod on the road (about 65% of levels get one; practice every 1200-2200 road units); collected like a crate (footprint + swept, once). 10 s;
 //    collecting again refreshes to 10 s (no stacking). Never in the boss phase, never on holes / gates / crates / barrels. Fairness never assumes it.
 //  * While active it REPLACES the lasers. Rate = 0.45 x the current fire rate (upgrades and timed fire gates count), bounded 0.9 .. 4.0 /s; BOOST multiplies it x2.5.
-//  * One rocket per shot. Damage = 3 x the volley's main-shot damage x the number of lasers (so ~1.35x the lasers' single-target damage per second at the
-//    lower rate, plus splash). "Stronger shots" multiplies it (and Opening volley). Rockets never pierce: they explode on the FIRST target (enemy or crate).
-//    Spread adds no side rockets. Boost keeps its x2.5 rate and protection (rockets turn golden); it adds no extra damage multiplier (no double counting).
-//  * Direct hit = a normal hit (armor: plate soaks, 20% chip; boss shield blocks except the weak point). Splash: 35% of the rocket damage on up to 4 other
-//    enemies inside an ellipse 0.6 lane wide (x) by 2.5 deep (z), nearest first, the direct target excluded (never hit twice); a normal hit for armor and
-//    the boss shield (a splash cannot bypass it). Crates and barrels' contact rules are unchanged (a barrel hit by splash arms like any hit).
-//  * Rocket shots are not part of the accuracy percentage. Kills go through killEnemy: one credit, one alien boost pip.
-const ROCKET_T = 10, RK_N = 16, ROCKET_SPEED = 60, SPLASH_RX = 0.6 * LANE_W, SPLASH_RZ = 2.5, SPLASH_MAX = 4, SPLASH_F = 0.35;
-const rockets = Array.from({ length: RK_N }, () => ({ on: false, x: 0, z: 0, yo: 0, dmg: 0, boost: false, aim: null, originX: 0 }));
+//  * One rocket per shot. Damage = 3 x the volley's main-shot damage x the number of lasers (so ~1.3x the lasers' single-target damage per second at the
+//    lower rate, plus splash). "Stronger shots" multiplies it (and Opening volley). Boost adds no damage and no extra piercing (no double counting).
+//  * Each upgrade keeps its ROLE with rockets (measured, see the report): PIERCING = column identity: the rocket flies on through up to N more enemies in its lane
+//    (each pass exactly 60% of the last damage, like the lasers), and explodes at the last one. SPREAD = coverage identity: the splash gets wider (0.6 lane
+//    + 0.5 lane per Spread level, so neighbouring lanes are hit) and reaches 1 more target per level; those outer targets take 28% instead of 35%.
+//  * Direct hit = a normal hit (armor: plate soaks, 20% chip; boss shield blocks except the weak point, and a blocked rocket just explodes). Splash: 35% of the
+//    rocket's current damage on up to 4 other enemies inside the base ellipse (0.6 lane wide x 2.5 deep), nearest first, anything the rocket already hit
+//    excluded (never hit twice); a normal hit for armor and the boss shield (a splash cannot bypass it). Crates are never splashed (a direct rocket on a crate
+//    counts one hit and stops it). A barrel hit by splash arms like any hit. The boss is never pierced.
+//  * ACCURACY counts every rocket as ONE projectile (also boost rockets): a hit only if its DIRECT hit connects; pierce passes and splash never add hits.
+//    Kills go through killEnemy: one credit, one alien boost pip.
+const ROCKET_T = 10, RK_N = 16, ROCKET_SPEED = 60, SPLASH_RX = 0.6 * LANE_W, SPLASH_RZ = 2.5, SPLASH_MAX = 4, SPLASH_F = 0.35, SPLASH_OUT_F = 0.28, PASS_F = 0.6;
+const splashRX = () => (0.6 + 0.5 * G.wings) * LANE_W, splashMax = () => SPLASH_MAX + G.wings;
+const rockets = Array.from({ length: RK_N }, () => ({ on: false, x: 0, z: 0, yo: 0, dmg: 0, boost: false, aim: null, originX: 0, pl: 0, hits: [], cn: false }));
 const pods = [];
 const rocketRate = () => clamp(0.45 * fireEff0(), 0.9, 4.0) * (G.boostT > 0 ? BOOST_FIRE : 1);
 const rocketDmg = () => 3 * rollDmg() * lasersFor(G.squad);
@@ -1478,22 +1515,31 @@ function updatePods(dt) {
 function fireRocket() {
   for (const r of rockets) {
     if (r.on) continue;
-    r.on = true; r.x = r.originX = G.px; r.z = G.pz + 0.5; r.yo = jumpHeight(); r.dmg = rocketDmg(); r.boost = G.boostT > 0; r.aim = aimCandidate(G.px); r.age = 0;
-    bump('rk_shots'); G.muzzle = 1; Sound.play('rocket', panOf(G.px)); return r;
+    r.on = true; r.x = r.originX = G.px; r.z = G.pz + 0.5; r.yo = jumpHeight(); r.dmg = rocketDmg(); r.boost = G.boostT > 0; r.aim = aimCandidate(G.px); r.age = 0; r.pl = G.pierceN; r.hits.length = 0; r.cn = false;
+    bump('shots'); bump('rk_shots'); G.muzzle = 1; Sound.play('rocket', panOf(G.px)); return r;
   }
   return null;
 }
-function rocketImpact(r, t, isEnemy) {
-  const x = r.x, z = t.z, col = r.boost ? '#ffd24d' : '#ff8a1f';
-  if (isEnemy) { t.byRocket = true; damageEnemy(t, { dmg: r.dmg, x }); if (!t.dead) t.byRocket = false; } else damageCrate(t, { x, dmg: r.dmg });
-  const near = [];
+function rocketNext(r, t) {                                    // is there another enemy in the rocket's path to fly on to? (not a boss, not a crate)
+  for (const o of enemies) if (o !== t && !o.dead && !o.fuse && o.solid !== false && o.type !== 'boss' && !r.hits.includes(o) && o.z > t.z + 0.4 && o.z < t.z + 14 && Math.abs(r.x - o.x) < o.r + 0.05) return true;
+  return false;
+}
+function rocketImpact(r, t, isEnemy) {                         // returns true when the rocket flies on (a Piercing pass), false when it exploded
+  const x = r.x, z = t.z, col = r.boost ? '#ffd24d' : '#ff8a1f'; r.hits = r.hits || []; let landed = true;
+  if (isEnemy) { t.byRocket = true; landed = damageEnemy(t, { dmg: r.dmg, x }) !== false; if (!t.dead) t.byRocket = false; } else damageCrate(t, { x, dmg: r.dmg });
+  if (landed && !r.cn) { r.cn = true; bump('hits'); }          // accuracy: one hit per rocket, however many things it pierces or splashes
+  r.hits.push(t);
+  if (isEnemy && landed && (r.pl || 0) > 0 && t.type !== 'boss' && rocketNext(r, t)) { r.pl--; r.dmg *= PASS_F; FX.burst(x, z, col, 3, false); return true; }      // Piercing: on to the next one at exactly 60%
+  const near = [], rx0 = SPLASH_RX, rxw = splashRX();
   for (const o of enemies) {
-    if (o === t || o.dead || o.fuse || o.solid === false) continue;
-    const dx = (o.x - x) / SPLASH_RX, dz = (o.z - z) / SPLASH_RZ, d = dx * dx + dz * dz; if (d <= 1) near.push({ o, d });
+    if (r.hits.includes(o) || o.dead || o.fuse || o.solid === false) continue;
+    const dz = (o.z - z) / SPLASH_RZ, dxw = (o.x - x) / rxw, dxb = (o.x - x) / rx0, dw = dxw * dxw + dz * dz;
+    if (dw <= 1) near.push({ o, d: dw, inner: dxb * dxb + dz * dz <= 1 });
   }
   near.sort((a, b) => a.d - b.d);
-  for (let i = 0; i < Math.min(SPLASH_MAX, near.length); i++) { const o = near[i].o; o.byRocket = true; damageEnemy(o, { dmg: r.dmg * SPLASH_F, x, blast: true }); if (!o.dead) o.byRocket = false; }
+  for (let i = 0; i < Math.min(splashMax(), near.length); i++) { const o = near[i].o; o.byRocket = true; damageEnemy(o, { dmg: r.dmg * (near[i].inner ? SPLASH_F : SPLASH_OUT_F), x, blast: true }); if (!o.dead) o.byRocket = false; }
   FX.fireball(x, z, 0.3); FX.burst(x, z, col, 7, false); FX.ring(x, z, col, 0.3); Sound.play('rocketHit', panOf(x));       // small explosion puff
+  return false;
 }
 function updateRockets(dt) {
   if (G.state !== 'play') return;
@@ -1505,9 +1551,9 @@ function updateRockets(dt) {
     const z0 = r.z; r.z += ROCKET_SPEED * dt;
     if (r.z > ZMAX * 0.95) { r.on = false; continue; }
     let best = null, bz = 1e9, isEnemy = false;
-    for (const e of enemies) if (e.solid !== false && !e.dead && !e.fuse && e.z <= r.z + 1.4 && e.z >= z0 - 1.4 && Math.abs(r.x - e.x) < e.r + 0.05 && e.z < bz) { best = e; bz = e.z; isEnemy = true; }
+    for (const e of enemies) if (e.solid !== false && !e.dead && !e.fuse && !r.hits.includes(e) && e.z <= r.z + 1.4 && e.z >= z0 - 1.4 && Math.abs(r.x - e.x) < e.r + 0.05 && e.z < bz) { best = e; bz = e.z; isEnemy = true; }
     for (const c of crates) if (c.z <= r.z + 1.4 && c.z >= z0 - 1.4 && Math.abs(r.x - c.x) < 0.2 && c.z < bz) { best = c; bz = c.z; isEnemy = false; }
-    if (best) { r.on = false; rocketImpact(r, best, isEnemy); if (G.state !== 'play') return; }
+    if (best) { if (!rocketImpact(r, best, isEnemy)) r.on = false; if (G.state !== 'play') return; }
   }
 }
 function updateBullets(dt) {
@@ -3385,14 +3431,15 @@ function drawGatePreview() {
 function drawBanner() {
   if (G.bannerT <= 0 || !G.banner || (G.state !== 'play' && G.state !== 'resume')) return;
   const boss = !!G.bannerBoss; let fs = F(UI.short ? 17 : 20), text = G.banner, maxW = W - SAFE.l - SAFE.r - 24;
-  const cl = effectChipLayout(); if (chipStack().length && cl.y < UI.banY + UI.banH) maxW = Math.min(maxW, 2 * (cl.x - 8 - L.cx));      // never under the right-hand chips
+  const by = G.celebT > 0 ? UI.pvY : UI.banY;                       // "NAME DOWN": up in the (now empty) boss-bar row, so it never covers the falling boss
+  const cl = effectChipLayout(); if (chipStack().length && cl.y < by + UI.banH) maxW = Math.min(maxW, 2 * (cl.x - 8 - L.cx));      // never under the right-hand chips
   ctx.font = '900 ' + fs + 'px ' + FONT; while (fs > 14 && ctx.measureText(text).width + F(32) > maxW) { fs--; ctx.font = '900 ' + fs + 'px ' + FONT; }
   if (ctx.measureText(text).width + F(32) > maxW && text.indexOf(' \u00b7 ') > 0) { G.bannerSub = text.split(' \u00b7 ')[1]; text = text.split(' \u00b7 ')[0]; fs = F(UI.short ? 17 : 20); if (boss) { text = G.bannerSub; G.bannerSub = null; } ctx.font = '900 ' + fs + 'px ' + FONT; }   // too long: boss shows its name, a level shows the theme on a second pill
   ctx.globalAlpha = clamp(G.bannerT / 0.3, 0, 1) * (boss ? 0.75 + 0.25 * Math.sin(G.t * 16) : 1);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   const bw = ctx.measureText(text).width + F(32), col = boss ? '#ff5a3d' : '#19f0ff';
-  rr(L.cx - bw / 2, UI.banY, bw, UI.banH, UI.banH / 2); ctx.fillStyle = 'rgba(8,4,28,.88)'; ctx.fill();
-  ctx.lineWidth = 2; ctx.strokeStyle = col; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.fillText(text, L.cx, UI.banY + UI.banH / 2 + 1);
+  rr(L.cx - bw / 2, by, bw, UI.banH, UI.banH / 2); ctx.fillStyle = 'rgba(8,4,28,.88)'; ctx.fill();
+  ctx.lineWidth = 2; ctx.strokeStyle = col; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.fillText(text, L.cx, by + UI.banH / 2 + 1);
   ctx.globalAlpha = 1;
   if (G.bannerSub && !UI.short) { drawPill(G.bannerSub, clamp(G.bannerT / 0.3, 0, 1) * 0.9); G.bannerSub = null; }
 }
@@ -3647,7 +3694,7 @@ function frame(t) {
   } else if (G.state !== 'pause') ambient(dt);
   render();
 }
-resize();
+resize(); updateFs();
 resetGame();
 setScreen('start');
 requestAnimationFrame(frame);
