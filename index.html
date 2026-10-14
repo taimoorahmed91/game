@@ -63,6 +63,7 @@ p{margin:6px 0}
 .how li b{color:#fff}
 /* screens that sit under the top-right buttons leave room for them */
 @media (max-width:560px){#pause,#complete,#over,#quit{padding-top:calc(58px + env(safe-area-inset-top))}}   /* narrow screens: the panel starts below the icons */
+#diff .cards{margin:10px 0 12px}
 @media (min-width:640px){.how{max-width:780px}.how ul{grid-template-columns:1fr 1fr}}
 @media (min-width:1000px){#complete .panel{max-width:640px}.card span{font-size:14px;line-height:1.3}.card b{font-size:16px}.card{min-height:52px;padding:8px 12px}#complete .stats{margin:8px 0 4px}#complete .stat b{font-size:24px}#complete .pick{margin:4px 0}}
 @media (max-height:520px){
@@ -73,6 +74,7 @@ p{margin:6px 0}
   #complete h2{font-size:26px;margin-bottom:4px}#complete .medal{margin:0 0 2px;padding:4px 12px}
   #complete .stats{margin:6px 0 4px}#complete .stat{padding:4px}#complete .stat b{font-size:20px}
   #complete .cards{margin-bottom:8px}#complete .card{padding:6px}#complete .row2{margin-top:2px}#complete .btn{padding:8px 20px}
+  #diff h2{font-size:26px;margin-bottom:4px}#diff .sub,#diff .help{display:none}#diff .cards{grid-template-columns:repeat(3,1fr);margin:6px 0 8px}#diff .card{flex-direction:column;text-align:center;padding:8px;gap:4px;min-height:0}#diff .card i{display:none}#diff .card span{font-size:12.5px;line-height:1.22}#diff .card b{font-size:15px}#diff .btn{padding:6px 24px}
   #complete .card span{font-size:12px;line-height:1.22}#complete .card b{font-size:13.5px;margin-bottom:0}.how li{font-size:13px}
 }
 @media (max-height:640px){.how li{padding:5px 9px;line-height:1.25}.how ul{gap:5px;margin:6px 0 8px}.how .btn{padding:9px 28px}}
@@ -146,6 +148,7 @@ p{margin:6px 0}
     <button class="cta" id="btnStart">New Game</button>
     <p class="hint">or press Enter</p>
     <div class="opts menu">
+      <button class="btn alt" id="btnPractice">Practice</button>
       <button class="btn alt" id="btnHow">How to play</button>
       <button class="btn alt" id="btnMute2">Sound: on</button>
       <button class="btn alt" id="btnMusic2">Music: on</button>
@@ -170,10 +173,23 @@ p{margin:6px 0}
     <button class="btn" id="btnHowBack">Back</button>
   </div>
 </div>
+<div class="screen" id="diff">
+  <div class="panel">
+    <h2>Practice</h2>
+    <p class="sub" id="dSub">Endless run: you can't lose. No score, no boss.</p>
+    <div class="cards" id="dCards">
+      <button class="card" id="btnEasy" data-d="0"><i>1</i><span><b>Easy</b>Level 1 mix: gentle waves</span></button>
+      <button class="card sel" id="btnNormal" data-d="1"><i>2</i><span><b>Normal</b>Level 3 mix: hoppers, armor</span></button>
+      <button class="card" id="btnHard" data-d="2"><i>3</i><span><b>Hard</b>Level 6 mix: big, fast waves</span></button>
+    </div>
+    <button class="btn alt" id="btnDiffBack">Back</button>
+    <p class="help" id="dHelp">1 &middot; 2 &middot; 3 or tap &middot; Enter = Normal &middot; Esc = back</p>
+  </div>
+</div>
 <div class="screen" id="pause">
   <div class="panel">
     <h2>Paused</h2>
-    <p class="sub">Your run is on hold.</p>
+    <p class="sub" id="pSub">Your run is on hold.</p>
     <div class="row">
       <button class="btn" id="btnResume">Resume</button>
       <div class="opts">
@@ -296,7 +312,7 @@ window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', resize);
 
 // ===== STATE =====
-const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0 };
+const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false };
 const enemies = [], gates = [], crates = [], holes = [];
 let tipsDone = false, holeTipSeen = false, boostHintSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
 // ONE contact rule for gates, holes, boss slams, crates and enemies: where the squad is DRAWN (G.px / G.pz), never where it is heading.
@@ -324,7 +340,12 @@ const footHit = (x0, x1) => footOverlap(x0, x1) > 0.3 * squadHW();
 const playerLane = () => laneOf(G.px);
 const nearX = (x, w) => x >= Math.min(G.pxPrev, G.px) - w && x <= Math.max(G.pxPrev, G.px) + w;
 const depthHit = (zb, za, lo, hi) => { const r0 = zb - G.pzPrev, r1 = za - G.pz; return Math.min(r0, r1) <= hi && Math.max(r0, r1) >= lo; };
-const scoreNow = () => Math.floor(G.dist + G.bonus);
+// PRACTICE MODE: an endless run (no score, no boss, no finish, no game over; the squad is floored at 1). Difficulty = a level-like encounter mix
+// (Easy L1, Normal L3, Hard L6) that never ramps. Everything is reset by resetGame(), so a real run after practice is untouched.
+const PRACTICE_LV = [1, 3, 6], PRACTICE_NAME = ['Easy', 'Normal', 'Hard'];
+const tipLv = () => G.practice ? 1 : G.level;                                    // practice shows the level-1 teaching tips
+const award = n => { if (!G.practice) G.bonus += n; };                           // points are never awarded in practice
+const scoreNow = () => G.practice ? 0 : Math.floor(G.dist + G.bonus);
 
 function resetGame() {
   G.t = 0; G.scroll = 0; G.dist = 0; G.speed = BASE_SPEED;
@@ -333,6 +354,7 @@ function resetGame() {
   G.fireCap = 7; G.dmgMul = 1; G.extraLasers = 0; G.shieldMax = 0; G.shield = 0;      // upgrades live only for this session's run
   G.boostNeed = BOOST_KILLS; G.boostLen = BOOST_T; G.boostHead = 0; G.wings = 0; G.pierceN = 0; G.steady = 0; G.util = {}; G.rushLeft = 0; G.openT = 0;
   G.themeBase = irand(0, THEMES.length - 1);                                          // which theme a run starts its rotation with
+  G.practice = false; G.pDiff = 1; G.diffOpen = false;                                // practice is always switched off by a reset
   G.quitAsk = false; G.howOpen = false;                                               // 'Quit to home?' dialog / How-to-play panel are open
   G.effects = []; G.gone = [];                                                        // timed gate effects (fire rate): active list + just-expired (for the fade-out)
   G.muzzle = 0; G.popAt = -9; G.llost = 0; G.lkills = 0; G.upgOffer = []; G.upgPick = -1;
@@ -378,6 +400,13 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ControlLeft' || e.code === 'ControlRight') { e.preventDefault(); if (!e.repeat) { ctrlHeld = true; ctrlClean = true; } return; }   // armed: BOOST fires on key UP if Ctrl stayed alone
   if (e.ctrlKey || e.metaKey || e.altKey) { ctrlClean = false; return; }          // Ctrl / Cmd / Alt combinations are not game input (and they spoil a Ctrl tap)
   if (ctrlHeld) ctrlClean = false;
+  if (G.diffOpen) {                                                                          // practice difficulty chooser: 1 / 2 / 3, Enter = Normal, Esc = back
+    e.preventDefault();
+    if (e.code === 'Escape') closeDiff();
+    else if (e.code === 'Enter' || e.code === 'NumpadEnter') startPractice(1);
+    else { const m = /^(?:Digit|Numpad)([1-3])$/.exec(e.code); if (m) startPractice(+m[1] - 1); }
+    return;
+  }
   if (G.howOpen) { if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') { e.preventDefault(); closeHow(); } return; }   // How to play: Esc / Enter close it; nothing can start a game from here
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'Enter', 'NumpadEnter'].includes(e.code)) e.preventDefault();   // never scroll; Enter never double-fires a focused button
   if (e.code === 'ArrowUp' || e.code === 'KeyW') { if (G.state === 'play' && (!e.repeat || held.up)) held.up = true; return; }       // only a fresh press in play starts movement (repeats after a pause / resume are ignored)
@@ -449,7 +478,8 @@ window.addEventListener('dblclick', e => { if (e.target && e.target.closest && e
 
 // ===== SCREENS / STATE FLOW =====
 function setScreen(name) {
-  for (const id of ['start', 'how', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
+  for (const id of ['start', 'how', 'diff', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
+  $('btnHomeP').textContent = G.practice ? 'End practice' : 'Home'; $('pSub').textContent = G.practice ? 'Practice is on hold.' : 'Your run is on hold.';
   if (name === 'start') refreshDash();
   $('btnPause').style.visibility = (G.state === 'play' || G.state === 'pause' || G.state === 'resume') ? 'visible' : 'hidden';
   $('btnHome').style.visibility = G.state === 'start' ? 'hidden' : 'visible';                  // home icon: play, pause, level complete, game over
@@ -481,10 +511,26 @@ function showHome() {
 }
 function askQuit() {                                        // home icon / H key
   G.hitStop = 0;
+  if (G.practice && (G.state === 'play' || G.state === 'resume' || G.state === 'pause')) { showHome(); return; }   // practice: nothing to lose, straight to the dashboard
   if (G.state === 'play' || G.state === 'resume') { G.state = 'pause'; clearDrag(); releaseKeys(); Sound.pause(); G.quitAsk = true; setScreen('quit'); }   // pause first, then ask
   else if (G.state === 'pause') { if (!G.quitAsk) { G.quitAsk = true; setScreen('quit'); } }
   else if (G.state === 'complete') { const sc = Math.floor(scoreNow()); if (sc > G.best) G.best = sc; showHome(); }            // nothing to lose: straight home (the score so far still counts as a best)
   else if (G.state === 'over') showHome();
+}
+function openDiff() { if (G.state !== 'start') return; G.diffOpen = true; setScreen('diff'); }
+function closeDiff() { G.diffOpen = false; if (G.state === 'start') setScreen('start'); }
+function startPractice(d) {                             // Practice: endless, no score, no boss, cannot lose
+  const now = performance.now();
+  if (now - G.startAt < 300) return;
+  G.startAt = now; d = clamp(d | 0, 0, 2);
+  Sound.unlock(); Sound.resume(); resetGame();
+  G.practice = true; G.pDiff = d;
+  startLevel(PRACTICE_LV[d]);                           // a fixed level-like mix (lvlProg is constant in practice: no ramp)
+  tipsDone = false; holeTipSeen = false; boostHintSeen = false; G.tips = pickTips(1); G.tipT = 0;   // practice is for learning: the level-1 teaching tips run at the start
+  G.banner = 'PRACTICE \u00b7 ' + PRACTICE_NAME[d].toUpperCase(); G.bannerBoss = false; G.bannerT = 1.0;
+  G.state = 'play'; clearDrag(); setScreen(null);
+  Sound.play('start');
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 }
 function openHow() { if (G.state !== 'start') return; G.howOpen = true; setScreen('how'); }
 function closeHow() { G.howOpen = false; if (G.state === 'start') setScreen('start'); }
@@ -575,6 +621,9 @@ $('btnMusic').addEventListener('click', e => { e.currentTarget.blur(); toggleMus
 $('btnMute2').addEventListener('click', e => { e.currentTarget.blur(); toggleMute(); });
 $('btnMusic2').addEventListener('click', e => { e.currentTarget.blur(); toggleMusic(); });
 $('btnHow').addEventListener('click', e => { e.currentTarget.blur(); openHow(); });
+$('btnPractice').addEventListener('click', e => { e.currentTarget.blur(); openDiff(); });
+$('btnDiffBack').addEventListener('click', e => { e.currentTarget.blur(); closeDiff(); });
+$('dCards').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && G.diffOpen) startPractice(+b.dataset.d); });
 $('btnHowBack').addEventListener('click', e => { e.currentTarget.blur(); closeHow(); });
 for (const id of ['btnHome', 'btnHomeP', 'btnHomeC', 'btnHomeO']) $(id).addEventListener('click', e => { e.currentTarget.blur(); askQuit(); });
 $('btnKeep').addEventListener('click', e => { e.currentTarget.blur(); if (G.quitAsk) togglePause(); });
@@ -1070,7 +1119,11 @@ function setSquad(n) {
   if (G.state !== 'play') return;                       // once the run is over nothing can change the squad
   n = Math.floor(n);
   if (n > SQUAD_MAX) {                                  // over the cap: a small score bonus instead of an empty celebration
-    const o = n - SQUAD_MAX; G.bonus += o * 5; FX.pop(G.px, G.pz + 3.1, 'MAX +' + o * 5, '#ffd24d', 1.2); n = SQUAD_MAX;
+    const o = n - SQUAD_MAX; award(o * 5); FX.pop(G.px, G.pz + 3.1, G.practice ? 'MAX' : 'MAX +' + o * 5, '#ffd24d', 1.2); n = SQUAD_MAX;
+  }
+  if (G.practice && n < 1) {                            // practice: the squad can never die. The hit still shows its feedback (the full loss), the squad stays at 1
+    squadFeedback(n - G.squad, 1, Math.min(G.squad, MAX_VISUAL)); G.popAt = G.t; G.squad = 1;
+    return;
   }
   n = Math.max(0, n);
   const d = n - G.squad;
@@ -1229,8 +1282,8 @@ function fireEff() { return fireEff0() * (G.boostT > 0 ? BOOST_FIRE : 1); }     
 // golden laser, no damage from enemies or holes. Then the meter restarts at 0 (and does not charge while boost is ready or running). -----
 function setReady() {
   G.boostReady = true; G.charge = G.boostNeed; G.readyAt = G.t; Sound.play('ready');
-  if (G.level === 1) { if (!boostHintSeen) { boostHintSeen = true; G.boostHint = G.boostHintDur = 2.4; } }          // level 1 teaches: "Double-tap or Ctrl for BOOST"
-  else if (!G.readyNoticeSeen) { G.readyNoticeSeen = true; G.boostHint = G.boostHintDur = 1.2; }                    // later levels: a short plain "BOOST READY" notice, no teaching
+  if (tipLv() === 1) { if (!boostHintSeen) { boostHintSeen = true; G.boostHint = G.boostHintDur = 2.4; } }          // level 1 teaches: "Double-tap or Ctrl for BOOST"
+  else if (!G.readyNoticeSeen || G.practice) { G.readyNoticeSeen = true; G.boostHint = G.boostHintDur = 1.2; }                    // later levels: a short plain "BOOST READY" notice, no teaching
 }
 function chargeBoost(e) {                                                          // called when an alien dies
   if (G.boostT > 0 || G.boostReady) return false;
@@ -1348,8 +1401,8 @@ const ETYPE = {
 };
 // ----- levels: run -> boss -> finish -> complete. Scaling stops growing after level 8 (levels keep coming, bounded) -----
 const LV = n => Math.min(n, 8);
-const levelLen = () => Math.min(1500, 1100 + 80 * (G.level - 1));          // run distance before the boss (~60-80s)
-const lvlProg = () => clamp(G.ldist / levelLen(), 0, 1);
+const levelLen = () => G.practice ? 1e9 : Math.min(1500, 1100 + 80 * (G.level - 1));          // run distance before the boss (~60-80s)
+const lvlProg = () => G.practice ? 0.5 : clamp(G.ldist / levelLen(), 0, 1);      // practice: a fixed mid-level mix, no ramp
 const difficulty = () => 1 + 0.8 * (LV(G.level) - 1) + 1.2 * lvlProg();      // wave size ramp
 const hpScale = () => 1 + 0.45 * (LV(G.level) - 1) + 0.6 * lvlProg();        // enemy HP ramp
 function shuffled(n) {
@@ -1391,7 +1444,7 @@ const THEMES = [
   { id: 'gauntlet', name: 'GAUNTLET',    w: { hole: 3.2, gates: 1.7, crates: 1.3, swarm: 0.6 } },
   { id: 'swarm',    name: 'SWARM NIGHT', w: { swarm: 3, few: 0.6, tank: 0.5, wall: 0.4 } }
 ];
-const themeFor = lv => lv >= 5 ? THEMES[(G.themeBase + lv) % THEMES.length] : null;
+const themeFor = lv => (lv >= 5 && !G.practice) ? THEMES[(G.themeBase + lv) % THEMES.length] : null;
 function alienReachable(e) {                           // can the lasers really get at it? What stands in front of it in its lane must cost less than ~3s of permanent fire
   let cost = 0;
   for (const o of enemies) if (o !== e && o.type !== 'boss' && o.lane === e.lane && o.z < e.z) cost += o.hp + (o.armor || 0);
@@ -1424,6 +1477,7 @@ function pickEncounter() {
 // never more than 1.3x what the squad can realistically clear in one lane, so every pattern stays fair.
 const levelLoad = () => 30 * Math.pow(1.8, LV(G.level) - 1) * (0.75 + 0.5 * lvlProg());
 function runEncounter(kind) {                           // returns the distance until the next decision (minimum spacing)
+  if (G.practice) G.lopp = Math.max(0, G.lopp - 0.45);   // practice never ends a level: the alien schedule keeps refilling so boost stays practicable
   const d = difficulty(), lanes = shuffled(LANES), load = Math.min(levelLoad(), laneCap() * 1.3);
   const hp = f => Math.max(2, Math.round(load * f * rand(0.85, 1.15)));                  // HP worth f of one lane's load
   const lv = LV(G.level);                                                                // from level 3 half the big units are armored; from level 2 some small ones hop
@@ -1496,11 +1550,11 @@ function updateDirector() {
 }
 function killEnemy(e) {
   const T = ETYPE[e.type], big = e.type === 'boss', m = streakMult(), pts = (big ? 150 + 50 * LV(G.level) : T.pts) * m;
-  G.bonus += pts; G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult());
+  award(pts); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult());
   const heavy = e.type === 'tank' || e.type === 'armor';
   if (e.type === 'alien') { FX.coreImplode(e.x, e.z); FX.burst(e.x, e.z, T.col, 5, false); }                    // golden core implodes, then a small burst
   else FX.burst(e.x, e.z, T.col, big ? 70 : heavy ? 24 : e.type === 'swarm' ? 4 : 12, big);
-  FX.pop(e.x, e.z, '+' + pts + (m > 1 ? ' \u00d7' + m : ''), m > 1 ? '#ffd24d' : '#ffe14d', big ? 1.4 : 0.8);
+  if (!G.practice) FX.pop(e.x, e.z, '+' + pts + (m > 1 ? ' \u00d7' + m : ''), m > 1 ? '#ffd24d' : '#ffe14d', big ? 1.4 : 0.8);      // (no points in practice)
   if (big) { FX.shake(16); FX.flash('#ff8a1f', 0.2); FX.ring(e.x, e.z, '#ff8a1f', 3); }
   else if (heavy) { FX.shake(3); FX.flash(T.col, 0.07); FX.ring(e.x, e.z, T.col, 1.2); }
   if (big || heavy) requestHitStop(big ? 0.04 : 0.033);                                    // hit-stop: big kills only, never swarm / grunt spam
@@ -1899,6 +1953,7 @@ function startBoss() {
 }
 function updateLevel(dt) {
   if (G.state !== 'play') return;
+  if (G.practice) return;                                                             // endless: no clear / boss / finish / complete
   G.phaseT += dt;
   if (G.phase === 'run') { if (G.ldist >= levelLen()) { G.phase = 'clear'; G.phaseT = 0; } }
   else if (G.phase === 'clear') {                                                    // never overlap the boss announcement with other threats
@@ -1928,7 +1983,7 @@ function completeLevel() {
   showComplete();
 }
 function gameOver() {
-  if (G.state !== 'play') return;
+  if (G.state !== 'play' || G.practice) return;
   G.hitStop = 0; G.state = 'over'; G.overAt = performance.now();
   FX.burst(G.px, G.pz + 0.5, '#19f0ff', 40, true); FX.shake(18); FX.flash('#ff3b5c', 0.5); Sound.play('over');
   G.score = scoreNow();                                    // final score is computed here, not from the last frame
@@ -2230,7 +2285,7 @@ function drawWorld() {
 const HOLE_TIME = 0.26, HOLE_GRACE = 0.08;
 function spawnHole(l0, l1) {
   holes.push({ z: ZMAX, len: HOLE_TIME * (G.speed + 1.5), l0, l1, hit: false, cover: false, safe: false, cleared: false, grace: 0 });
-  if (G.level === 1 && !holeTipSeen) { holeTipSeen = true; G.tipJump = 2; }   // jump tip: before the first hole of level 1 only (the orange JUMP! cue in the preview strip warns in every level)
+  if (tipLv() === 1 && !holeTipSeen) { holeTipSeen = true; G.tipJump = 2; }   // jump tip: before the first hole of level 1 only (the orange JUMP! cue in the preview strip warns in every level)
 }
 function holeFall(h) {
   h.hit = true; G.landAt = G.t;
@@ -2261,7 +2316,7 @@ function updateHoles(dt) {
       else if (!h.hit) { h.grace += dt; if (h.grace >= HOLE_GRACE) { holeFall(h); if (G.state !== 'play') return; } }   // tiny grace so a press right at the edge still counts
     } else h.grace = 0;                                                               // stepping out sideways resets the grace
     if (!h.cleared && !h.hit && h.cover && h.air && pz > h.z + h.len) {             // jumped it: small bonus (an actual airborne crossing)
-      h.cleared = true; G.bonus += 25; FX.pop(G.px, G.pz + 1.6, 'CLEAR! +25', '#7dffb0', 1.3); Sound.play('clear', panOf(G.px));
+      h.cleared = true; award(25); FX.pop(G.px, G.pz + 1.6, G.practice ? 'CLEAR!' : 'CLEAR! +25', '#7dffb0', 1.3); Sound.play('clear', panOf(G.px));
     }
     if (h.z + h.len < behind(4)) holes.splice(i, 1);
   }
@@ -2305,7 +2360,7 @@ function applyGate(c, gx0) {
   else if (c.type === 'mul') next = sq * c.v;
   else if (c.type === 'div') { const keep = Math.max(1, Math.floor(sq / c.v)); next = sq - Math.ceil((sq - keep) * STEADY[G.steady]); }
   else if (c.type === 'fr_up' && fireEff0() >= G.fireCap - 0.01) {                       // already at the limit: score bonus, and the running buff is kept fresh
-    G.bonus += 50; txt = 'FIRE MAX +50'; for (const e of G.effects) if (e.key === 'up') e.t = EFFECT_T;
+    award(50); txt = G.practice ? 'FIRE MAX' : 'FIRE MAX +50'; for (const e of G.effects) if (e.key === 'up') e.t = EFFECT_T;
   } else {
     addEffect(c.type === 'fr_up' ? 1.2 : 0.8);                                         // temporary: 15s, see addEffect
     txt = 'FIRE ' + c.big.replace('-', '\u2212');
@@ -2759,16 +2814,17 @@ function drawStatusRow() {
     left = sx - u - F(6);
   }
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';                                  // score + streak (line 1), level (line 2)
-  const sTxt = String(scoreNow()), b1 = P.y + P.h * 0.47, b2 = P.y + P.h * 0.82;
-  const showStreak = G.streak > 0 && left - x1 >= F(72);                                    // no room (tiny phone + shield + arrow): the score wins, the multiplier waits
+  const sTxt = G.practice ? 'PRACTICE' : String(scoreNow()), b1 = P.y + P.h * 0.47, b2 = P.y + P.h * 0.82;
+  const showStreak = !G.practice && G.streak > 0 && left - x1 >= F(72);                                    // no room (tiny phone + shield + arrow): the score wins, the multiplier waits
   fitFont(sTxt, 900, F(P.short ? 18 : 20), Math.max(40, left - x1 - (showStreak ? F(34) : 0)), 14);
-  ctx.fillStyle = '#fff'; ctx.fillText(sTxt, x1, b1);
+  ctx.fillStyle = G.practice ? '#ffd24d' : '#fff'; ctx.fillText(sTxt, x1, b1);
   if (showStreak) {                                                                         // kill streak multiplier + progress to the next step
     const sw = ctx.measureText(sTxt).width, m = streakMult(), sx = x1 + sw + 7;
     ctx.font = '900 ' + F(15) + 'px ' + FONT; ctx.fillStyle = m > 1 ? '#ffd24d' : 'rgba(255,255,255,.7)'; ctx.fillText('\u00d7' + m, sx, b1);
     if (m < 5) { const bw2 = F(22); ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(sx, b1 + 3, bw2, 2); ctx.fillStyle = '#ffd24d'; ctx.fillRect(sx, b1 + 3, bw2 * (G.streak % 5) / 5, 2); }
   }
-  ctx.font = '800 ' + F(14) + 'px ' + FONT; ctx.fillStyle = '#ff9af0'; ctx.fillText('LV ' + G.level + '  SCORE', x1, b2);
+  ctx.font = '800 ' + F(14) + 'px ' + FONT; ctx.fillStyle = '#ff9af0'; ctx.fillText(G.practice ? PRACTICE_NAME[G.pDiff].toUpperCase() : 'LV ' + G.level + '  SCORE', x1, b2);
+  if (G.practice) return;                                                                   // no level progress / boss / finish markers in an endless run
   const bx = P.x + 12, bw = P.w - 24, by = P.y + P.h - 6, prog = levelProgress();          // progress through the whole level
   ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(bx, by, bw, 3);
   const bg = ctx.createLinearGradient(bx, 0, bx + bw, 0); bg.addColorStop(0, '#19f0ff'); bg.addColorStop(0.8, '#ff2bd6'); bg.addColorStop(1, '#ffd24d');
@@ -2869,10 +2925,10 @@ const TIP_TEXT = {
 };
 const TIP_INTRO = { 1: ['steer', 'crates', 'charge'] };
 function pickTips(lv) { return lv === 1 ? TIP_INTRO[1].slice() : []; }
-const tipsActive = () => G.level === 1 && !tipsDone && G.phase === 'run' && G.tipT < G.tips.length * TIP_SECS + 0.05;      // the tip sequence is still running (or about to)
+const tipsActive = () => tipLv() === 1 && !tipsDone && G.phase === 'run' && G.tipT < G.tips.length * TIP_SECS + 0.05;      // the tip sequence is still running (or about to)
 function drawTips() {            // this level's tips (see pickTips); not during the boss fight, not while paused
   const jt = G.tipJump > 0;                                // the jump tip (shown before the first hole of each level) takes priority
-  if (G.level !== 1 || (tipsDone && !jt) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
+  if (tipLv() !== 1 || (tipsDone && !jt) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
   if (UI.short && G.bannerT > 0) return;                   // banner has the shared row right now
   if (G.bannerT > 0 && !jt) return;                        // the sequence starts once the "LEVEL n" banner has cleared
   const touch = 'ontouchstart' in window;
@@ -2905,7 +2961,7 @@ function drawPill(text, alpha) {                         // the small hint pill 
 }
 function drawBoostHint() {                               // level 1: the teaching hint; later levels: a short "BOOST READY" notice (once per level)
   if (G.boostHint <= 0 || G.state !== 'play' || G.boostT > 0 || G.tipJump > 0 || tipsActive() || bossCueOn() || (UI.short && G.bannerT > 0)) return;   // never on top of another tip or a boss warning (it also works during the boss fight)
-  const ph = (G.boostHintDur || 2.4) - G.boostHint; drawPill(G.level === 1 ? 'Double-tap or Ctrl for BOOST' : 'BOOST READY', 0.9 * clamp(Math.min(ph / 0.2, G.boostHint / 0.3), 0, 1));
+  const ph = (G.boostHintDur || 2.4) - G.boostHint; drawPill(tipLv() === 1 ? 'Double-tap or Ctrl for BOOST' : 'BOOST READY', 0.9 * clamp(Math.min(ph / 0.2, G.boostHint / 0.3), 0, 1));
 }
 function drawCountdown() {       // 3-2-1 after unpausing
   if (G.state !== 'resume') return;
