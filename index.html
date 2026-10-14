@@ -367,13 +367,13 @@ const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, complete
 // ACCURACY = main-laser bullets that hit something (enemy, boss, crate) / main-laser bullets fired. Each bullet counts once (a piercing pass is the same bullet).
 //   A bullet stopped by the boss shield is a miss ("blocked"). Wing shots (Spread) and BOOST shots are left out of BOTH numbers: they are not aimed.
 // Soldiers lost are attributed to the cause that set G.cause just before the squad changed: enemy contact, red gates, pits, boss attacks, crates.
-const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate'];
+const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate', 'lost_barrel', 'barrels', 'barrel_kills', 'rk_pick', 'rk_kills', 'rk_shots'];
 const newStats = () => { const o = { peak: 1, streak: 0, byType: {} }; for (const k of STAT_KEYS) o[k] = 0; return o; };
 G.rs = newStats(); G.ls = newStats();
 const bump = (k, n) => { n = n === undefined ? 1 : n; G.rs[k] += n; G.ls[k] += n; };
 const setCause = (c, d) => { G.cause = c; G.causeD = d || null; };
 const enemies = [], gates = [], crates = [], holes = [];
-let tipsDone = false, holeTipSeen = false, boostHintSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
+let tipsDone = false, holeTipSeen = false, boostHintSeen = false, barrelTipSeen = false, rocketTipSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
 // ONE contact rule for gates, holes, boss slams, crates and enemies: where the squad is DRAWN (G.px / G.pz), never where it is heading.
 // G.lane is only the movement TARGET (the squad slides there in ~0.1s). playerLane() = the lane under the squad's ground centre.
 //   gates / holes / boss slams: the lane (exact drawn lane boundaries) under the centre at the moment of crossing / slam
@@ -587,7 +587,7 @@ function startPractice(d) {                             // Practice: endless, no
   Sound.unlock(); Sound.resume(); resetGame();
   G.practice = true; G.pDiff = d;
   startLevel(PRACTICE_LV[d]);                           // a fixed level-like mix (lvlProg is constant in practice: no ramp)
-  tipsDone = false; holeTipSeen = false; boostHintSeen = false; G.tips = pickTips(1); G.tipT = 0;   // practice is for learning: the level-1 teaching tips run at the start
+  tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; G.tips = pickTips(1); G.tipT = 0; planPod();   // practice is for learning: the level-1 teaching tips run at the start
   G.banner = 'PRACTICE \u00b7 ' + PRACTICE_NAME[d].toUpperCase(); G.bannerBoss = false; G.bannerT = 1.0;
   G.state = 'play'; clearDrag(); setScreen(null);
   Sound.play('start');
@@ -623,13 +623,13 @@ const UPGRADES = {
              desc: () => { const c1 = Math.min(10, G.fireCap + 0.8); return 'Fire rate ' + n1(G.fireRate) + ' \u2192 ' + n1(Math.min(c1, G.fireRate + 0.8)) + '/s (limit ' + n1(G.fireCap) + ' \u2192 ' + n1(c1) + ')'; },
              apply() { G.fireCap = Math.min(10, G.fireCap + 0.8); G.fireRate = Math.min(G.fireCap, G.fireRate + 0.8); } },
   dmg:     { name: 'Stronger shots', ok: () => G.dmgMul < 1.55,
-             desc: () => 'Shot damage \u00d7' + G.dmgMul.toFixed(1) + ' \u2192 \u00d7' + (G.dmgMul + 0.2).toFixed(1),
+             desc: () => 'Shot damage \u00d7' + G.dmgMul.toFixed(1) + ' \u2192 \u00d7' + (G.dmgMul + 0.2).toFixed(1) + ' (rockets too)',
              apply() { G.dmgMul += 0.2; } },
   pierce:  { name: 'Piercing core', ok: () => G.pierceN < 2,
-             desc: () => 'Shots pass through ' + G.pierceN + ' \u2192 ' + (G.pierceN + 1) + ' extra target' + (G.pierceN ? 's' : '') + ' (each pass keeps exactly 60% of the last damage)',
+             desc: () => 'Shots pass through ' + G.pierceN + ' \u2192 ' + (G.pierceN + 1) + ' extra target' + (G.pierceN ? 's' : '') + ' (each pass keeps exactly 60% of the last damage; rockets never pierce)',
              apply() { G.pierceN++; } },
   spread:  { name: 'Wider spread', ok: () => G.wings < 2,
-             desc: () => 'Side shots ' + G.wings * 2 + ' \u2192 ' + (G.wings + 1) * 2 + ' per volley: each is exactly 50% of a normal shot, reaching ' + (G.wings + 1) + ' lane' + (G.wings ? 's' : '') + ' either side',
+             desc: () => 'Side shots ' + G.wings * 2 + ' \u2192 ' + (G.wings + 1) * 2 + ' per volley: each is exactly 50% of a normal shot, reaching ' + (G.wings + 1) + ' lane' + (G.wings ? 's' : '') + ' either side (none while rockets are active)',
              apply() { G.wings++; } },
   shield:  { name: 'Shield', ok: () => G.shieldMax < 2,
              desc: () => 'Blocks enemy hits and slams each level (not pits or bad gates): ' + G.shieldMax + ' \u2192 ' + (G.shieldMax + 1) + ' charge' + (G.shieldMax ? 's' : ''),
@@ -1424,9 +1424,91 @@ function updatePlayer(dt) {
   G.muzzle = Math.max(0, G.muzzle - dt * 12);
   if (G.openT > 0) G.openT = Math.max(0, G.openT - dt);                      // utility: Opening volley (+50% damage, first 20 s of the level)
   G.aimTarget = aimCandidate(G.px);
+  if (G.rocketT > 0) {                                       // ROCKETS replace the lasers while they last
+    G.rocketT = Math.max(0, G.rocketT - dt); G.rockAcc += dt * rocketRate();
+    for (let i = 0; i < 2 && G.rockAcc >= 1; i++) { G.rockAcc -= 1; fireRocket(); }
+    if (G.rockAcc > 1) G.rockAcc = 1;
+    if (G.rocketT <= 0) { Sound.play('expire'); FX.pop(G.px, G.pz + 2.2, 'LASERS', '#19f0ff', 1); }
+    return;
+  }
   G.fireAcc += dt * fireEff();
   for (let i = 0; i < 4 && G.fireAcc >= 1; i++) { G.fireAcc -= 1; volley(); }
   if (G.fireAcc > 1) G.fireAcc = 1;
+}
+// ===== ROCKET LAUNCHER (temporary special weapon) =====
+// RULES (final):
+//  * Rare pod on the road (about 65% of levels get one; practice every 1200-2200 road units); collected like a crate (footprint + swept, once). 10 s;
+//    collecting again refreshes to 10 s (no stacking). Never in the boss phase, never on holes / gates / crates / barrels. Fairness never assumes it.
+//  * While active it REPLACES the lasers. Rate = 0.45 x the current fire rate (upgrades and timed fire gates count), bounded 0.9 .. 4.0 /s; BOOST multiplies it x2.5.
+//  * One rocket per shot. Damage = 3 x the volley's main-shot damage x the number of lasers (so ~1.35x the lasers' single-target damage per second at the
+//    lower rate, plus splash). "Stronger shots" multiplies it (and Opening volley). Rockets never pierce: they explode on the FIRST target (enemy or crate).
+//    Spread adds no side rockets. Boost keeps its x2.5 rate and protection (rockets turn golden); it adds no extra damage multiplier (no double counting).
+//  * Direct hit = a normal hit (armor: plate soaks, 20% chip; boss shield blocks except the weak point). Splash: 35% of the rocket damage on up to 4 other
+//    enemies inside an ellipse 0.6 lane wide (x) by 2.5 deep (z), nearest first, the direct target excluded (never hit twice); a normal hit for armor and
+//    the boss shield (a splash cannot bypass it). Crates and barrels' contact rules are unchanged (a barrel hit by splash arms like any hit).
+//  * Rocket shots are not part of the accuracy percentage. Kills go through killEnemy: one credit, one alien boost pip.
+const ROCKET_T = 10, RK_N = 16, ROCKET_SPEED = 60, SPLASH_RX = 0.6 * LANE_W, SPLASH_RZ = 2.5, SPLASH_MAX = 4, SPLASH_F = 0.35;
+const rockets = Array.from({ length: RK_N }, () => ({ on: false, x: 0, z: 0, yo: 0, dmg: 0, boost: false, aim: null, originX: 0 }));
+const pods = [];
+const rocketRate = () => clamp(0.45 * fireEff0(), 0.9, 4.0) * (G.boostT > 0 ? BOOST_FIRE : 1);
+const rocketDmg = () => 3 * rollDmg() * lasersFor(G.squad);
+function resetRockets() { for (const r of rockets) r.on = false; G.rockAcc = 0; }
+function planPod() { G.podPlan = G.practice ? G.ldist + rand(1200, 2200) : (Math.random() < 0.65 ? levelLen() * (G.level === 1 ? rand(0.3, 0.6) : rand(0.15, 0.7)) : -1); }
+function tryPod() {                                        // place the planned pod just beyond the far edge, in a lane with nothing near it
+  if (G.podPlan < 0 || G.ldist < G.podPlan || G.phase !== 'run' || pods.length) return;
+  if (!G.practice && G.ldist > levelLen() - 220) { G.podPlan = -1; return; }
+  const z = ZMAX + 6, free = l => !enemies.some(e => e.type !== 'boss' && e.lane === l && Math.abs(e.z - z) < 22) && !crates.some(c => c.lane === l && Math.abs(c.z - z) < 14)
+    && !holes.some(h => l >= h.l0 && l <= h.l1 && Math.abs(h.z - z) < 24) && !gates.some(g => Math.abs(g.z - z) < 16);
+  const ls = shuffled(LANES).filter(free); if (!ls.length) return;                                // try again next frame
+  pods.push({ x: laneX(ls[0]), lane: ls[0], z, t: 0 }); G.podPlan = G.practice ? G.ldist + rand(1200, 2200) : -1; G.nextAt = Math.max(G.nextAt, G.ldist + 22);   // the next pattern starts after it has moved clear
+}
+function collectPod() {
+  const fresh = !(G.rocketT > 0); G.rocketT = ROCKET_T; G.rocketAt = G.t; if (fresh) G.rockAcc = 0.7; bump('rk_pick');
+  FX.ring(G.px, G.pz + 1, '#ff7a3d', 1.8); FX.burst(G.px, G.pz + 1.2, '#ff8a1f', 12, false); FX.pop(G.px, G.pz + 2.6, 'ROCKETS!', '#ff9a4d', 1.4); Sound.play('pod');
+  if (tipLv() === 1 && !rocketTipSeen) { rocketTipSeen = true; G.tipRocket = 2; }                  // level 1 teaches it once; later pickups: chip + notice only
+}
+function updatePods(dt) {
+  if (G.state !== 'play') return;
+  for (let i = pods.length - 1; i >= 0; i--) {
+    const p = pods[i], zb = p.z; p.z -= G.speed * dt; p.t += dt;
+    if (depthHit(zb, p.z, -1.2, 0.7) && nearX(p.x, 0.17 + squadHW())) { pods.splice(i, 1); collectPod(); continue; }      // same swept footprint pickup as crates, once
+    if (p.z < behind(3)) pods.splice(i, 1);
+  }
+}
+function fireRocket() {
+  for (const r of rockets) {
+    if (r.on) continue;
+    r.on = true; r.x = r.originX = G.px; r.z = G.pz + 0.5; r.yo = jumpHeight(); r.dmg = rocketDmg(); r.boost = G.boostT > 0; r.aim = aimCandidate(G.px); r.age = 0;
+    bump('rk_shots'); G.muzzle = 1; Sound.play('rocket', panOf(G.px)); return r;
+  }
+  return null;
+}
+function rocketImpact(r, t, isEnemy) {
+  const x = r.x, z = t.z, col = r.boost ? '#ffd24d' : '#ff8a1f';
+  if (isEnemy) { t.byRocket = true; damageEnemy(t, { dmg: r.dmg, x }); if (!t.dead) t.byRocket = false; } else damageCrate(t, { x, dmg: r.dmg });
+  const near = [];
+  for (const o of enemies) {
+    if (o === t || o.dead || o.fuse || o.solid === false) continue;
+    const dx = (o.x - x) / SPLASH_RX, dz = (o.z - z) / SPLASH_RZ, d = dx * dx + dz * dz; if (d <= 1) near.push({ o, d });
+  }
+  near.sort((a, b) => a.d - b.d);
+  for (let i = 0; i < Math.min(SPLASH_MAX, near.length); i++) { const o = near[i].o; o.byRocket = true; damageEnemy(o, { dmg: r.dmg * SPLASH_F, x, blast: true }); if (!o.dead) o.byRocket = false; }
+  FX.fireball(x, z, 0.3); FX.burst(x, z, col, 7, false); FX.ring(x, z, col, 0.3); Sound.play('rocketHit', panOf(x));       // small explosion puff
+}
+function updateRockets(dt) {
+  if (G.state !== 'play') return;
+  for (const r of rockets) {
+    if (!r.on) continue;
+    r.age += dt;
+    if (aimLive(r.aim) && r.aim.z > r.z && Math.abs(aimX(r.aim) - r.originX) <= LANE_W) r.x += clamp(clamp(aimX(r.aim), r.originX - LANE_W, r.originX + LANE_W) - r.x, -AIM_SPEED * dt, AIM_SPEED * dt);
+    if (r.yo > 0.001) r.yo *= Math.max(0, 1 - 9 * dt);
+    const z0 = r.z; r.z += ROCKET_SPEED * dt;
+    if (r.z > ZMAX * 0.95) { r.on = false; continue; }
+    let best = null, bz = 1e9, isEnemy = false;
+    for (const e of enemies) if (e.solid !== false && !e.dead && !e.fuse && e.z <= r.z + 1.4 && e.z >= z0 - 1.4 && Math.abs(r.x - e.x) < e.r + 0.05 && e.z < bz) { best = e; bz = e.z; isEnemy = true; }
+    for (const c of crates) if (c.z <= r.z + 1.4 && c.z >= z0 - 1.4 && Math.abs(r.x - c.x) < 0.2 && c.z < bz) { best = c; bz = c.z; isEnemy = false; }
+    if (best) { r.on = false; rocketImpact(r, best, isEnemy); if (G.state !== 'play') return; }
+  }
 }
 function updateBullets(dt) {
   if (G.state !== 'play') return;
@@ -1477,7 +1559,8 @@ const ETYPE = {
   hopper: { r: 0.15, col: '#ffb02e', vz: 2.2, pts: 15 },      // switches lane once after a 0.6s warning
   armor: { r: 0.18, col: '#7ad7ff', vz: 1.5, pts: 40 },        // front shield soaks damage until it breaks
   alien: { r: 0.16, col: '#3dffb8', vz: 1.8, pts: 20 },        // changes lanes on its own: weaver / teleporter / dancer (telegraphed, locked when close)
-  boss:  { r: 0.58, col: '#ff8a1f', vz: 0.7, pts: 200 }
+  boss:  { r: 0.58, col: '#ff8a1f', vz: 0.7, pts: 200 },
+  barrel: { r: 0.17, col: '#ff8a1f', vz: 0, pts: 0 }           // explosive barrel: sits on the road, shoot it to blast the enemies around it (see BARRELS)
 };
 // ----- levels: run -> boss -> finish -> complete. Scaling stops growing after level 8 (levels keep coming, bounded) -----
 const LV = n => Math.min(n, 8);
@@ -1491,7 +1574,7 @@ function shuffled(n) {
   return a;
 }
 function startLevel(n) {
-  if (n === 1) { tipsDone = false; holeTipSeen = false; boostHintSeen = false; } else tipsDone = true;      // teaching happens in level 1 of a run only (resetGame -> startLevel(1) re-arms it)
+  if (n === 1) { tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; } else tipsDone = true;      // teaching happens in level 1 of a run only (resetGame -> startLevel(1) re-arms it)
   dbl = null; G.tips = pickTips(n); G.tipT = 0; G.tipJump = 0; G.readyNoticeSeen = false; G.boostHintDur = 0; G.hitStop = 0; G.aimTarget = null;
   G.ls = newStats();                                                                // level subtotals restart with every level
   G.level = n; G.phase = 'run'; G.ldist = 0; G.phaseT = 0; G.finish = null; G.supplied = false;
@@ -1500,7 +1583,7 @@ function startLevel(n) {
   G.boostT = 0; G.charge = 0; G.boostReady = false; G.boostAt = -9; G.readyAt = -9; G.boostEndAt = -9; G.boostHint = 0; G.pipAt = -9; G.lalien = 0;
   G.charge = Math.min(G.boostHead || 0, G.boostNeed - 1);       // upgrade: a head start of 1-2 boost pips (never a free boost)
   const U = G.util || {}; G.rushLeft = U.rush ? 2 : 0; G.openT = U.open ? 20 : 0; if (U.shield1) G.shield += 1; if (U.boostfull) setReady(); G.util = {}; G.squad = 1;      // one-level utility picks (taken once, for this level only)
-  enemies.length = 0; gates.length = 0; crates.length = 0; holes.length = 0;
+  enemies.length = 0; gates.length = 0; crates.length = 0; holes.length = 0; pendingBlasts.length = 0; G.celebT = 0; G.bar = { n: 0, last: -9 }; G.tipBarrel = 0; G.tipRocket = 0; G.rocketT = 0; pods.length = 0; resetRockets(); planPod();
   for (const b of bullets) b.on = false;
   G.theme = themeFor(n); G.lopp = 0; G.banner = 'LEVEL ' + n + (G.theme ? ' \u00b7 ' + G.theme.name : ''); G.bannerBoss = false; G.bannerT = 1.0;
   spawnGatePair(true, 36);                              // every level: the first pair always has a recruit gate (you start with 1 soldier)
@@ -1509,6 +1592,73 @@ function spawnEnemy(type, lane, z, hp, armor) {
   const T = ETYPE[type], d = difficulty();
   enemies.push({ type, lane, x: laneX(lane), bx: laneX(lane), z, hp, maxhp: hp, armor: armor || 0, maxarmor: armor || 0, hopsLeft: type === 'hopper' ? (LV(G.level) >= 4 ? 2 : 1) : 0, hopT: rand(0.4, 1.2), tele: null,
     r: T.r, vz: T.vz * rand(0.85, 1.2) * (1 + d * 0.03), flash: 0, ph: rand(0, 6.28) });
+}
+
+// ===== BARRELS: explosive barrels inside enemy encounters =====
+// RULES (final):
+//  * A barrel is an obstacle with a few HP (about 4 effective hits). Shooting it to 0 starts a 0.25 s telegraph (flash + a ring that shows the EXACT blast area),
+//    then it explodes. Blast area = ellipse, 1.3 lanes wide (x) and 5 depth units (z); an enemy is hit when its CENTRE is inside it.
+//  * Blast damage is a fixed, level-scaled amount (15 x 1.8^(level-1), level capped at 8), never a % of HP. Armored enemies: it is a normal hit (plate soaks,
+//    body takes the 20% chip). Boss: 25% of that, and never while the boss is flying in, shielded (or rising) or dead. Crates, gates, holes: untouched.
+//  * The squad is NEVER hurt by a barrel it shot: blasts only ever damage enemies. Chain: a blast sets off other barrels inside it, but those secondaries
+//    do not chain further (depth cap 1). At most 2 barrels per encounter, a per-level cap, never in the boss phase.
+//  * Touching one (the same footprint / swept contact rule as enemies): it explodes on the squad once: lose 15% of the squad (min 1, max 8), cause "Barrel".
+//    A shield absorbs it; BOOST plows through harmlessly. Either way the blast still hits the enemies around it.
+//  * Kills made by a blast go through killEnemy (one credit: score, streak, alien boost pip); barrels themselves give no points.
+const BLAST_RX = 1.3 * LANE_W, BLAST_RZ = 5, FUSE_T = 0.25, pendingBlasts = [];
+const blastDmg = () => Math.round(15 * Math.pow(1.8, LV(G.level) - 1));
+const barrelLoss = () => clamp(Math.ceil(G.squad * 0.15), 1, 8);
+function spawnBarrel(lane, z) {
+  const hp = Math.max(3, Math.round(Math.min(4 * dmgPerLaser(G.squad), 0.9 * consDps())));      // ~4 hits, never more than ~1 s of permanent fire
+  enemies.push({ type: 'barrel', lane, x: laneX(lane), bx: laneX(lane), z, hp, maxhp: hp, armor: 0, maxarmor: 0, hopsLeft: 0, hopT: 1, tele: null, r: ETYPE.barrel.r, vz: 0, flash: 0, ph: rand(0, 6.28), fuse: 0, depth: 0 });
+  const b = enemies[enemies.length - 1];
+  if (tipLv() === 1 && !barrelTipSeen) { barrelTipSeen = true; G.tipBarrel = 2; }               // level-1 teaching: one short tip before the first barrel
+  return b;
+}
+function armBarrel(b, depth) {                                  // destroyed: telegraph, then explode
+  if (b.dead || b.fuse) return;
+  b.fuse = FUSE_T; b.depth = depth; b.solid = false; b.hp = 0; b.flash = 1; Sound.play('barrelArm', panOf(b.x));
+}
+const inBlast = (o, x, z) => { const dx = (o.x - x) / BLAST_RX, dz = (o.z - z) / BLAST_RZ; return dx * dx + dz * dz <= 1; };
+function explode(x, z, depth) {
+  bump('barrels'); const dmg = blastDmg(); FX.explosion(x, z);
+  const targets = []; for (const o of enemies) if (!o.dead && inBlast(o, x, z) && (o.solid !== false || o.type === 'barrel')) targets.push(o);
+  for (const o of targets) {
+    if (o.type === 'barrel') { if (depth === 0 && !o.fuse) armBarrel(o, 1); continue; }         // chain depth 1: a secondary barrel does not set off a third
+    o.byBlast = true;
+    if (o.type === 'boss') { if (o.z > BOSS_Z + 0.6 || o.shield > 0 || o.hp <= EPS) continue; damageEnemy(o, { dmg: dmg * 0.25, x: o.x, blast: true }); continue; }
+    damageEnemy(o, { dmg, x: o.x, blast: true });
+  }
+}
+function processBlasts() {
+  while (pendingBlasts.length) {
+    const b = pendingBlasts.shift(), k = enemies.indexOf(b); if (k >= 0) enemies.splice(k, 1);
+    explode(b.x, b.z, b.depth || 0);
+  }
+}
+// How many barrels go into this pattern (0, 1 or 2): a gentle start in level 1, a little more later; practice uses the same rules without the per-level cap.
+function barrelCount(kind) {
+  if (kind !== 'few' && kind !== 'tank' && kind !== 'swarm') return 0;
+  const B = G.bar, lv = LV(G.level); let p, cap = 99;
+  if (G.practice) p = 0.35; else if (G.level === 1) { if (B.n >= 2 || G.lev < 1) return 0; cap = 2; p = B.n === 0 ? 1 : 0.25; } else { cap = lv <= 3 ? 3 : 5; p = 0.3 + 0.04 * (lv - 2); }
+  if (!G.practice && B.n >= cap) return 0;
+  if (G.lev - B.last < 2 || Math.random() >= p) return 0;
+  const n = (lv >= 4 && Math.random() < 0.25) ? 2 : 1;
+  return G.practice ? n : Math.min(n, cap - B.n);                  // never past the per-level cap
+}
+function addBarrels(kind, e0) {                                 // in front of an enemy of the new pattern, so shooting it is useful; never on gates / crates / holes
+  let n = barrelCount(kind); if (!n) return;
+  const group = enemies.slice(e0).filter(o => o.type !== 'barrel' && o.type !== 'boss' && o.z > 30), made = [];
+  const lanes = shuffled(group.length);
+  for (const gi of lanes) {
+    if (made.length >= n) break;
+    const t = group[gi], z = t.z - 3.5;
+    if (z < 30 || enemies.some(o => o.lane === t.lane && Math.abs(o.z - z) < 2.5) || crates.some(c => c.lane === t.lane && Math.abs(c.z - z) < 6) || gates.some(g => Math.abs(g.z - z) < 12)
+        || holes.some(h => t.lane >= h.l0 && t.lane <= h.l1 && z > h.z - 10 && z < h.z + h.len + 10)) continue;
+    made.push(spawnBarrel(t.lane, z));
+  }
+  if (made.length && !routeOk()) { for (const b of made) enemies.splice(enemies.indexOf(b), 1); made.length = 0; }     // a barrel counts as a blocker (its few HP): never close the last way through
+  if (made.length) { G.bar.n += made.length; G.bar.last = G.lev; }
 }
 
 // ----- encounter tables: small patterns picked with spacing and fairness rules -----
@@ -1616,6 +1766,7 @@ function runEncounter(kind) {                           // returns the distance 
   }
   for (let i = e0; i < enemies.length; i++) if (enemies[i].type === 'alien' && alienReachable(enemies[i])) G.lopp++;      // count alien OPPORTUNITIES that really are reachable
   repairRoute(e0, c0);                                  // never leave a pattern (together with what is already on the road) without a way through
+  addBarrels(kind, e0);                                 // explosive barrels in front of some enemy groups
   G.hist.push(kind); if (G.hist.length > 4) G.hist.shift(); G.lev++;
   return Math.max(kind === 'hole' ? 48 : 26, gap * (1 - 0.07 * (LV(G.level) - 1)));   // spacing tightens each level (never below 26; 48 after a hole so nothing catches up with it)
 }
@@ -1625,13 +1776,42 @@ function spawnSupplyPair() {                            // last gates before the
 }
 function updateDirector() {
   if (G.phase !== 'run') return;
+  tryPod();
   const len = levelLen();
   if (!G.supplied && G.ldist >= len - 130) { G.supplied = true; spawnSupplyPair(); G.nextAt = Math.max(G.nextAt, G.ldist + 44); }
   while (G.ldist >= G.nextAt && G.ldist < len - 90) G.nextAt += runEncounter(pickEncounter());
 }
+// ===== BOSS DEFEAT SEQUENCE (about 1.9 s) =====
+// At the kill: every boss attack, warning, mine, shield and minion is removed at once; the squad cannot be hurt until the sequence ends (G.celebT).
+// Then: "NAME DOWN" banner, cracks spreading over the body, 4 staged explosions at points on it, and at 1.6 s the final blast (flash, shockwave, debris,
+// hit-stop, audio flourish). The boss is removed at the final blast; the existing finish-line phase starts when the sequence is over.
+// Reduced effects: softer flashes, fewer particles, no shake, no hit-stop (FX handles it).
+const BOSS_DEATH_T = 1.9, BOSS_BLAST_T = 1.6, BOSS_STAGES = [[0.15, -0.4, 0.2], [0.55, 0.35, -0.3], [0.95, -0.2, -0.45], [1.3, 0.25, 0.35]];
+function startBossDeath(e) {
+  e.dying = { t: 0, n: 0, fin: false }; e.tele = null; e.atk = null; e.mineSt = null; e.cue = null; e.shield = 0; e.hasShield = false; e.vz = 0; e.flash = 1;
+  dissolveMinions(); G.celebT = BOSS_DEATH_T;
+  G.banner = (e.bname || 'BOSS') + ' DOWN'; G.bannerBoss = true; G.bannerT = 1.8; Sound.play('bossCrack');
+}
+function updateBossDeath(e, dt) {
+  const d = e.dying; d.t += dt; if (((d.t * 12) | 0) % 3 === 0) e.flash = Math.max(e.flash, 0.5);          // flickers while it falls apart
+  while (d.n < BOSS_STAGES.length && d.t >= BOSS_STAGES[d.n][0]) {                         // staged explosions on the body
+    const st = BOSS_STAGES[d.n++], bx = e.x + st[1] * e.r, bz = e.z + st[2] * 1.5;
+    FX.fireball(bx, bz, 0.85); FX.burst(bx, bz, '#ff8a1f', 14, true); FX.ring(bx, bz, '#ffb13d', 0.9); FX.shake(5); FX.flash('#ff8a1f', 0.1); e.flash = 1; Sound.play('bossPop', panOf(bx));
+  }
+  if (d.t >= BOSS_BLAST_T && !d.fin) {                                                     // the final blast
+    d.fin = true;
+    FX.fireball(e.x, e.z, 2.6); FX.burst(e.x, e.z, '#ff8a1f', 70, true); FX.burst(e.x, e.z, '#fff2b8', 24, true); FX.ring(e.x, e.z, '#ff8a1f', 3.4); FX.ring(e.x, e.z, '#fff', 2);
+    FX.shake(16); FX.flash('#fff2b8', 0.55); if (!FX.reduced) requestHitStop(0.04); Sound.play('bossDown');
+    const k = enemies.indexOf(e); if (k >= 0) enemies.splice(k, 1);
+  }
+}
 function killEnemy(e) {
+  if (e.dead) return;                                      // ONE kill path, one credit: a second hit in the same frame (bullet + blast) is ignored
+  e.dead = true;
   const T = ETYPE[e.type], big = e.type === 'boss', m = streakMult(), pts = (big ? 150 + 50 * LV(G.level) : T.pts) * m;
+  if (e.byBlast) bump('barrel_kills'); if (e.byRocket) bump('rk_kills');
   award(pts); bump('kills'); G.rs.byType[e.type] = (G.rs.byType[e.type] || 0) + 1; if (e.type === 'alien') bump('aliens'); else if (big) bump('bosses'); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult()); if (G.streak > G.rs.streak) G.rs.streak = G.streak; if (G.streak > G.ls.streak) G.ls.streak = G.streak;
+  if (big) { if (!G.practice) FX.pop(e.x, e.z, '+' + pts + (m > 1 ? ' \u00d7' + m : ''), m > 1 ? '#ffd24d' : '#ffe14d', 1.4); startBossDeath(e); return; }      // credited once above; the boss stays on screen for the defeat sequence
   const heavy = e.type === 'tank' || e.type === 'armor';
   if (e.type === 'alien') { FX.coreImplode(e.x, e.z); FX.burst(e.x, e.z, T.col, 5, false); }                    // golden core implodes, then a small burst
   else FX.burst(e.x, e.z, T.col, big ? 70 : heavy ? 24 : e.type === 'swarm' ? 4 : 12, big);
@@ -1644,19 +1824,21 @@ function killEnemy(e) {
   if (big) dissolveMinions();                              // the boss is gone: its minions dissolve (no attack outlives it)
   enemies.splice(enemies.indexOf(e), 1);
 }
-function damageEnemy(e, b) {                              // returns false when the boss shield blocked the shot
-  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); FX.hit(b.x, e.z, '#8fd8ff'); Sound.play('hit'); if (b.main) bump('blocked'); return false; }       // shield: only the glowing lane gets through
+function damageEnemy(e, b) {                              // returns false when the boss shield blocked the shot (or the target is already dead)
+  if (e.dead || e.fuse) return false;
+  const q = !b.blast;                                      // a barrel blast hits many things at once: no per-hit sounds / sparks
+  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); if (q) { FX.hit(b.x, e.z, '#8fd8ff'); Sound.play('hit'); } if (b.main) bump('blocked'); return false; }       // shield: only the glowing lane gets through
   e.flash = 1; e.hitAt = G.t;
   if (e.armor > 0) {                                     // armored: the front shield takes the hit, the body only a chip (20%)
     e.armor -= b.dmg; e.hp -= b.dmg * 0.2;
-    FX.hit(b.x, e.z, '#bfeaff');
+    if (q) FX.hit(b.x, e.z, '#bfeaff');
     if (e.armor <= EPS) {
       e.armor = 0; FX.plateBreak(e.x, e.z); FX.pop(e.x, e.z, 'BROKEN', '#bfeaff', 1); Sound.play('armorClang', panOf(e.x));      // shards + flying plate pieces + metallic clang
-    } else Sound.play('hit', panOf(e.x));
+    } else if (q) Sound.play('hit', panOf(e.x));
   } else {
-    e.hp -= b.dmg; FX.hit(b.x, e.z, ETYPE[e.type].col); Sound.play('hit', panOf(e.x));
+    e.hp -= b.dmg; if (q) { FX.hit(b.x, e.z, ETYPE[e.type].col); Sound.play('hit', panOf(e.x)); }
   }
-  if (e.hp <= EPS) killEnemy(e);
+  if (e.hp <= EPS) { if (e.type === 'barrel') armBarrel(e, 0); else killEnemy(e); }
   return true;
 }
 function updateHopper(e, dt) {                           // telegraph (blinking arrow, 0.6s), then switch to the next lane; never into a busy lane
@@ -1837,7 +2019,9 @@ function hitTarget(b) {   // one test across enemies AND crates: the nearest thi
   if (b.pl > 0) { b.hits.push(best); b.pl--; b.dmg *= 0.6; return false; }      // Piercing core: the shot goes on (60% damage), each target is hit once
   return true;
 }
-function hurtSquad(loss, big, cause, detail) {                         // enemy hits go through here; a shield blocks one hit; boost blocks everything
+function hurtSquad(loss, big, cause, detail) {
+  if (G.celebT > 0) return;                                  // boss-defeat sequence: the squad cannot be hurt
+                         // enemy hits go through here; a shield blocks one hit; boost blocks everything
   if (G.boostT > 0) { FX.ring(G.px, G.pz + 1, '#ffd24d', 1.8); FX.burst(G.px, G.pz + 1.2, '#ffe680', 10, false); return; }
   if (G.shield > 0) {
     G.shield--; G.shieldHitAt = G.t; FX.pop(G.px, G.pz + 0.8, 'SHIELD', '#19f0ff', 1.3); FX.ring(G.px, G.pz + 0.8, '#19f0ff', 1.6); FX.flash('#19f0ff', 0.18);
@@ -1873,7 +2057,8 @@ function bossPlan(n) {                                   // L1 slam only; L2 sla
   if (n === 5) return { type: 'aegis', pats: ['shield', 'slam', 'volley'] };
   const c = BOSS_COMBOS[(n - 6) % BOSS_COMBOS.length]; return { type: c[0], pats: c[1].slice() };
 }
-const bossAlive = () => enemies.find(e => e.type === 'boss');
+const bossAlive = () => enemies.find(e => e.type === 'boss' && !e.dying);
+const bossDying = () => enemies.find(e => e.type === 'boss' && e.dying);
 function bossLanes(e) {
   const a = [];
   for (let l = e.age > 25 ? 0 : Math.max(0, e.lane - 1); l <= (e.age > 25 ? LANES - 1 : Math.min(LANES - 1, e.lane + 1)); l++) a.push(l);
@@ -1964,6 +2149,7 @@ function updateBossShield(e, dt) {                       // the shield cycle run
 const bossShielded = e => e.shield > 0 && e.shield <= SHIELD_T;                  // the first 0.6s are the shield rising: still vulnerable
 function dissolveMinions() { for (let i = enemies.length - 1; i >= 0; i--) if (enemies[i].minion) { FX.burst(enemies[i].x, enemies[i].z, '#bfeaff', 8, false); enemies.splice(i, 1); } }
 function updateBoss(e, dt) {
+  if (e.dying) { updateBossDeath(e, dt); return; }                                  // dying: no attacks, no shield, nothing but the sequence
   e.age += dt;
   if (e.z > BOSS_Z + 0.6) { e.z = Math.max(BOSS_Z, e.z - 16 * dt); return; }       // flying in: no attacks, no shield
   e.z = BOSS_Z + Math.sin(G.t * 2.2) * 0.5; e.hold = true;
@@ -1990,7 +2176,15 @@ function updateEnemies(dt) {
     else if (e.type === 'grunt' || e.type === 'tank' || e.type === 'armor') e.x = e.bx + Math.sin(G.t * 1.7 + e.ph) * (e.type === 'grunt' ? 0.04 : 0.025);   // slight sway, looks only (the lane never changes)
     else if (e.type === 'hopper') updateHopper(e, dt);
     else if (e.type === 'alien' && e.grp.stamp !== alienTick) { e.grp.stamp = alienTick; updateAlienGroup(e.grp, dt); }
+    else if (e.type === 'barrel' && e.fuse > 0) { e.fuse -= dt; if (e.fuse <= 0) { e.fuse = -1; pendingBlasts.push(e); } }      // telegraph over: it goes off after this pass
     if (e.solid !== false && depthHit(zb, e.z, -1.5, 0.9) && nearX(e.x, e.r + squadHW())) {      // contact = the enemy's drawn footprint overlaps the squad's, at the same depth (swept); a dematerialised teleporter never touches
+      if (e.type === 'barrel') {                                                  // touching a barrel: it goes off right here, once (same footprint / swept contact as enemies)
+        enemies.splice(i, 1); pendingBlasts.push({ x: e.x, z: e.z, depth: 0 }); FX.pop(e.x, e.z + 0.5, 'BARREL!', '#ffb13d', 1.1);
+        if (G.boostT > 0) FX.ring(G.px, G.pz + 1, '#ffd24d', 1.5);               // boost plows through: harmless for the squad (the blast still hits enemies)
+        else hurtSquad(barrelLoss(), false, 'barrel', {});                          // a shield absorbs it (hurtSquad)
+        if (G.state !== 'play') return;
+        continue;
+      }
       if (G.boostT > 0) { FX.ring(G.px, G.pz + 1, '#ffd24d', 1.5); killEnemy(e); continue; }   // boost: the squad plows straight through
       const loss = Math.min(Math.max(1, Math.ceil((hpInt(e.hp) + hpInt(e.armor || 0)) / 2)), Math.max(2, Math.ceil(G.squad * 0.35)));   // one leak never costs more than ~35% of the squad
       const cd = { type: e.type, minion: !!e.minion, wall: wallAround(e) };
@@ -2002,6 +2196,7 @@ function updateEnemies(dt) {
     }
     if (e.z < behind(3)) enemies.splice(i, 1);
   }
+  if (pendingBlasts.length) processBlasts();
   if (G.bannerT > 0) G.bannerT -= dt;
 }
 
@@ -2047,7 +2242,8 @@ function updateLevel(dt) {
     if (G.phaseT > 1.2 && fieldClear()) startBoss();
   }
   else if (G.phase === 'boss') {
-    if (!bossAlive()) { G.phase = 'finish'; G.phaseT = 0; G.finish = { z: ZMAX }; G.banner = 'FINISH LINE'; G.bannerBoss = false; G.bannerT = 1.0; }
+    if (G.celebT > 0) { G.celebT = Math.max(0, G.celebT - dt); return; }                 // the defeat sequence plays out first
+    if (!bossAlive() && !bossDying()) { G.phase = 'finish'; G.phaseT = 0; G.finish = { z: ZMAX }; G.banner = 'FINISH LINE'; G.bannerBoss = false; G.bannerT = 1.0; }
   } else if (G.phase === 'finish') {
     G.finish.z -= G.speed * dt;
     if (G.finish.z <= G.pz + 0.5) completeLevel();
@@ -2056,6 +2252,7 @@ function updateLevel(dt) {
 function completeLevel() {
   G.hitStop = 0; G.phase = 'done'; G.state = 'complete'; G.completeAt = performance.now(); clearDrag(); tipsDone = true;
   G.effects.length = 0; G.gone.length = 0;                 // timed effects end with the level (a clean slate for the next one)
+  G.rocketT = 0; resetRockets();                         // the rocket launcher ends with the level
   for (const b of bullets) b.on = false;
   const tiers = ['bronze', 'silver', 'gold'];
   let mi = G.llost <= 5 ? 2 : G.llost <= 20 ? 1 : 0;
@@ -2075,8 +2272,8 @@ let prevRun = null;                                      // summary of the previ
 const accOf = st => st.shots >= 10 ? Math.round(100 * st.hits / st.shots) : null;
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 const fmtTime = t => { const m = Math.floor(t / 60), sec = Math.floor(t % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; };
-const LOST_NAMES = { enemy: 'enemies', gate: 'red gates', hole: 'pits', boss: 'boss attacks', crate: 'crates' };
-const LOST_SHORT = { enemy: 'enemies', gate: 'gates', hole: 'pits', boss: 'boss', crate: 'crates' };
+const LOST_NAMES = { enemy: 'enemies', gate: 'red gates', hole: 'pits', boss: 'boss attacks', crate: 'crates', barrel: 'barrels' };
+const LOST_SHORT = { enemy: 'enemies', gate: 'gates', hole: 'pits', boss: 'boss', crate: 'crates', barrel: 'barrels' };
 function topCause(st) { let best = null, v = 0; for (const k in LOST_NAMES) if (st['lost_' + k] > v) { v = st['lost_' + k]; best = k; } return best; }
 function runSummary(st, t) { return { score: Math.floor(G.score), level: G.level, acc: accOf(st), aliens: st.aliens, lost: st.lost, peak: st.peak, time: t === undefined ? G.t : t, streak: st.streak }; }
 function defeatText(d) {                                  // what finished the run
@@ -2086,6 +2283,7 @@ function defeatText(d) {                                  // what finished the r
   if (d.c === 'hole') return 'Fell into a pit';
   if (d.c === 'gate') return 'Bad gate' + (D.big ? ' (' + String(D.big).replace('-', '\u2212') + ')' : '');
   if (d.c === 'crate') return 'Negative crate';
+  if (d.c === 'barrel') return 'Barrel explosion';
   if (d.c === 'enemy') {
     if (D.minion) { const b = bossAlive(); return 'Boss minions' + (b && b.bname ? ' \u2014 ' + b.bname : ''); }
     if (D.wall) return 'Enemy wall';
@@ -2102,6 +2300,7 @@ function coachTips(st, d, o) {
     else if (d.c === 'hole') add('pit', plural(st.h_fall, 'pit fall') + ': press Space just before the hazard stripes end.');
     else if (d.c === 'gate') add('gate', 'Red gates cost you ' + st.lost_gate + ' soldiers: the middle lane skips a pair.');
     else if (d.c === 'crate') add('crate', 'A negative crate finished you: shoot it until it turns green before you drive in.');
+    else if (d.c === 'barrel') add('barrel', 'Barrels hurt on contact: shoot them first, a few hits pop them.');
     else if (d.c === 'enemy') {
       if (D.minion) add('boss', 'Boss minions: slide into the gap lane, or shoot the row down.');
       else if (D.wall) add('wall', 'Enemy wall: aim for the lane with the smallest number and keep shooting it.');
@@ -2113,6 +2312,7 @@ function coachTips(st, d, o) {
   if (!o.practice && st.b_wasted >= 1) add('boost', 'BOOST was ready and unused ' + plural(st.b_wasted, 'time') + ': use it before the boss.');
   if (acc !== null && acc < 45) add('acc', 'Accuracy ' + acc + '%: stay in one lane longer so your shots connect.');
   if ((o.time || 0) >= (o.practice ? 30 : 45) && st.aliens <= 2) add('alien', (st.aliens === 0 ? 'No aliens down' : 'Only ' + plural(st.aliens, 'alien') + ' down') + ': they carry BOOST, aim for the golden core.');
+  if (st.lost_barrel >= 4 && st.lost_barrel * 5 >= st.lost) add('barrel', 'Barrels cost you ' + st.lost_barrel + ' soldiers on contact: shoot them first, a few hits pop them.');
   if (st.lost_crate >= 6) add('crate', 'Negative crates cost ' + st.lost_crate + ' soldiers: shoot them green before you drive in.');
   if (st.lost_enemy >= 10 && st.lost_enemy * 100 >= 35 * st.lost) add('contact', 'Enemies that reached you cost ' + st.lost_enemy + ' soldiers: shoot the nearest lane or step aside.');
   if (!o.practice && st.peak < 6 + 6 * (o.level || 1)) add('peak', 'Peak squad ' + st.peak + ': favour + and \u00d7 gates early.');
@@ -2188,7 +2388,40 @@ function drawAlienTele(e, s, Y) {                          // where the alien is
   }
   ctx.globalAlpha = 1;
 }
+function drawBarrel(e) {                                  // a cylinder with rim bands, orange / black hazard stripes and a flame glyph (crates are boxes with value badges)
+  const s = sc(e.z), u = L.rh * s, X = gx(e.x, s), Y = gy(s), fuse = e.fuse > 0, k = fuse ? 1 - e.fuse / FUSE_T : 0, sw = fuse ? 1 + 0.22 * k : 1, R = 0.15 * u * sw;
+  if (R < 1) return;
+  const fade = clamp((ZMAX - e.z) / 12, 0, 1), H1 = R * 2.3, ey = R * 0.34, blink = fuse && ((G.t * 20) | 0) % 2 === 0, fl = blink || e.flash > 0.35;
+  if (fuse) {                                                                           // telegraph: the exact blast area, filling up until it goes off
+    const sN = sc(Math.max(e.z - BLAST_RZ, L.zmin - 3)), sF = sc(e.z + BLAST_RZ), y1 = gy(sN), y2 = gy(sF), cyE = (y1 + y2) / 2, ry = (y1 - y2) / 2, rx = BLAST_RX * L.rh * s;
+    ctx.globalAlpha = 0.14 + 0.12 * k; ctx.fillStyle = '#ff8a1f'; ctx.beginPath(); ctx.ellipse(X, cyE, rx * (0.35 + 0.65 * k), ry * (0.35 + 0.65 * k), 0, 0, 6.2832); ctx.fill();
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = blink ? '#ffe08a' : '#ff8a1f'; ctx.lineWidth = Math.max(2, u * 0.03); ctx.beginPath(); ctx.ellipse(X, cyE, rx, ry, 0, 0, 6.2832); ctx.stroke();
+  }
+  ctx.globalAlpha = fade; ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(X, Y, R * 1.15, R * 0.3, 0, 0, 6.2832); ctx.fill();
+  ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * (fuse ? 0.3 : 0.14); ctx.fillStyle = '#ff8a1f'; ctx.beginPath(); ctx.arc(X, Y - H1 * 0.5, R * 1.7, 0, 6.2832); ctx.fill();   // restrained glow
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade; ctx.lineJoin = 'round';
+  const body = fl ? '#fff' : '#3a1608', lw = Math.max(1.5, R * 0.11);
+  ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(X - R, Y - H1); ctx.lineTo(X - R, Y); ctx.ellipse(X, Y, R, ey, 0, Math.PI, 0, true); ctx.lineTo(X + R, Y - H1); ctx.closePath(); ctx.fill();   // barrel body
+  ctx.save(); ctx.beginPath(); ctx.rect(X - R, Y - H1 * 0.74, R * 2, H1 * 0.34); ctx.clip();                          // hazard band: diagonal orange / black stripes
+  ctx.fillStyle = fl ? '#ffe08a' : '#ff8a1f'; ctx.fillRect(X - R, Y - H1 * 0.74, R * 2, H1 * 0.34); ctx.fillStyle = '#1a0a02';
+  for (let i = -3; i < 4; i++) { const x0 = X + i * R * 0.55; ctx.beginPath(); ctx.moveTo(x0, Y - H1 * 0.74); ctx.lineTo(x0 + R * 0.27, Y - H1 * 0.74); ctx.lineTo(x0 + R * 0.27 - R * 0.35, Y - H1 * 0.4); ctx.lineTo(x0 - R * 0.35, Y - H1 * 0.4); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+  ctx.fillStyle = '#7a3a12'; for (const yy of [Y - H1 * 0.9, Y - H1 * 0.12]) { ctx.fillRect(X - R, yy - R * 0.07, R * 2, R * 0.14); }          // rim bands
+  ctx.strokeStyle = '#ff8a1f'; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(X - R, Y - H1); ctx.lineTo(X - R, Y); ctx.ellipse(X, Y, R, ey, 0, Math.PI, 0, true); ctx.lineTo(X + R, Y - H1); ctx.stroke();
+  ctx.fillStyle = fl ? '#fff' : '#5a2a0c'; ctx.beginPath(); ctx.ellipse(X, Y - H1, R, ey, 0, 0, 6.2832); ctx.fill(); ctx.stroke();                      // lid
+  const fx = X, fy = Y - H1 * 0.57, fr = R * 0.42;                                                                                    // flame glyph on a dark badge
+  ctx.fillStyle = 'rgba(8,4,28,.9)'; ctx.beginPath(); ctx.arc(fx, fy, fr * 1.25, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = '#ffb13d'; ctx.beginPath(); ctx.moveTo(fx, fy - fr * 1.05); ctx.quadraticCurveTo(fx + fr * 1.1, fy + fr * 0.1, fx, fy + fr * 0.95); ctx.quadraticCurveTo(fx - fr * 1.1, fy + fr * 0.1, fx, fy - fr * 1.05); ctx.fill();
+  ctx.fillStyle = '#fff2b8'; ctx.beginPath(); ctx.moveTo(fx, fy - fr * 0.1); ctx.quadraticCurveTo(fx + fr * 0.5, fy + fr * 0.4, fx, fy + fr * 0.85); ctx.quadraticCurveTo(fx - fr * 0.5, fy + fr * 0.4, fx, fy - fr * 0.1); ctx.fill();
+  if (!fuse && e.z < 75) {                                                                                                            // small HP label (never under 14px)
+    const fs = Math.max(F(14), 14), txt = String(hpShow(e.hp)), ty = Y - H1 - R * 0.9;
+    ctx.font = '900 ' + fs + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; const tw = ctx.measureText(txt).width + fs * 0.7, th = fs * 1.15;
+    rr(X - tw / 2, ty - th / 2, tw, th, th * 0.4); ctx.fillStyle = 'rgba(8,4,28,.82)'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#ff8a1f'; ctx.stroke(); ctx.fillStyle = '#fff'; ctx.fillText(txt, X, ty + 1);
+  }
+  ctx.globalAlpha = 1; ctx.lineJoin = 'miter';
+}
 function drawEnemy(e) {
+  if (e.type === 'barrel') { drawBarrel(e); return; }
   const T = ETYPE[e.type], s = sc(e.z), X = gx(e.x, s), Y = gy(s), R = e.r * L.rh * s;
   if (R < 1) return;
   if (e.tele && e.type === 'hopper') drawHopTele(e, s, Y);
@@ -2285,8 +2518,18 @@ function drawEnemy(e) {
     ctx.globalAlpha = fade * 0.95; ctx.fillStyle = '#ffffff'; const wx = gx(e.weakX, s); ctx.fillRect(wx - Math.max(2, R * 0.08), cy - R * 1.3, Math.max(4, R * 0.16), R * 1.9);
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
   }
+  if (e.dying) {                                                                      // cracks spread over the body while it falls apart
+    const k = clamp(e.dying.t / 1.5, 0, 1); ctx.globalAlpha = fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (let i = 0; i < 9; i++) {
+      const a = i * 2.399 + 0.5, len = R * (0.5 + 0.9 * (((i * 37) % 10) / 10)) * k;
+      ctx.beginPath(); ctx.moveTo(X, cy);
+      for (let q2 = 1; q2 <= 4; q2++) { const aa = a + Math.sin(i * 5 + q2 * 2.3) * 0.55, dd = len * q2 / 4; ctx.lineTo(X + Math.cos(aa) * dd, cy + Math.sin(aa) * dd * 0.9); }
+      ctx.strokeStyle = '#1a0a02'; ctx.lineWidth = Math.max(2.5, R * 0.075); ctx.stroke(); ctx.strokeStyle = '#ffe08a'; ctx.lineWidth = Math.max(1.2, R * 0.03); ctx.stroke();
+    }
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+  }
   if (deform) ctx.restore();
-  if (boss || (e.type !== 'swarm' ? e.z < 75 : R * 0.9 >= 15)) {     // HP label: never under 14px (swarm labels only when close enough not to clutter)                                           // HP label (pill) + boss bar
+  if (!boss && (e.type !== 'swarm' ? e.z < 75 : R * 0.9 >= 15)) {     // HP label: never under 14px (swarm labels only when close enough not to clutter)                                           // HP label (pill) + boss bar
     const fs = Math.max(F(14), clamp(R * (boss ? 0.5 : 0.8), 14, 38)) * (1 + (FX.reduced ? 0.04 : 0.1) * reaction), txt = e.armor > EPS ? hpShow(e.armor) + '+' + hpShow(e.hp) : String(hpShow(e.hp)), ty = cy - R * (boss ? 2.55 : e.type === 'alien' ? 2.2 : 1.62);
     ctx.font = '900 ' + fs + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     const tw = ctx.measureText(txt).width + fs * 0.7, th = fs * 1.15;
@@ -2436,6 +2679,7 @@ function drawWorld() {
   for (const e of enemies) dwPush(e.z, 0, e);
   for (const g of gates) dwPush(g.z, 1, g);
   for (const c of crates) dwPush(c.z, 2, c);
+  for (const p of pods) dwPush(p.z, 5, p);
   if (G.finish) dwPush(G.finish.z, 3, G.finish);
   dwPush(G.pz, 4, null);                                                       // the squad itself
   for (let i = 1; i < dwN; i++) {                                              // far (large z) first
@@ -2446,7 +2690,7 @@ function drawWorld() {
   for (let i = 0; i < dwN; i++) {
     const it = dwList[i];
     if (it.z > ZMAX + 14 || it.z < behind(3.2)) continue;
-    if (it.k === 0) drawEnemy(it.o); else if (it.k === 1) drawGate(it.o); else if (it.k === 2) drawCrate(it.o); else if (it.k === 3) drawFinish(it.o); else drawPlayer();
+    if (it.k === 0) drawEnemy(it.o); else if (it.k === 1) drawGate(it.o); else if (it.k === 2) drawCrate(it.o); else if (it.k === 3) drawFinish(it.o); else if (it.k === 5) drawPod(it.o); else drawPlayer();
   }
 }
 
@@ -2652,6 +2896,44 @@ function updateCrates(dt) {
     if (c.z < behind(3)) crates.splice(i, 1);
   }
 }
+function drawRocketIcon(cx, cy, sz, col) {                // little rocket: pointed body, fins, flame (used by the pickup and the chip)
+  ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(cx, cy - sz * 0.55); ctx.quadraticCurveTo(cx + sz * 0.28, cy - sz * 0.15, cx + sz * 0.2, cy + sz * 0.3); ctx.lineTo(cx - sz * 0.2, cy + sz * 0.3); ctx.quadraticCurveTo(cx - sz * 0.28, cy - sz * 0.15, cx, cy - sz * 0.55); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx - sz * 0.2, cy + sz * 0.05); ctx.lineTo(cx - sz * 0.42, cy + sz * 0.38); ctx.lineTo(cx - sz * 0.2, cy + sz * 0.3); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx + sz * 0.2, cy + sz * 0.05); ctx.lineTo(cx + sz * 0.42, cy + sz * 0.38); ctx.lineTo(cx + sz * 0.2, cy + sz * 0.3); ctx.fill();
+  ctx.fillStyle = '#ffe08a'; ctx.beginPath(); ctx.moveTo(cx - sz * 0.1, cy + sz * 0.32); ctx.lineTo(cx, cy + sz * 0.62); ctx.lineTo(cx + sz * 0.1, cy + sz * 0.32); ctx.fill();
+}
+function drawPod(p) {                                      // floating holo hexagon with a rocket emblem: spins slowly, bobs, magenta-orange glow (gates are wide panels, crates are boxes)
+  const s = sc(p.z), u = L.rh * s, X = gx(p.x, s), Y = gy(s), R = 0.17 * u;
+  if (R < 1) return;
+  const fade = clamp((ZMAX - p.z) / 12, 0, 1), bob = Math.sin(p.t * 2.4) * R * 0.12, cy = Y - R * 1.7 + bob, spin = p.t * 0.9;
+  ctx.globalAlpha = fade; ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(X, Y, R * 0.95, R * 0.25, 0, 0, 6.2832); ctx.fill();
+  ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * 0.3; ctx.fillStyle = '#ff5a3d'; ctx.beginPath(); ctx.arc(X, cy, R * 2.1, 0, 6.2832); ctx.fill();
+  ctx.globalAlpha = fade * 0.22; ctx.fillStyle = '#ff2bd6'; ctx.beginPath(); ctx.arc(X, cy, R * 1.5, 0, 6.2832); ctx.fill(); ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = fade; ctx.lineJoin = 'round';
+  ctx.beginPath(); for (let k = 0; k < 6; k++) { const a = k * 1.0472 + Math.PI / 6; ctx.lineTo(X + Math.cos(a) * R * 1.15, cy + Math.sin(a) * R * 1.15); } ctx.closePath();
+  ctx.fillStyle = 'rgba(30,8,36,.88)'; ctx.fill(); ctx.lineWidth = Math.max(2, R * 0.12); ctx.strokeStyle = '#ff7a3d'; ctx.stroke();
+  ctx.setLineDash([R * 0.35, R * 0.3]); ctx.lineDashOffset = -spin * R * 2; ctx.lineWidth = Math.max(1.5, R * 0.07); ctx.strokeStyle = '#ff2bd6';          // slow-spinning inner ring
+  ctx.beginPath(); ctx.arc(X, cy, R * 0.86, 0, 6.2832); ctx.stroke(); ctx.setLineDash([]);
+  drawRocketIcon(X, cy, R * 1.25, '#ffd9b8');
+  if (p.z < 30 && R >= 8) {                                                        // label when close
+    const fs = Math.max(F(14), 14); ctx.font = '900 ' + fs + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const tw = ctx.measureText('ROCKETS').width + fs * 0.8, ty = cy - R * 1.75;
+    rr(X - tw / 2, ty - fs * 0.62, tw, fs * 1.24, fs * 0.45); ctx.fillStyle = 'rgba(8,4,28,.85)'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#ff7a3d'; ctx.stroke(); ctx.fillStyle = '#ffd9b8'; ctx.fillText('ROCKETS', X, ty + 1);
+  }
+  ctx.globalAlpha = 1; ctx.lineJoin = 'miter';
+}
+function drawRockets() {                                   // a rocket body with an exhaust trail (golden during BOOST); at most 16
+  ctx.lineCap = 'round';
+  for (const r of rockets) {
+    if (!r.on) continue;
+    const s0 = sc(r.z), s1 = sc(r.z + 2.2), s2 = sc(r.z - 3.4), x0 = gx(r.x, s0), yb = gy(s0) - (0.22 + r.yo) * L.rh * s0, yn = gy(s1) - (0.22 + r.yo) * L.rh * s1, yt = gy(s2) - (0.22 + r.yo) * L.rh * s2;
+    const w = Math.max(3.5, L.rh * s0 * 0.09), hot = r.boost ? '#ffd24d' : '#ff8a1f', core = r.boost ? '#fff4b0' : '#ffd9b8';
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.55; ctx.strokeStyle = hot; ctx.lineWidth = w * 1.5; ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x0, yt); ctx.stroke();    // exhaust trail
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = '#fff'; ctx.lineWidth = w * 0.5; ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x0, yb + (yt - yb) * 0.4); ctx.stroke();
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.strokeStyle = core; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x0, yn); ctx.stroke();                 // body
+    ctx.fillStyle = hot; ctx.beginPath(); ctx.moveTo(x0, yn - w * 0.9); ctx.lineTo(x0 + w * 0.6, yn + w * 0.2); ctx.lineTo(x0 - w * 0.6, yn + w * 0.2); ctx.fill();                       // nose
+  }
+  ctx.globalAlpha = 1;
+}
 function drawCrate(c) {
   const s = sc(c.z), u = L.rh * s, X = gx(c.x, s), Y = gy(s), R = 0.15 * u * (1 + 0.18 * c.flash);
   if (R < 1) return;
@@ -2684,7 +2966,7 @@ function drawCrate(c) {
 // ===== PARTICLES, POP TEXT, SHAKE, FLASH =====
 const PN = 500;
 const parts = Array.from({ length: PN }, () => ({ on: false, x: 0, z: 0, h: 0, vx: 0, vz: 0, vh: 0, life: 0, max: 1, col: '#fff', size: 2, kind: 0 }));   // kind 1 = flying plate piece
-const pops = [], rings = [];
+const pops = [], rings = [], blasts = [];                  // blasts: barrel fireballs (at most 6 alive)
 let partCursor = 0;
 function addPart(x, z, h, vx, vz, vh, life, col, size) {
   let p = null;
@@ -2695,7 +2977,7 @@ function addPart(x, z, h, vx, vz, vh, life, col, size) {
 }
 const FX = {
   shakeAmt: 0, flashCol: '#fff', flashA: 0, reduced: false,          // reduced = no shake, softer flashes, fewer particles
-  clear() { for (const p of parts) p.on = false; pops.length = 0; rings.length = 0; this.shakeAmt = 0; this.flashA = 0; },
+  clear() { for (const p of parts) p.on = false; pops.length = 0; rings.length = 0; blasts.length = 0; this.shakeAmt = 0; this.flashA = 0; },
   update(dt) {
     const sp = G.state === 'play' ? G.speed : 0;
     for (const p of parts) {
@@ -2706,6 +2988,7 @@ const FX = {
     }
     for (let i = pops.length - 1; i >= 0; i--) { const q = pops[i]; q.t += dt; q.z -= sp * dt * 0.5; if (q.t > q.life) pops.splice(i, 1); }
     for (let i = rings.length - 1; i >= 0; i--) { rings[i].t += dt; if (rings[i].t > rings[i].life) rings.splice(i, 1); }
+    for (let i = blasts.length - 1; i >= 0; i--) { blasts[i].t += dt; if (blasts[i].t > blasts[i].life) blasts.splice(i, 1); }
     this.shakeAmt *= Math.exp(-dt * 8); if (this.shakeAmt < 0.3) this.shakeAmt = 0;
     this.flashA = Math.max(0, this.flashA - dt * 2.2);
   },
@@ -2729,6 +3012,14 @@ const FX = {
     for (let i = 0; i < 8; i++) { const a = i * 0.785398, dx = Math.cos(a) * 0.16, dz = Math.sin(a) * 0.7; addPart(x + dx, z + dz, 0.22, -dx / 0.18, -dz / 0.18, 0.8, 0.18, '#ffe27a', 3); }
     this.ring(x, z, '#ffd24d', 0.7);
   },
+  fireball(x, z, size) { if (blasts.length >= 6) blasts.shift(); blasts.push({ x, z, t: 0, life: this.reduced ? 0.3 : 0.45, sc: size || 1 }); },      // a bare fireball (no sound, shake or flash)
+  explosion(x, z) {                                         // barrel blast: fireball, shockwave rings, debris, small shake, boom (Reduced effects: softer flash, fewer particles, no shake)
+    const r = this.reduced;
+    if (blasts.length >= 6) blasts.shift(); blasts.push({ x, z, t: 0, life: r ? 0.3 : 0.45 });
+    this.burst(x, z, '#ff8a1f', r ? 10 : 26, true); if (!r) this.burst(x, z, '#ffd24d', 8, false);
+    this.ring(x, z, '#ffb13d', 0.6); if (!r) this.ring(x, z, '#ffe08a', 0.35);
+    this.shake(7); this.flash('#ff9a3d', 0.16); Sound.play('barrel', panOf(x));
+  },
   pop(x, z, text, col, size) { if (pops.length < 24) pops.push({ x, z, text, col, size: size || 1, t: 0, life: 0.9 }); },
   ring(x, z, col, size) { if (rings.length < 12) rings.push({ x, z, col, size: size || 1, t: 0, life: 0.55 }); },
   shake(a) { if (this.reduced) return; this.shakeAmt = Math.max(this.shakeAmt, Math.min(a * 0.55, 8)); },     // restrained: never more than 8px
@@ -2741,6 +3032,11 @@ const FX = {
       const s = sc(Math.max(r.z, L.zmin - 3)), k = r.t / r.life, rx = (0.15 + k * 0.7 * r.size) * L.rh * s;
       ctx.globalAlpha = (1 - k) * 0.8 * fxCap(r.z); ctx.strokeStyle = r.col; ctx.lineWidth = Math.max(1.5, L.rh * s * 0.03 * (1 - k));
       ctx.beginPath(); ctx.ellipse(gx(r.x, s), gy(s), rx, rx * 0.3, 0, 0, 6.2832); ctx.stroke();
+    }
+    for (const b of blasts) {                              // fireballs (additive, dimmed over gates / holes / telegraphs)
+      const s = sc(Math.max(b.z, L.zmin - 3)), k = b.t / b.life, R = (0.25 + 0.75 * Math.sqrt(k)) * BLAST_RX * (b.sc || 1) * L.rh * s * (this.reduced ? 0.7 : 1), X = gx(b.x, s), Y = gy(s) - 0.35 * L.rh * s;
+      ctx.globalAlpha = (1 - k) * (this.reduced ? 0.3 : 0.5) * fxCap(b.z); ctx.fillStyle = '#ff8a1f'; ctx.beginPath(); ctx.ellipse(X, Y, R, R * 0.8, 0, 0, 6.2832); ctx.fill();
+      ctx.globalAlpha = (1 - k) * (this.reduced ? 0.4 : 0.8) * fxCap(b.z); ctx.fillStyle = '#fff2b8'; ctx.beginPath(); ctx.ellipse(X, Y, R * 0.5, R * 0.4, 0, 0, 6.2832); ctx.fill();
     }
     let pn = 0;
     for (const p of parts) {                               // at most 96 particles drawn (24 in Reduced effects), dimmed over gates / holes / telegraphs
@@ -2780,7 +3076,7 @@ const Sound = (() => {
   let ac = null, master = null, sfx = null, mus = null, noiseBuf = null, hasPan = false;
   let muted = false, musicOn = true, active = true, musicTimer = null, nextTime = 0, step = 0;
   const VOL = { master: 0.8, sfx: 0.9, music: 0.28 };
-  const lastT = {}, gap = { zap: 0.07, hit: 0.045, kill: 0.04, tick: 0.05, hop: 0.2, armorClang: 0.06, crateFlip: 0.08, killHeavy: 0.08, killAlien: 0.05 };
+  const lastT = {}, gap = { zap: 0.07, hit: 0.045, kill: 0.04, tick: 0.05, hop: 0.2, armorClang: 0.06, crateFlip: 0.08, barrel: 0.05, barrelArm: 0.1, rocket: 0.06, rocketHit: 0.05, killHeavy: 0.08, killAlien: 0.05 };
   const hz = m => 440 * Math.pow(2, (m - 69) / 12);
 
   function wake() {                                     // resume the context; a rejected promise is fine (needs another gesture)
@@ -2892,6 +3188,15 @@ const Sound = (() => {
       case 'armorClang': noise(0.12, 0.09, 5200, 0, pan); tone('triangle', 1450, 620, 0.18, 0.07, 0, pan, 0.035); tone('sine', 2180, 1100, 0.12, 0.035, 0.015, pan); break;
       case 'crateFlip': tone('sine', 660, 660, 0.1, 0.075, 0, pan); tone('triangle', 990, 990, 0.14, 0.065, 0.055, pan); break;
       case 'boom': noise(0.8, 0.4, 600); tone('sawtooth', 170, 28, 0.7, 0.2); break;
+      case 'barrel': noise(0.5, 0.3, 520, 0, pan); tone('sawtooth', 150, 32, 0.5, 0.16, 0, pan, 0.14); tone('square', 70, 30, 0.35, 0.08, 0.02, pan, 0.1); break;      // low boom, a little different every time
+      case 'bossCrack': noise(0.5, 0.18, 1800); tone('sawtooth', 90, 40, 0.5, 0.1); break;
+      case 'bossPop': noise(0.3, 0.26, 800, 0, pan); tone('sawtooth', 150, 38, 0.3, 0.14, 0, pan, 0.1); break;
+      case 'bossDown': noise(1.0, 0.4, 600); tone('sawtooth', 220, 26, 0.95, 0.22); tone('square', 110, 24, 0.8, 0.1, 0.02);
+        tone('triangle', 392, 392, 0.7, 0.13, 0.55); tone('triangle', 494, 494, 0.7, 0.13, 0.6); tone('triangle', 587, 587, 0.7, 0.13, 0.65); tone('triangle', 784, 784, 0.9, 0.13, 0.95); tone('triangle', 988, 988, 0.9, 0.11, 1.0); break;      // descending boom, then a rising triumphant chord
+      case 'rocket': noise(0.22, 0.16, 900, 0, pan); tone('sawtooth', 190, 90, 0.2, 0.07, 0, pan, 0.1); tone('triangle', 420, 160, 0.14, 0.05, 0, pan, 0.1); break;      // whoomp
+      case 'rocketHit': noise(0.18, 0.2, 700, 0, pan); tone('sine', 120, 45, 0.18, 0.14, 0, pan, 0.12); break;                                  // thud
+      case 'pod': tone('triangle', 440, 440, 0.1, 0.12); tone('triangle', 660, 660, 0.1, 0.12, 0.07); tone('sawtooth', 220, 880, 0.22, 0.06, 0.1); break;
+      case 'barrelArm': tone('triangle', 640, 420, 0.1, 0.05, 0, pan, 0.05); tone('triangle', 640, 420, 0.1, 0.05, 0.12, pan, 0.05); break;
       case 'good': tone('triangle', 520, 520, 0.12, 0.17); tone('triangle', 660, 660, 0.12, 0.17, 0.08); tone('triangle', 880, 880, 0.2, 0.17, 0.16); break;   // rewards: louder
       case 'bad': tone('sawtooth', 230, 70, 0.3, 0.2); tone('square', 115, 55, 0.3, 0.1); break;            // damage: louder
       case 'shield': tone('sine', 400, 900, 0.18, 0.14); tone('triangle', 900, 1300, 0.12, 0.08, 0.1); break;
@@ -3103,13 +3408,15 @@ const TIP_INTRO = { 1: ['steer', 'crates', 'charge'] };
 function pickTips(lv) { return lv === 1 ? TIP_INTRO[1].slice() : []; }
 const tipsActive = () => tipLv() === 1 && !tipsDone && G.phase === 'run' && G.tipT < G.tips.length * TIP_SECS + 0.05;      // the tip sequence is still running (or about to)
 function drawTips() {            // this level's tips (see pickTips); not during the boss fight, not while paused
-  const jt = G.tipJump > 0;                                // the jump tip (shown before the first hole of each level) takes priority
-  if (tipLv() !== 1 || (tipsDone && !jt) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
+  const jt = G.tipJump > 0, bt = !jt && G.tipBarrel > 0, rt = !jt && !bt && G.tipRocket > 0;   // the jump tip (shown before the first hole of each level) takes priority
+  if (tipLv() !== 1 || (tipsDone && !jt && !bt && !rt) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
   if (UI.short && G.bannerT > 0) return;                   // banner has the shared row right now
-  if (G.bannerT > 0 && !jt) return;                        // the sequence starts once the "LEVEL n" banner has cleared
+  if (G.bannerT > 0 && !jt && !bt && !rt) return;                        // the sequence starts once the "LEVEL n" banner has cleared
   const touch = 'ontouchstart' in window;
   let text, ph, dur = TIP_SECS;
   if (jt) { text = touch ? 'Tap to jump holes' : 'Space to jump holes'; ph = 2 - G.tipJump; dur = 2; }
+  else if (bt) { text = 'Shoot barrels to blast enemies'; ph = 2 - G.tipBarrel; dur = 2; }
+  else if (rt) { text = 'Rockets! Slower but they explode'; ph = 2 - G.tipRocket; dur = 2; }
   else {
     let i = Math.floor(G.tipT / TIP_SECS);
     if (i === 0 && G.tips[0] === 'steer' && G.laneMoved && G.tipT > 2) i = 1;
@@ -3136,7 +3443,7 @@ function drawPill(text, alpha) {                         // the small hint pill 
   ctx.globalAlpha = 1;
 }
 function drawBoostHint() {                               // level 1: the teaching hint; later levels: a short "BOOST READY" notice (once per level)
-  if (G.boostHint <= 0 || G.state !== 'play' || G.boostT > 0 || G.tipJump > 0 || tipsActive() || bossCueOn() || (UI.short && G.bannerT > 0)) return;   // never on top of another tip or a boss warning (it also works during the boss fight)
+  if (G.boostHint <= 0 || G.state !== 'play' || G.boostT > 0 || G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || tipsActive() || bossCueOn() || (UI.short && G.bannerT > 0)) return;   // never on top of another tip or a boss warning (it also works during the boss fight)
   const ph = (G.boostHintDur || 2.4) - G.boostHint; drawPill(tipLv() === 1 ? 'Double-tap or Ctrl for BOOST' : 'BOOST READY', 0.9 * clamp(Math.min(ph / 0.2, G.boostHint / 0.3), 0, 1));
 }
 function drawCountdown() {       // 3-2-1 after unpausing
@@ -3160,6 +3467,7 @@ function chipStack() {                                   // what is shown, top t
   const add = (kind, e, h) => { out.push({ kind, e, dy, h }); dy += h + o.gap; };
   if (G.state !== 'play' && G.state !== 'resume' && G.state !== 'pause') return out;      // never over the start / level-complete / game-over screens
   if (G.boostT > 0) add('on', null, o.h); else if (G.boostReady) add('ready', null, o.h); else add('charge', null, Math.round(o.h * 0.56));
+  if (G.rocketT > 0) add('rocket', null, o.h);
   for (const e of G.effects) add('fx', e, o.h);
   return out;
 }
@@ -3179,6 +3487,15 @@ function drawEffectChip(e, x, y, w, h, alpha, scale) {
     ctx.font = '800 ' + F(14) + 'px ' + FONT; ctx.fillStyle = '#e8ecff'; ctx.fillText(Math.ceil(e.t) + 's', bx + bw + F(4), by + 2);
     ctx.fillStyle = col; for (let k = 0; k < e.stacks; k++) { ctx.beginPath(); ctx.arc(x + w / 2 + (k - (e.stacks - 1) / 2) * F(7), y + h - F(5.5), 2.1, 0, 6.2832); ctx.fill(); }   // one dot per stack
   }
+  ctx.restore(); ctx.globalAlpha = 1;
+}
+function drawRocketChip(x, y, w, h) {                     // magenta-orange: rocket icon + seconds + bar, blinking in the last 3 s
+  const col = '#ff7a3d', blink = G.rocketT < 3 && ((G.t * 6) | 0) % 2 === 0, age = G.t - (G.rocketAt === undefined ? -9 : G.rocketAt), pop = age < 0.3 ? 1 + 0.15 * (1 - age / 0.3) : 1;
+  ctx.save(); ctx.translate(x + w, y + h / 2); ctx.scale(pop, pop); ctx.translate(-(x + w), -(y + h / 2));
+  ctx.globalAlpha = blink ? 0.4 : 1; rr(x, y, w, h, 10); ctx.fillStyle = 'rgba(8,4,28,.84)'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = col; ctx.stroke();
+  drawRocketIcon(x + F(14), y + F(16), F(18), col);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff'; ctx.font = '900 ' + F(14) + 'px ' + FONT; ctx.fillText(Math.ceil(G.rocketT) + 's', x + F(28), y + F(16));
+  const bx = x + F(8), by = y + h - F(14), bw = w - F(16); ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(bx, by, bw, 4); ctx.fillStyle = col; ctx.fillRect(bx, by, bw * clamp(G.rocketT / ROCKET_T, 0, 1), 4);
   ctx.restore(); ctx.globalAlpha = 1;
 }
 function drawBoostChip(kind, x, y, w, h) {               // gold: 'charge' = slim chip with one pip per alien kill, 'ready' = pulsing BOOST READY, 'on' = countdown
@@ -3218,7 +3535,7 @@ function drawEffectChips() {
   if (G.state !== 'play' && G.state !== 'resume' && G.state !== 'pause') return;
   const st = chipStack(); if (!st.length && !G.gone.length) return;
   const o = effectChipLayout();
-  for (const it of st) { if (it.kind === 'fx') drawEffectChip(it.e, o.x, o.y + it.dy, o.w, it.h, 1, 0); else drawBoostChip(it.kind, o.x, o.y + it.dy, o.w, it.h); }
+  for (const it of st) { if (it.kind === 'fx') drawEffectChip(it.e, o.x, o.y + it.dy, o.w, it.h, 1, 0); else if (it.kind === 'rocket') drawRocketChip(o.x, o.y + it.dy, o.w, it.h); else drawBoostChip(it.kind, o.x, o.y + it.dy, o.w, it.h); }
   for (const g of G.gone) {                                                          // just expired: fades out in the slot it had
     const k = (G.t - g.at) / 0.45; drawEffectChip({ mult: g.mult, stacks: g.stacks }, o.x, o.y + g.dy, o.w, o.h, clamp(1 - k, 0, 1), 1 + 0.1 * k);
   }
@@ -3248,12 +3565,16 @@ function update(dt) {
   updateEffects(dt);
   updateBoost(dt);
   updateDirector();
-  updateBullets(dt);  if (G.state !== 'play') return;      // shots resolve BEFORE enemies / boss slams act, so a killing shot always beats a due slam
+  updateBullets(dt);  if (G.state !== 'play') return;
+  updateRockets(dt);  if (G.state !== 'play') return;      // shots resolve BEFORE enemies / boss slams act, so a killing shot always beats a due slam
   updateEnemies(dt);  if (G.state !== 'play') return;      // every step stops as soon as the run ends
   updateGates(dt);    if (G.state !== 'play') return;
   updateCrates(dt);   if (G.state !== 'play') return;
+  updatePods(dt);     if (G.state !== 'play') return;
   updateHoles(dt);    if (G.state !== 'play') return;
   if (G.tipJump > 0) G.tipJump -= dt;
+  else if (G.tipBarrel > 0) G.tipBarrel -= dt;
+  else if (G.tipRocket > 0) G.tipRocket -= dt;
   else if (G.bannerT <= 0 && G.phase === 'run') G.tipT += dt;               // tip clock: starts after the LEVEL banner, pauses with the game, waits during the jump tip
   updateLevel(dt);    if (G.state !== 'play') return;
   G.score = scoreNow();
@@ -3300,7 +3621,7 @@ function render() {
   drawHoles();
   drawBossTele();
   drawWorld();
-  drawBullets();
+  drawBullets(); drawRockets();
   drawAimLock();
   FX.draw();
   ctx.restore();
