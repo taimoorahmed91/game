@@ -64,6 +64,35 @@ p{margin:6px 0}
 /* screens that sit under the top-right buttons leave room for them */
 @media (max-width:560px){#pause,#complete,#over,#quit{padding-top:calc(58px + env(safe-area-inset-top))}}   /* narrow screens: the panel starts below the icons */
 #diff .cards{margin:10px 0 12px}
+/* results (game over + practice summary) */
+.res{max-width:480px;padding:22px 16px 14px}.res h2{margin-bottom:6px}
+.cause{margin:2px 0 8px;padding:6px 10px;border-radius:12px;background:rgba(255,59,92,.1);border:1px solid rgba(255,59,92,.45)}
+.cause span{display:block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ff9bb0}
+.cause b{display:block;font-size:calc(18px*var(--s));color:#fff;letter-spacing:.02em;line-height:1.2}
+.res .stats{margin:6px 0 6px}.res .stats.three .stat b{font-size:22px}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.rc{min-width:0;padding:6px 4px 5px;border-radius:12px;background:rgba(25,240,255,.07);border:1px solid rgba(25,240,255,.35)}
+.rc b{display:block;font-size:20px;color:#fff;text-shadow:0 0 10px var(--cyan);line-height:1.15;white-space:nowrap}
+.rc span{display:block;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#b6f4ff;line-height:1.15}
+.rc em{display:block;font-style:normal;font-size:12px;color:#b4bfe8;line-height:1.2;min-height:14px}
+.coach{margin:8px 0 6px;padding:8px 12px 7px;border-radius:14px;text-align:left;background:rgba(255,210,77,.08);border:1px solid rgba(255,210,77,.5)}
+.coach h3{margin:0 0 3px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.coach ul{margin:0;padding-left:18px}.coach li{font-size:calc(14px*var(--s));line-height:1.35;color:#fff5d6;margin:3px 0}
+.cmp{margin:4px 0 0;font-size:13px;color:#b4bfe8}.cmp:empty{display:none}
+.lvrow{display:flex;justify-content:center;gap:0 12px;margin:0 0 2px;font-size:13px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:#b6f4ff;white-space:nowrap}
+.lvrow b{color:#fff;margin-left:4px}
+#psum .sub{margin:0 0 4px}
+@media (min-height:700px){.lvrow{font-size:14px}}
+@media (min-width:1000px){.res{max-width:560px}}
+@media (max-width:560px){#psum{padding-top:calc(58px + env(safe-area-inset-top))}}
+@media (max-height:640px) and (max-width:560px){#complete .panel{padding-top:14px}#complete h2{font-size:27px;margin-bottom:2px}#complete .stats{margin:4px 0 2px}#complete .lvrow{margin:0}#complete .pick{margin:2px 0}.res{padding:14px 12px 10px}.res h2{font-size:24px;margin-bottom:2px}.cause{margin-bottom:5px;padding:4px 8px}.rc em{min-height:0}.rgrid{gap:5px;margin:5px 0}.res .stats.three .stat{padding:5px 3px}.res .stats.three .stat b{font-size:20px}.rc{padding:4px 3px}.rc b{font-size:18px}.coach{margin:6px 0 4px;padding:6px 10px}.coach li{font-size:13px;line-height:1.3;margin:2px 0}.res .btn{padding:9px 22px;font-size:17px}.res .row2{margin-top:4px}#over .help,#psum .help{display:none}}
+@media (max-height:520px) and (min-width:640px){
+  #over .panel{max-width:820px;display:grid;grid-template-columns:1fr 1.3fr;grid-template-areas:"rh rr" "rb rr";column-gap:14px;align-items:start;padding:12px 16px}
+  #over .rh{grid-area:rh}#over .rr{grid-area:rr}#over .rb{grid-area:rb}
+  .res h2{font-size:24px;margin-bottom:2px}.cause{margin-bottom:4px}.res .stats{margin:4px 0}.res .stats.three .stat{padding:4px 3px}.res .stats.three .stat b{font-size:19px}
+  .rgrid{margin:0 0 4px;gap:5px}.rc{padding:3px 3px}.rc b{font-size:17px}.rc em{min-height:0}.coach{margin:4px 0 0;padding:5px 10px}.coach li{font-size:13px;line-height:1.25;margin:1px 0}.cmp{margin:2px 0 0}
+  .res .btn{padding:8px 22px;font-size:17px}.res .row2{margin-top:2px}#psum .sub,#psum .help{display:none}#psum h2{font-size:22px}
+}
 @media (min-width:640px){.how{max-width:780px}.how ul{grid-template-columns:1fr 1fr}}
 @media (min-width:1000px){#complete .panel{max-width:640px}.card span{font-size:14px;line-height:1.3}.card b{font-size:16px}.card{min-height:52px;padding:8px 12px}#complete .stats{margin:8px 0 4px}#complete .stat b{font-size:24px}#complete .pick{margin:4px 0}}
 @media (max-height:520px){
@@ -75,6 +104,7 @@ p{margin:6px 0}
   #complete .stats{margin:6px 0 4px}#complete .stat{padding:4px}#complete .stat b{font-size:20px}
   #complete .cards{margin-bottom:8px}#complete .card{padding:6px}#complete .row2{margin-top:2px}#complete .btn{padding:8px 20px}
   #diff h2{font-size:26px;margin-bottom:4px}#diff .sub,#diff .help{display:none}#diff .cards{grid-template-columns:repeat(3,1fr);margin:6px 0 8px}#diff .card{flex-direction:column;text-align:center;padding:8px;gap:4px;min-height:0}#diff .card i{display:none}#diff .card span{font-size:12.5px;line-height:1.22}#diff .card b{font-size:15px}#diff .btn{padding:6px 24px}
+  #complete .lvrow{margin:0;font-size:12.5px}#complete .pick{margin:2px 0}#complete .stats{margin:4px 0 2px}#complete h2{margin-bottom:2px}
   #complete .card span{font-size:12px;line-height:1.22}#complete .card b{font-size:13.5px;margin-bottom:0}.how li{font-size:13px}
 }
 @media (max-height:640px){.how li{padding:5px 9px;line-height:1.25}.how ul{gap:5px;margin:6px 0 8px}.how .btn{padding:9px 28px}}
@@ -223,22 +253,42 @@ p{margin:6px 0}
       <div class="stat">Soldiers lost<b id="cLost">0</b></div>
       <div class="stat">Kills<b id="cKills">0</b></div>
     </div>
+    <div class="lvrow" id="cRow"></div>
     <div class="pick" id="cHint">Choose one upgrade</div>
     <div class="cards" id="cards"></div>
     <div class="row2"><button class="btn" id="btnContinue">Continue</button><button class="btn alt" id="btnHomeC">Home</button></div>
   </div>
 </div>
 <div class="screen" id="over">
-  <div class="panel">
-    <h2 class="bad">Game over</h2>
-    <div class="badge" id="oNew">New best score!</div>
-    <div class="stats">
-      <div class="stat">Score<b id="oScore">0</b></div>
-      <div class="stat">Level<b id="oWave">0</b></div>
+  <div class="panel res">
+    <div class="rh">
+      <h2 class="bad">Game over</h2>
+      <div class="badge" id="oNew">New best score!</div>
+      <div class="cause"><span>Cause of defeat</span><b id="oCause">&mdash;</b></div>
+      <div class="stats three">
+        <div class="stat">Score<b id="oScore">0</b></div>
+        <div class="stat">Level<b id="oWave">0</b></div>
+        <div class="stat">Best<b id="oBest">0</b></div>
+      </div>
     </div>
-    <p class="bestline">Best this session<b id="oBest">0</b></p>
-    <div class="row2"><button class="btn" id="btnRestart">Restart</button><button class="btn alt" id="btnHomeO">Home</button></div>
-    <p class="help">Enter restarts &middot; H goes home</p>
+    <div class="rr">
+      <div class="rgrid" id="oGrid"></div>
+      <div class="coach"><h3>Next time, try</h3><ul id="oTips"></ul><p class="cmp" id="oCmp"></p></div>
+    </div>
+    <div class="rb">
+      <div class="row2"><button class="btn" id="btnRestart">Restart</button><button class="btn alt" id="btnHomeO">Home</button></div>
+      <p class="help">Enter restarts &middot; H goes home</p>
+    </div>
+  </div>
+</div>
+<div class="screen" id="psum">
+  <div class="panel res">
+    <h2>Practice summary</h2>
+    <p class="sub" id="sName">Normal</p>
+    <div class="rgrid" id="sGrid"></div>
+    <div class="coach"><h3>Next time, try</h3><ul id="sTips"></ul></div>
+    <div class="row2"><button class="btn" id="btnSumAgain">Practice again</button><button class="btn alt" id="btnSumHome">Dashboard</button></div>
+    <p class="help">Enter or Esc: back to the dashboard</p>
   </div>
 </div>
 <script>
@@ -312,7 +362,16 @@ window.addEventListener('resize', resize);
 window.addEventListener('orientationchange', resize);
 
 // ===== STATE =====
-const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false };
+const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
+// ----- RUN STATS: plain counters only (a few additions per event, nothing per frame). G.rs = this run, G.ls = this level (for the level-complete row). -----
+// ACCURACY = main-laser bullets that hit something (enemy, boss, crate) / main-laser bullets fired. Each bullet counts once (a piercing pass is the same bullet).
+//   A bullet stopped by the boss shield is a miss ("blocked"). Wing shots (Spread) and BOOST shots are left out of BOTH numbers: they are not aimed.
+// Soldiers lost are attributed to the cause that set G.cause just before the squad changed: enemy contact, red gates, pits, boss attacks, crates.
+const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate'];
+const newStats = () => { const o = { peak: 1, streak: 0, byType: {} }; for (const k of STAT_KEYS) o[k] = 0; return o; };
+G.rs = newStats(); G.ls = newStats();
+const bump = (k, n) => { n = n === undefined ? 1 : n; G.rs[k] += n; G.ls[k] += n; };
+const setCause = (c, d) => { G.cause = c; G.causeD = d || null; };
 const enemies = [], gates = [], crates = [], holes = [];
 let tipsDone = false, holeTipSeen = false, boostHintSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
 // ONE contact rule for gates, holes, boss slams, crates and enemies: where the squad is DRAWN (G.px / G.pz), never where it is heading.
@@ -354,6 +413,7 @@ function resetGame() {
   G.fireCap = 7; G.dmgMul = 1; G.extraLasers = 0; G.shieldMax = 0; G.shield = 0;      // upgrades live only for this session's run
   G.boostNeed = BOOST_KILLS; G.boostLen = BOOST_T; G.boostHead = 0; G.wings = 0; G.pierceN = 0; G.steady = 0; G.util = {}; G.rushLeft = 0; G.openT = 0;
   G.themeBase = irand(0, THEMES.length - 1);                                          // which theme a run starts its rotation with
+  G.rs = newStats(); G.ls = newStats(); G.cause = G.causeD = G.defeat = null; G.sumOpen = false;       // run stats start from zero on every new game / restart / home
   G.practice = false; G.pDiff = 1; G.diffOpen = false;                                // practice is always switched off by a reset
   G.quitAsk = false; G.howOpen = false;                                               // 'Quit to home?' dialog / How-to-play panel are open
   G.effects = []; G.gone = [];                                                        // timed gate effects (fire rate): active list + just-expired (for the fade-out)
@@ -400,6 +460,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'ControlLeft' || e.code === 'ControlRight') { e.preventDefault(); if (!e.repeat) { ctrlHeld = true; ctrlClean = true; } return; }   // armed: BOOST fires on key UP if Ctrl stayed alone
   if (e.ctrlKey || e.metaKey || e.altKey) { ctrlClean = false; return; }          // Ctrl / Cmd / Alt combinations are not game input (and they spoil a Ctrl tap)
   if (ctrlHeld) ctrlClean = false;
+  if (G.sumOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeSum(); return; }      // practice summary: Enter / Esc = dashboard
   if (G.diffOpen) {                                                                          // practice difficulty chooser: 1 / 2 / 3, Enter = Normal, Esc = back
     e.preventDefault();
     if (e.code === 'Escape') closeDiff();
@@ -478,7 +539,7 @@ window.addEventListener('dblclick', e => { if (e.target && e.target.closest && e
 
 // ===== SCREENS / STATE FLOW =====
 function setScreen(name) {
-  for (const id of ['start', 'how', 'diff', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
+  for (const id of ['start', 'how', 'diff', 'psum', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
   $('btnHomeP').textContent = G.practice ? 'End practice' : 'Home'; $('pSub').textContent = G.practice ? 'Practice is on hold.' : 'Your run is on hold.';
   if (name === 'start') refreshDash();
   $('btnPause').style.visibility = (G.state === 'play' || G.state === 'pause' || G.state === 'resume') ? 'visible' : 'hidden';
@@ -511,7 +572,7 @@ function showHome() {
 }
 function askQuit() {                                        // home icon / H key
   G.hitStop = 0;
-  if (G.practice && (G.state === 'play' || G.state === 'resume' || G.state === 'pause')) { showHome(); return; }   // practice: nothing to lose, straight to the dashboard
+  if (G.practice && (G.state === 'play' || G.state === 'resume' || G.state === 'pause')) { endPractice(); return; }   // practice: nothing to lose; a short summary, then the dashboard
   if (G.state === 'play' || G.state === 'resume') { G.state = 'pause'; clearDrag(); releaseKeys(); Sound.pause(); G.quitAsk = true; setScreen('quit'); }   // pause first, then ask
   else if (G.state === 'pause') { if (!G.quitAsk) { G.quitAsk = true; setScreen('quit'); } }
   else if (G.state === 'complete') { const sc = Math.floor(scoreNow()); if (sc > G.best) G.best = sc; showHome(); }            // nothing to lose: straight home (the score so far still counts as a best)
@@ -531,6 +592,17 @@ function startPractice(d) {                             // Practice: endless, no
   G.state = 'play'; clearDrag(); setScreen(null);
   Sound.play('start');
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+function openSum(snap) {                                 // practice summary: lightweight, no score, nothing recorded
+  G.sumOpen = true; $('sName').textContent = snap.name + ' \u00b7 ' + fmtTime(snap.t);
+  $('sGrid').innerHTML = resultCells(snap.st, snap.t, true);
+  $('sTips').innerHTML = coachTips(snap.st, null, { practice: true, time: snap.t }).map(x => '<li>' + x + '</li>').join('');
+  setScreen('psum');
+}
+function closeSum() { G.sumOpen = false; if (G.state === 'start') setScreen('start'); }
+function endPractice() {                                 // leaving practice: show the summary if there was something to summarise
+  const snap = (G.practice && G.t >= 10 && G.rs.shots + G.rs.kills > 0) ? { st: G.rs, t: G.t, name: PRACTICE_NAME[G.pDiff] } : null;
+  showHome(); if (snap) openSum(snap);
 }
 function openHow() { if (G.state !== 'start') return; G.howOpen = true; setScreen('how'); }
 function closeHow() { G.howOpen = false; if (G.state === 'start') setScreen('start'); }
@@ -590,7 +662,7 @@ function showComplete() {
   const s = G.lvStats;
   $('cTitle').textContent = 'Level ' + s.level + ' complete';
   $('cStreak').textContent = s.streak > 1 ? 'Best kill streak \u00d7' + s.streak + (s.streak >= 4 ? '  (medal boost)' : '') : '';
-  $('cScore').textContent = s.score; $('cLost').textContent = s.lost; $('cKills').textContent = s.kills;
+  $('cScore').textContent = s.score; $('cLost').textContent = s.lost; $('cKills').textContent = s.kills; fillLevelRow(G.lsDone || G.ls);
   const m = $('cMedal'); m.className = 'medal ' + s.medal; m.textContent = s.medal[0].toUpperCase() + s.medal.slice(1) + ' medal  +' + s.bonus + ' points';
   $('cards').innerHTML = G.upgOffer.map((k, i) => '<button class="card" data-i="' + i + '"><i>' + (i + 1) + '</i><span><b>' + UPGRADES[k].name + '</b>' + UPGRADES[k].desc() + '</span></button>').join('');
   $('cHint').style.display = G.upgOffer.length ? 'block' : 'none';
@@ -622,6 +694,8 @@ $('btnMute2').addEventListener('click', e => { e.currentTarget.blur(); toggleMut
 $('btnMusic2').addEventListener('click', e => { e.currentTarget.blur(); toggleMusic(); });
 $('btnHow').addEventListener('click', e => { e.currentTarget.blur(); openHow(); });
 $('btnPractice').addEventListener('click', e => { e.currentTarget.blur(); openDiff(); });
+$('btnSumHome').addEventListener('click', e => { e.currentTarget.blur(); closeSum(); });
+$('btnSumAgain').addEventListener('click', e => { e.currentTarget.blur(); closeSum(); openDiff(); });
 $('btnDiffBack').addEventListener('click', e => { e.currentTarget.blur(); closeDiff(); });
 $('dCards').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && G.diffOpen) startPractice(+b.dataset.d); });
 $('btnHowBack').addEventListener('click', e => { e.currentTarget.blur(); closeHow(); });
@@ -1115,6 +1189,11 @@ function squadFeedback(d, vNew, vOld) {                // every squad change is 
   if (d < 0) { G.llost -= d; G.streak = 0; }           // soldiers lost this level (medal); taking damage resets the streak
   else if (vNew > vOld) { G.joinFrom = vOld; G.joinAt = G.t; }   // new soldiers slide into the formation
 }
+function noteLoss(a) {                                  // a = soldiers actually lost; the cause was set by whoever hurt the squad
+  if (a <= 0) { G.cause = G.causeD = null; return; }
+  bump('lost', a); if (G.cause && ('lost_' + G.cause) in G.rs) bump('lost_' + G.cause, a);
+  if (G.squad > 0) G.cause = G.causeD = null;                // (kept when this loss ends the run: it is the cause of defeat)
+}
 function setSquad(n) {
   if (G.state !== 'play') return;                       // once the run is over nothing can change the squad
   n = Math.floor(n);
@@ -1122,7 +1201,7 @@ function setSquad(n) {
     const o = n - SQUAD_MAX; award(o * 5); FX.pop(G.px, G.pz + 3.1, G.practice ? 'MAX' : 'MAX +' + o * 5, '#ffd24d', 1.2); n = SQUAD_MAX;
   }
   if (G.practice && n < 1) {                            // practice: the squad can never die. The hit still shows its feedback (the full loss), the squad stays at 1
-    squadFeedback(n - G.squad, 1, Math.min(G.squad, MAX_VISUAL)); G.popAt = G.t; G.squad = 1;
+    noteLoss(G.squad - 1); squadFeedback(n - G.squad, 1, Math.min(G.squad, MAX_VISUAL)); G.popAt = G.t; G.squad = 1;
     return;
   }
   n = Math.max(0, n);
@@ -1130,7 +1209,8 @@ function setSquad(n) {
   if (d === 0) return;
   squadFeedback(d, Math.min(n, MAX_VISUAL), Math.min(G.squad, MAX_VISUAL));
   G.popAt = G.t; G.squad = n;
-  if (n <= 0) gameOver();
+  if (d < 0) noteLoss(-d); else { if (n > G.rs.peak) G.rs.peak = n; if (n > G.ls.peak) G.ls.peak = n; }
+  if (n <= 0) { G.defeat = { c: G.cause || 'other', d: G.causeD }; G.cause = G.causeD = null; gameOver(); }
 }
 function drawSoldier(X, Y, k, ph, tA, tCol, lift, shS) {
   const bob = Math.abs(Math.sin(ph)) * k * 0.12, sw = Math.sin(ph) * k * 0.25, ol = Math.max(1, k * 0.13);
@@ -1264,7 +1344,7 @@ let bulletCursor = 0;
 function fireBullet(x, dmg, tier, yo, vx, lim) {
   for (let k = 0; k < BULLET_N; k++) {
     const b = bullets[(bulletCursor + k) % BULLET_N];
-    if (!b.on) { b.on = true; b.x = x; b.z = G.pz + 0.4; b.dmg = dmg; b.tier = tier; b.yo = yo || 0; b.pierce = tier === 4; b.hits.length = 0; b.originX = x; b.vx = vx || 0; b.lim = lim || 0; b.pl = tier === 4 ? 0 : G.pierceN; b.aim = (tier === 4 || vx) ? null : aimCandidate(x); bulletCursor = (bulletCursor + k + 1) % BULLET_N; return; }
+    if (!b.on) { b.on = true; b.main = !vx && tier !== 4; b.cn = false; if (b.main) bump('shots'); b.x = x; b.z = G.pz + 0.4; b.dmg = dmg; b.tier = tier; b.yo = yo || 0; b.pierce = tier === 4; b.hits.length = 0; b.originX = x; b.vx = vx || 0; b.lim = lim || 0; b.pl = tier === 4 ? 0 : G.pierceN; b.aim = (tier === 4 || vx) ? null : aimCandidate(x); bulletCursor = (bulletCursor + k + 1) % BULLET_N; return; }
   }
 }
 function lasersFor(n) { return clamp(Math.ceil(n / 12), 1, 6) + G.extraLasers; }
@@ -1289,14 +1369,14 @@ function chargeBoost(e) {                                                       
   if (G.boostT > 0 || G.boostReady) return false;
   G.charge++; G.pipAt = G.t;
   FX.pop(e.x, e.z + 1.1, '+1 BOOST', alienCol(e.mode), 1.1); FX.ring(e.x, e.z, '#ffd24d', 1.1);
-  if (G.charge >= G.boostNeed) setReady(); else Sound.play('pip');
+  if (G.charge >= G.boostNeed) { bump('b_earned'); setReady(); } else Sound.play('pip');
   return true;
 }
 const holeXa = h => laneEdge(h.l0), holeXb = h => laneEdge(h.l1 + 1);
 function onCoveredHole() { return holes.some(h => G.pz >= h.z && G.pz <= h.z + h.len && G.px >= holeXa(h) && G.px <= holeXb(h)); }
 function activateBoost() {
   if (G.state !== 'play' || !G.boostReady || G.boostT > 0) return false;
-  G.boostReady = false; G.charge = 0; G.boostT = G.boostLen; G.boostAt = G.t; G.boostHint = 0;
+  G.boostReady = false; G.charge = 0; G.boostT = G.boostLen; G.boostAt = G.t; G.boostHint = 0; bump('b_used');
   FX.shake(12); FX.flash('#ffd24d', 0.45); FX.ring(G.px, G.pz + 1, '#ffd24d', 2.6); FX.ring(G.px, G.pz + 1, '#fff4b0', 1.6);
   FX.burst(G.px, G.pz + 1.2, '#ffd24d', 36, true); FX.pop(G.px, G.pz + 2.7, 'BOOST!', '#ffd24d', 1.7); Sound.play('boost');
   return true;
@@ -1413,6 +1493,7 @@ function shuffled(n) {
 function startLevel(n) {
   if (n === 1) { tipsDone = false; holeTipSeen = false; boostHintSeen = false; } else tipsDone = true;      // teaching happens in level 1 of a run only (resetGame -> startLevel(1) re-arms it)
   dbl = null; G.tips = pickTips(n); G.tipT = 0; G.tipJump = 0; G.readyNoticeSeen = false; G.boostHintDur = 0; G.hitStop = 0; G.aimTarget = null;
+  G.ls = newStats();                                                                // level subtotals restart with every level
   G.level = n; G.phase = 'run'; G.ldist = 0; G.phaseT = 0; G.finish = null; G.supplied = false;
   G.llost = 0; G.lkills = 0; G.streak = 0; G.lbestMult = 1; G.lev = 0; G.jumpT = -1; G.jumpQ = false; G.hist = []; G.nextKind = null; G.nextAt = 12; G.shield = G.shieldMax;
   G.squad = 1; G.joinFrom = 0; G.effects.length = 0; G.gone.length = 0;            // EVERY level starts with one soldier: the squad is built again inside each level
@@ -1550,7 +1631,7 @@ function updateDirector() {
 }
 function killEnemy(e) {
   const T = ETYPE[e.type], big = e.type === 'boss', m = streakMult(), pts = (big ? 150 + 50 * LV(G.level) : T.pts) * m;
-  award(pts); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult());
+  award(pts); bump('kills'); G.rs.byType[e.type] = (G.rs.byType[e.type] || 0) + 1; if (e.type === 'alien') bump('aliens'); else if (big) bump('bosses'); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult()); if (G.streak > G.rs.streak) G.rs.streak = G.streak; if (G.streak > G.ls.streak) G.ls.streak = G.streak;
   const heavy = e.type === 'tank' || e.type === 'armor';
   if (e.type === 'alien') { FX.coreImplode(e.x, e.z); FX.burst(e.x, e.z, T.col, 5, false); }                    // golden core implodes, then a small burst
   else FX.burst(e.x, e.z, T.col, big ? 70 : heavy ? 24 : e.type === 'swarm' ? 4 : 12, big);
@@ -1563,8 +1644,8 @@ function killEnemy(e) {
   if (big) dissolveMinions();                              // the boss is gone: its minions dissolve (no attack outlives it)
   enemies.splice(enemies.indexOf(e), 1);
 }
-function damageEnemy(e, b) {
-  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); FX.hit(b.x, e.z, '#8fd8ff'); Sound.play('hit'); return; }       // shield: only the glowing lane gets through
+function damageEnemy(e, b) {                              // returns false when the boss shield blocked the shot
+  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); FX.hit(b.x, e.z, '#8fd8ff'); Sound.play('hit'); if (b.main) bump('blocked'); return false; }       // shield: only the glowing lane gets through
   e.flash = 1; e.hitAt = G.t;
   if (e.armor > 0) {                                     // armored: the front shield takes the hit, the body only a chip (20%)
     e.armor -= b.dmg; e.hp -= b.dmg * 0.2;
@@ -1576,6 +1657,7 @@ function damageEnemy(e, b) {
     e.hp -= b.dmg; FX.hit(b.x, e.z, ETYPE[e.type].col); Sound.play('hit', panOf(e.x));
   }
   if (e.hp <= EPS) killEnemy(e);
+  return true;
 }
 function updateHopper(e, dt) {                           // telegraph (blinking arrow, 0.6s), then switch to the next lane; never into a busy lane
   e.x += (laneX(e.lane) - e.x) * Math.min(1, dt * 14);
@@ -1750,11 +1832,12 @@ function hitTarget(b) {   // one test across enemies AND crates: the nearest thi
   for (const e of enemies) if (e.solid !== false && Math.abs(b.z - e.z) < 1.4 && Math.abs(b.x - e.x) < e.r + 0.03 && e.z < bz && !(hs && hs.indexOf(e) >= 0)) { best = e; bz = e.z; isEnemy = true; }
   for (const c of crates) if (Math.abs(b.z - c.z) < 1.4 && Math.abs(b.x - c.x) < 0.18 && c.z < bz && !(hs && hs.indexOf(c) >= 0)) { best = c; bz = c.z; isEnemy = false; }
   if (!best) return false;
-  if (isEnemy) damageEnemy(best, b); else damageCrate(best, b);
+  let landed = true; if (isEnemy) landed = damageEnemy(best, b) !== false; else damageCrate(best, b);
+  if (landed && b.main && !b.cn) { b.cn = true; bump('hits'); }                          // a bullet connects once, however many things it pierces
   if (b.pl > 0) { b.hits.push(best); b.pl--; b.dmg *= 0.6; return false; }      // Piercing core: the shot goes on (60% damage), each target is hit once
   return true;
 }
-function hurtSquad(loss, big) {                         // enemy hits go through here; a shield blocks one hit; boost blocks everything
+function hurtSquad(loss, big, cause, detail) {                         // enemy hits go through here; a shield blocks one hit; boost blocks everything
   if (G.boostT > 0) { FX.ring(G.px, G.pz + 1, '#ffd24d', 1.8); FX.burst(G.px, G.pz + 1.2, '#ffe680', 10, false); return; }
   if (G.shield > 0) {
     G.shield--; G.shieldHitAt = G.t; FX.pop(G.px, G.pz + 0.8, 'SHIELD', '#19f0ff', 1.3); FX.ring(G.px, G.pz + 0.8, '#19f0ff', 1.6); FX.flash('#19f0ff', 0.18);
@@ -1762,6 +1845,7 @@ function hurtSquad(loss, big) {                         // enemy hits go through
     return;
   }
   FX.shake(big ? 14 : 7); FX.flash('#ff3b5c', 0.25); Sound.play('bad', panOf(G.px));
+  setCause(cause || (big ? 'boss' : 'enemy'), detail);
   setSquad(G.squad - loss);
 }
 
@@ -1803,7 +1887,7 @@ const bossHit = () => 1 + 0.08 * BL();                                      // b
 function bossSlam(e, lanes) {
   for (const ln of lanes) { FX.ring(laneX(ln), G.pz + 4, '#ff3b5c', 2.2); FX.burst(laneX(ln), G.pz + 4, '#ff8a1f', 14, false); }
   FX.shake(6);
-  if (footHit(laneEdge(Math.min(...lanes)), laneEdge(Math.max(...lanes) + 1))) hurtSquad(bossDmg(1), true);   // footprint overlap > 30% (lanes are always adjacent)
+  if (footHit(laneEdge(Math.min(...lanes)), laneEdge(Math.max(...lanes) + 1))) hurtSquad(bossDmg(1), true, 'boss', { atk: 'slam', name: e.bname });   // footprint overlap > 30% (lanes are always adjacent)
 }
 const minionsLive = () => enemies.some(m => m.minion && m.z > G.pz - 2.2);   // until they have fully passed the squad (contact window is -1.5 .. +0.9)
 function nextPattern(e) {                               // every pattern once per cycle, in a fresh order each cycle (never the same one twice in a row)
@@ -1839,7 +1923,7 @@ function bossMines(e, dt) {
   if (m.t > 0) return;
   for (const l of m.lanes) { FX.ring(laneX(l), m.zM, '#ff4de0', 1.6); FX.burst(laneX(l), m.zM, '#ff8af0', 12, false); }
   FX.shake(5); Sound.play('boom');
-  if (m.lanes.some(l => footHit(laneEdge(l), laneEdge(l + 1))) && Math.min(G.pzPrev, G.pz) - MINE_R < m.zM && Math.max(G.pzPrev, G.pz) + MINE_R > m.zM) hurtSquad(bossDmg(0.7), true);              // ground blast: a jump does not avoid it
+  if (m.lanes.some(l => footHit(laneEdge(l), laneEdge(l + 1))) && Math.min(G.pzPrev, G.pz) - MINE_R < m.zM && Math.max(G.pzPrev, G.pz) + MINE_R > m.zM) hurtSquad(bossDmg(0.7), true, 'boss', { atk: 'mines', name: e.bname });              // ground blast: a jump does not avoid it
   e.mineSt = null;
 }
 const volleyLanes = a => { const r = []; for (let l = 0; l < LANES; l++) if (l !== a.gap && (G.level >= 4 || l !== (a.gap + 2) % LANES)) r.push(l); return r; };
@@ -1852,7 +1936,7 @@ function updateBossAttack(e, dt) {
       const prev = a.bx; a.bx += a.dir * (2.2 / BEAM_T) * dt;
       if (!a.hit && G.jumpT < 0) {                                                                                        // the beam is LOW: an airborne squad passes over it
         const lo = Math.min(prev, a.bx) - BEAM_HW, hi = Math.max(prev, a.bx) + BEAM_HW, tol = 0.7 * squadHW(), sl = Math.min(G.pxPrev, G.px) - tol, sh = Math.max(G.pxPrev, G.px) + tol;   // swept footprint, 30% tolerance
-        if (sh >= lo && sl <= hi) { a.hit = true; FX.burst(G.px, G.pz + 0.5, e.bcol, 10, false); hurtSquad(bossDmg(0.55), true); }
+        if (sh >= lo && sl <= hi) { a.hit = true; FX.burst(G.px, G.pz + 0.5, e.bcol, 10, false); hurtSquad(bossDmg(0.55), true, 'boss', { atk: 'beam', name: e.bname }); }
       }
       if (a.t <= 0) { e.atk = null; e.slamT = bossGap(); e.cue = null; }
     }
@@ -1893,6 +1977,7 @@ function updateBoss(e, dt) {
     if (e.slamT <= 0 && (!minionsLive() || e.slamT < -5)) startBossAttack(e);       // never stack a new attack on top of a volley that is still in flight
   }
 }
+function wallAround(e) { const ls = new Set(); for (const o of enemies) if (o.type !== 'boss' && Math.abs(o.z - e.z) < 7) ls.add(o.lane); return ls.size >= 4; }      // 4+ lanes blocked at once = an enemy wall
 function updateEnemies(dt) {
   if (G.state !== 'play') return;
   alienTick++;
@@ -1908,9 +1993,10 @@ function updateEnemies(dt) {
     if (e.solid !== false && depthHit(zb, e.z, -1.5, 0.9) && nearX(e.x, e.r + squadHW())) {      // contact = the enemy's drawn footprint overlaps the squad's, at the same depth (swept); a dematerialised teleporter never touches
       if (G.boostT > 0) { FX.ring(G.px, G.pz + 1, '#ffd24d', 1.5); killEnemy(e); continue; }   // boost: the squad plows straight through
       const loss = Math.min(Math.max(1, Math.ceil((hpInt(e.hp) + hpInt(e.armor || 0)) / 2)), Math.max(2, Math.ceil(G.squad * 0.35)));   // one leak never costs more than ~35% of the squad
+      const cd = { type: e.type, minion: !!e.minion, wall: wallAround(e) };
       enemies.splice(i, 1);
       FX.burst(e.x, e.z, ETYPE[e.type].col, 14, false);
-      hurtSquad(loss, false);
+      hurtSquad(loss, false, 'enemy', cd);
       if (G.state !== 'play') return;
       continue;
     }
@@ -1977,16 +2063,101 @@ function completeLevel() {
   const medal = tiers[mi];
   const bonus = 200 * G.level + { gold: 300, silver: 150, bronze: 50 }[medal];
   G.bonus += bonus; G.score = scoreNow();
-  G.lvStats = { level: G.level, score: G.score, lost: G.llost, kills: G.lkills, medal, bonus, streak: G.lbestMult };
+  if (G.boostReady) bump('b_wasted');                    // a ready BOOST does not carry into the next level
+  G.lsDone = G.ls;
+  G.lvStats = { level: G.level, score: G.score, lost: G.llost, kills: G.lkills, medal, bonus, streak: G.lbestMult, acc: accOf(G.ls), aliens: G.ls.aliens, best: G.ls.streak };
   G.upgOffer = pickUpgrades(); G.upgPick = -1;
   FX.burst(G.px, G.pz + 1.5, '#ffd24d', 40, true); FX.flash('#ffd24d', 0.3); Sound.play('fanfare');
   showComplete();
 }
+// ===== RESULTS: summary, cause of defeat, coaching (all from the run counters; memory only) =====
+let prevRun = null;                                      // summary of the previous real run this session (for the "vs last run" line)
+const accOf = st => st.shots >= 10 ? Math.round(100 * st.hits / st.shots) : null;
+const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+const fmtTime = t => { const m = Math.floor(t / 60), sec = Math.floor(t % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; };
+const LOST_NAMES = { enemy: 'enemies', gate: 'red gates', hole: 'pits', boss: 'boss attacks', crate: 'crates' };
+const LOST_SHORT = { enemy: 'enemies', gate: 'gates', hole: 'pits', boss: 'boss', crate: 'crates' };
+function topCause(st) { let best = null, v = 0; for (const k in LOST_NAMES) if (st['lost_' + k] > v) { v = st['lost_' + k]; best = k; } return best; }
+function runSummary(st, t) { return { score: Math.floor(G.score), level: G.level, acc: accOf(st), aliens: st.aliens, lost: st.lost, peak: st.peak, time: t === undefined ? G.t : t, streak: st.streak }; }
+function defeatText(d) {                                  // what finished the run
+  if (!d) return 'The squad was wiped out';
+  const D = d.d || {}, nm = D.name ? ' \u2014 ' + D.name : '';
+  if (d.c === 'boss') return (D.atk === 'beam' ? 'Sweep beam' : D.atk === 'mines' ? 'Shock rings' : 'Boss slam') + nm;
+  if (d.c === 'hole') return 'Fell into a pit';
+  if (d.c === 'gate') return 'Bad gate' + (D.big ? ' (' + String(D.big).replace('-', '\u2212') + ')' : '');
+  if (d.c === 'crate') return 'Negative crate';
+  if (d.c === 'enemy') {
+    if (D.minion) { const b = bossAlive(); return 'Boss minions' + (b && b.bname ? ' \u2014 ' + b.bname : ''); }
+    if (D.wall) return 'Enemy wall';
+    const T = { grunt: 'Grunt', swarm: 'Swarm', tank: 'Tank', armor: 'Armored enemy', hopper: 'Hopper', alien: 'Alien' }; return 'Enemy contact \u2014 ' + (T[D.type] || 'enemy');
+  }
+  return 'The squad was wiped out';
+}
+// Coaching: the first matching rules win (at most 2; 1 in practice). Order = priority: what ended the run, then the biggest avoidable loss, then habits.
+function coachTips(st, d, o) {
+  o = o || {}; const out = [], used = {}, max = o.practice ? 1 : 2, acc = accOf(st), D = (d && d.d) || {};
+  const add = (topic, text) => { if (out.length < max && !used[topic]) { used[topic] = 1; out.push(text); } };
+  if (!o.practice && d) {                                 // 1. the thing that actually ended the run
+    if (d.c === 'boss') add('boss', D.atk === 'beam' ? 'Sweep beam: JUMP it just as the beam reaches you.' : D.atk === 'mines' ? 'Shock rings: step sideways or back out of the rings (jumping does not help).' : 'Boss slam: step out of the red lanes while they flash (jumping does not help).');
+    else if (d.c === 'hole') add('pit', plural(st.h_fall, 'pit fall') + ': press Space just before the hazard stripes end.');
+    else if (d.c === 'gate') add('gate', 'Red gates cost you ' + st.lost_gate + ' soldiers: the middle lane skips a pair.');
+    else if (d.c === 'crate') add('crate', 'A negative crate finished you: shoot it until it turns green before you drive in.');
+    else if (d.c === 'enemy') {
+      if (D.minion) add('boss', 'Boss minions: slide into the gap lane, or shoot the row down.');
+      else if (D.wall) add('wall', 'Enemy wall: aim for the lane with the smallest number and keep shooting it.');
+      else add('contact', 'Enemies that reached you cost ' + st.lost_enemy + ' soldiers: stay in one lane long enough to shoot them down, or step aside.');
+    }
+  }
+  if (st.lost_gate >= (o.practice ? 6 : 8) && st.lost_gate * 4 >= st.lost) add('gate', 'You lost ' + st.lost_gate + ' soldiers to red gates: the middle lane skips a pair.');
+  if (st.h_fall >= 2) add('pit', plural(st.h_fall, 'pit fall') + ': press Space just before the hazard stripes end.');
+  if (!o.practice && st.b_wasted >= 1) add('boost', 'BOOST was ready and unused ' + plural(st.b_wasted, 'time') + ': use it before the boss.');
+  if (acc !== null && acc < 45) add('acc', 'Accuracy ' + acc + '%: stay in one lane longer so your shots connect.');
+  if ((o.time || 0) >= (o.practice ? 30 : 45) && st.aliens <= 2) add('alien', (st.aliens === 0 ? 'No aliens down' : 'Only ' + plural(st.aliens, 'alien') + ' down') + ': they carry BOOST, aim for the golden core.');
+  if (st.lost_crate >= 6) add('crate', 'Negative crates cost ' + st.lost_crate + ' soldiers: shoot them green before you drive in.');
+  if (st.lost_enemy >= 10 && st.lost_enemy * 100 >= 35 * st.lost) add('contact', 'Enemies that reached you cost ' + st.lost_enemy + ' soldiers: shoot the nearest lane or step aside.');
+  if (!o.practice && st.peak < 6 + 6 * (o.level || 1)) add('peak', 'Peak squad ' + st.peak + ': favour + and \u00d7 gates early.');
+  if (st.streak < 5) add('streak', 'Best streak ' + st.streak + ': kill without getting hit to build the \u00d7 multiplier.');
+  else add('streak', o.practice ? 'Solid run: try the next difficulty up.' : 'Best streak ' + st.streak + ': keep it alive through the boss fight.');
+  return out;
+}
+function compareText(cur, p) {                           // small comparison with the previous real run this session
+  if (!p) return '';
+  const parts = [], sg = n => (n > 0 ? '+' : n < 0 ? '\u2212' : '') + Math.abs(n);
+  if (cur.level !== p.level) parts.push('level ' + sg(cur.level - p.level));
+  if (cur.acc !== null && p.acc !== null && Math.abs(cur.acc - p.acc) >= 1) parts.push('accuracy ' + sg(cur.acc - p.acc) + '%');
+  if (cur.aliens !== p.aliens) parts.push('aliens ' + sg(cur.aliens - p.aliens));
+  if (cur.lost !== p.lost && parts.length < 3) parts.push('soldiers lost ' + sg(cur.lost - p.lost));
+  return parts.length ? 'vs last run: ' + parts.slice(0, 3).join(' \u00b7 ') : '';
+}
+const rc = (label, val, sub) => '<div class="rc"><b>' + val + '</b><span>' + label + '</span><em>' + (sub || '') + '</em></div>';
+function resultCells(st, t, practice) {
+  const acc = accOf(st), tc = topCause(st), cells = [rc('Accuracy', acc === null ? '\u2014' : acc + '%', st.shots ? st.hits + ' of ' + st.shots + ' shots' : '')];
+  cells.push(rc('Aliens killed', st.aliens, ''));
+  if (!practice) cells.push(rc('Boosts', st.b_used + ' / ' + st.b_earned, 'used / earned'));
+  cells.push(rc('Gates', st.g_good + ' \u00b7 ' + st.g_bad + ' \u00b7 ' + st.g_skip, 'good/bad/skip'));
+  cells.push(rc('Best streak', st.streak, ''));
+  if (!practice) cells.push(rc('Soldiers lost', st.lost, tc ? 'mostly ' + LOST_SHORT[tc] : ''));
+  cells.push(rc('Pit falls', st.h_fall, st.h_clear + ' jumped'));
+  if (!practice) cells.push(rc('Peak squad', st.peak, ''));
+  cells.push(rc('Time', fmtTime(t), ''));
+  return cells.join('');
+}
+function fillResults() {                                 // game-over screen (called when the run ends)
+  const st = G.rs, sum = runSummary(st);
+  $('oCause').textContent = defeatText(G.defeat);
+  $('oGrid').innerHTML = resultCells(st, G.t, false);
+  $('oTips').innerHTML = coachTips(st, G.defeat, { level: G.level, time: G.t }).map(x => '<li>' + x + '</li>').join('');
+  $('oCmp').textContent = compareText(sum, prevRun);
+  prevRun = sum;
+}
+function fillLevelRow(ls) { const a = accOf(ls); $('cRow').innerHTML = '<span>Accuracy<b>' + (a === null ? '\u2014' : a + '%') + '</b></span><span>Aliens<b>' + ls.aliens + '</b></span><span>Streak<b>' + ls.streak + '</b></span>'; }
 function gameOver() {
   if (G.state !== 'play' || G.practice) return;
   G.hitStop = 0; G.state = 'over'; G.overAt = performance.now();
   FX.burst(G.px, G.pz + 0.5, '#19f0ff', 40, true); FX.shake(18); FX.flash('#ff3b5c', 0.5); Sound.play('over');
   G.score = scoreNow();                                    // final score is computed here, not from the last frame
+  if (G.boostReady) bump('b_wasted');                      // died holding a ready BOOST
+  fillResults();
   clearDrag(); tipsDone = true; $('btnPause').style.visibility = 'hidden';
   const s = Math.floor(G.score), isBest = s > G.best; if (isBest) G.best = s;
   $('oScore').textContent = s; $('oBest').textContent = G.best; $('oWave').textContent = G.level;
@@ -2292,6 +2463,7 @@ function holeFall(h) {
   const loss = Math.max(2, Math.ceil(G.squad * 0.4));        // soldiers fall in: ~40% of the squad (a shield does not help)
   FX.burst(G.px, G.pz, '#ff3b5c', 22, false); FX.burst(G.px, G.pz, '#ffb13d', 10, false);
   FX.pop(G.px, G.pz + 1.2, 'FELL IN!', '#ff3b5c', 1.4); FX.shake(8); FX.flash('#ff3b5c', 0.3); Sound.play('fall', panOf(G.px));
+  bump('h_fall'); setCause('hole');
   setSquad(G.squad - loss);                                   // delta pop, tint, streak reset, game over at 0
 }
 // A hole is jumpable only if crossing it takes <= ~0.45s (a jump lasts 0.66s). While retreating the crossing would stretch, so near a pit
@@ -2316,7 +2488,7 @@ function updateHoles(dt) {
       else if (!h.hit) { h.grace += dt; if (h.grace >= HOLE_GRACE) { holeFall(h); if (G.state !== 'play') return; } }   // tiny grace so a press right at the edge still counts
     } else h.grace = 0;                                                               // stepping out sideways resets the grace
     if (!h.cleared && !h.hit && h.cover && h.air && pz > h.z + h.len) {             // jumped it: small bonus (an actual airborne crossing)
-      h.cleared = true; award(25); FX.pop(G.px, G.pz + 1.6, G.practice ? 'CLEAR!' : 'CLEAR! +25', '#7dffb0', 1.3); Sound.play('clear', panOf(G.px));
+      h.cleared = true; bump('h_clear'); award(25); FX.pop(G.px, G.pz + 1.6, G.practice ? 'CLEAR!' : 'CLEAR! +25', '#7dffb0', 1.3); Sound.play('clear', panOf(G.px));
     }
     if (h.z + h.len < behind(4)) holes.splice(i, 1);
   }
@@ -2369,6 +2541,8 @@ function applyGate(c, gx0) {
   FX.ring(G.px, G.pz + 1.2, c.col, 1.6);
   if (c.good) { FX.flash(c.col, 0.22); Sound.play('good'); FX.burst(G.px, G.pz + 1.5, c.col, 16, false); }
   else { FX.flash('#ff3b5c', 0.3); FX.shake(9); Sound.play('bad'); }
+  bump(c.good ? 'g_good' : 'g_bad'); if (c.type === 'fr_up' || c.type === 'fr_dn') bump('g_fire');
+  if (next < sq) setCause('gate', { big: c.big, type: c.type });
   if (next !== sq) setSquad(next);
 }
 function updateGates(dt) {
@@ -2381,6 +2555,7 @@ function updateGates(dt) {
       const rp = zb - G.pzPrev, rn = g.z - G.pz, t = rp <= GATE_Z ? 1 : clamp((rp - GATE_Z) / Math.max(1e-6, rp - rn), 0, 1);   // fraction of this step at which it crossed
       const side = gateSide(G.pxPrev + (G.px - G.pxPrev) * t);                       // the centre's position at the crossing (interpolated)
       if (side >= 0) { g.hit = side; g.flash = 1; applyGate(g.sides[side]); if (G.state !== 'play') return; }
+      else bump('g_skip');                                 // the open middle lane: the pair was skipped on purpose
     }
     if (g.z < behind(4)) gates.splice(i, 1);
   }
@@ -2469,6 +2644,7 @@ function updateCrates(dt) {
       FX.burst(c.x, c.z, col, 16, false); FX.ring(c.x, c.z, col, 1.3);
       if (v > 0) { Sound.play('good'); FX.flash('#3dff8a', 0.18); }
       else if (v < 0) { Sound.play('bad'); FX.shake(8); FX.flash('#ff3b5c', 0.25); }
+      if (v > 0) bump('c_pos'); else if (v < 0) { bump('c_neg'); setCause('crate'); }
       if (v !== 0) setSquad(G.squad + (v < 0 ? -Math.max(1, Math.ceil(-v * STEADY[G.steady])) : v));
       if (G.state !== 'play') return;
       continue;
