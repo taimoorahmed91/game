@@ -57,6 +57,60 @@ p{margin:6px 0}
 .hint{margin:8px 0 0;font-size:calc(14px*var(--s));color:#b4bfe8}
 .btn.alt.danger{border-color:var(--red);color:#ff9bb0}
 .row2{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+/* dashboard menu: 2 columns (Practice | How to play, Scoreboard on its own row, Sound | Music); 3 columns on short landscape screens */
+#start .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#start .menu .btn{padding:10px 8px;white-space:nowrap}
+#start #btnBoard{grid-column:1/-1;justify-self:center;min-width:62%}
+@media (max-height:520px) and (min-width:560px){#start .menu{grid-template-columns:repeat(6,1fr)}#start .menu .btn{grid-column:span 2}#start #btnBoard{grid-column:span 2;min-width:0}#start #btnMute2{grid-column:2/4}#start #btnMusic2{grid-column:4/6}#start .panel{max-width:540px}}
+/* scoreboard (this page session only): a table on wide screens, two-line rows on phones; the list scrolls inside the panel */
+#board .bd{--bs:calc(1 + (var(--s) - 1)*.4);max-width:820px;display:flex;flex-direction:column;padding:20px 16px 14px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
+#board h2{margin-bottom:6px}
+#board .btn{align-self:center;min-width:min(100%,240px)}
+.bsum{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin:0 0 8px;font-size:calc(14px*var(--bs));font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#b6f4ff}
+.bsum b{color:#fff;margin-left:5px}.bsum .more{color:#b4bfe8;text-transform:none;font-weight:700;letter-spacing:0}
+.bhead,.br{display:grid;grid-template-columns:calc(26px*var(--bs)) calc(46px + 78px*var(--bs)) calc(44px*var(--bs)) calc(46px*var(--bs)) calc(50px*var(--bs)) calc(56px*var(--bs)) calc(50px*var(--bs)) minmax(70px,1fr) calc(52px*var(--bs));align-items:center;column-gap:8px;text-align:left}   /* one column template shared by the header and every row, so they always line up */
+.bhead{padding:0 11.5px 4px;overflow-y:hidden;scrollbar-gutter:stable;font-size:calc(11.5px*var(--bs));font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#8fb4d8;white-space:nowrap}
+.bhead span:nth-child(n+2):nth-child(-n+7),.bhead span:nth-child(9){text-align:right}
+.bhead span:nth-child(2){padding-right:46px}
+.blist{list-style:none;margin:0;padding:0 0 2px;scrollbar-gutter:stable;display:grid;gap:5px;align-content:start;flex:1 1 auto;min-height:84px;overflow-y:auto;overscroll-behavior:contain}
+.br{padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.05);border:1.5px solid transparent;font-size:calc(14px*var(--bs));line-height:1.2;color:#eef1ff}
+.br .rk{font-weight:900;color:#b6f4ff}
+.br .sc{position:relative;padding-right:46px;text-align:right;font-size:calc(17px*var(--bs));color:#fff;white-space:nowrap;font-variant-numeric:tabular-nums}   /* score right-aligned; the NEW / BEST tag has its own 46px slot at the right of the cell */
+.br .sc .tg{position:absolute;right:0;top:50%;margin:0;transform:translateY(-50%)}
+.br .lv,.br .at,.br .c{text-align:right;color:#d8e0ff;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bhead span:nth-child(8),.br .df{padding-left:10px}
+.br .df{min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br.best{background:rgba(255,210,77,.09);border-color:rgba(255,210,77,.8)}
+.br.latest{background:rgba(25,240,255,.12);border-color:rgba(25,240,255,.8)}
+.br.latest.best{border-color:rgba(255,210,77,.9)}
+.tg{display:inline-block;padding:1px 5px;border-radius:6px;font-style:normal;font-size:10.5px;font-weight:900;letter-spacing:.06em;vertical-align:2px}
+.tg.tn{background:var(--cyan);color:#03222a}.tg.tb{background:var(--gold);color:#2a1d00}
+.sec{display:contents}
+.bgap{margin:0;text-align:center;color:#8fb4d8;font-size:13px;line-height:1}
+.bempty{margin:14px 0 8px;font-size:calc(16px*var(--bs));line-height:1.45;color:#d8e0ff}
+.bnote{margin:8px 0 10px;font-size:calc(13px*var(--bs));color:#b4bfe8}
+@media (max-width:899px){#board .bd{--bs:1}}   /* no text scale-up on small/medium screens: the table must always fit */
+@media (min-width:640px) and (max-width:759px){.bhead,.br{grid-template-columns:24px 112px 42px 44px 48px 54px 48px minmax(56px,1fr) 46px;column-gap:6px}.bhead span:nth-child(2){padding-right:42px}.br .sc{padding-right:42px}}   /* compact table on small landscape screens */
+@media (max-width:639px),(max-width:699px) and (min-height:521px){
+  .bhead{display:none}
+  .br{grid-template-columns:26px minmax(0,1fr) 34px 46px;column-gap:8px;row-gap:3px;padding:8px 10px}   /* every row has the same 3 lines: rank / score+tag / L# / time of day; Peak / Acc. / Aliens / Time; cause */
+  .br .sc{padding-right:0;text-align:left}
+  .br .sc .tg{position:static;transform:none;margin-left:6px;vertical-align:2px}
+  .br .at{grid-column:4;grid-row:1}
+  .sec{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;column-gap:6px;row-gap:3px;min-width:0;grid-column:2/-1;grid-row:2;font-size:13px;color:#c9d3f5}
+  .br .sec .c{text-align:left}
+  .br .sec .df{grid-column:1/-1;padding-left:0}
+  .sec .c[data-l]:before{content:attr(data-l) " ";color:#8fb4d8}
+}
+@media (max-width:380px){.sec{font-size:12px;column-gap:4px}}
+@media (max-width:340px){.sec{grid-template-columns:repeat(2,auto)}}   /* tiny phones: Peak/Acc. then Aliens/Time (still the same height on every row) */
+@media (max-width:699px),(max-height:520px){#board{padding-top:calc(58px + env(safe-area-inset-top))}#board .bd{max-height:calc(100vh - 74px);max-height:calc(100dvh - 74px)}}
+@media (max-height:520px){#board{padding-top:calc(54px + env(safe-area-inset-top))}#board .bd{max-height:calc(100vh - 70px);max-height:calc(100dvh - 70px);padding:8px 16px 6px}#board h2{font-size:20px;margin-bottom:0}.bsum{margin-bottom:3px;font-size:13px}.bnote{font-size:12px;margin:3px 0 4px}#board .btn{padding:4px 26px;font-size:16px}.br{padding:2px 10px}.blist{gap:3px;min-height:60px}.bhead{padding-bottom:2px}}
+#over .row2 .btn.alt{padding:11px 16px;font-size:calc(15px*var(--s))}
+@media (max-width:480px){#over .row2{flex-wrap:nowrap;gap:6px}#over .row2 .btn,#over .row2 .btn.alt{font-size:13.5px;letter-spacing:.02em;padding:10px 6px;white-space:nowrap}}   /* Restart | Home | Scoreboard stay on one row on phones */
+.rankline{margin:2px 0 6px;font-size:calc(15px*var(--s));font-weight:800;letter-spacing:.03em;color:#d8e0ff}.rankline:empty{display:none}
+.rankline b{color:var(--gold)}
+@media (max-height:520px) and (min-width:640px){.rankline{margin:0 0 4px;font-size:14px}}
 .how ul{list-style:none;margin:10px 0 12px;padding:0;display:grid;gap:7px;text-align:left}
 .how li{display:flex;gap:10px;align-items:flex-start;font-size:calc(14px*var(--s));line-height:1.3;color:#eef1ff;background:rgba(255,255,255,.05);border-radius:12px;padding:6px 10px}
 .how li i{flex:none;margin-top:4px;width:11px;height:11px;border-radius:4px;background:currentColor;box-shadow:0 0 10px currentColor}
@@ -182,6 +236,7 @@ p{margin:6px 0}
     <div class="opts menu">
       <button class="btn alt" id="btnPractice">Practice</button>
       <button class="btn alt" id="btnHow">How to play</button>
+      <button class="btn alt" id="btnBoard" title="Scoreboard (S)">Scoreboard</button>
       <button class="btn alt" id="btnMute2">Sound: on</button>
       <button class="btn alt" id="btnMusic2">Music: on</button>
     </div>
@@ -203,6 +258,17 @@ p{margin:6px 0}
       <li><i style="color:#b4bfe8"></i><span><b>Keys:</b> Esc or P pause &middot; M sound &middot; H home</span></li>
     </ul>
     <button class="btn" id="btnHowBack">Back</button>
+  </div>
+</div>
+<div class="screen" id="board">
+  <div class="panel bd">
+    <h2>Scoreboard</h2>
+    <div class="bsum" id="bSum"></div>
+    <div class="bhead" id="bHead" aria-hidden="true"><span>#</span><span>Score</span><span>Level</span><span>Peak</span><span>Acc.</span><span>Aliens</span><span>Time</span><span>Defeat</span><span>At</span></div>
+    <ol class="blist" id="bList" aria-label="Top 10 runs this session"></ol>
+    <p class="bempty" id="bEmpty">No runs yet &mdash; play a game to see your scores here.</p>
+    <p class="bnote">Scores are kept only until you refresh the page.</p>
+    <button class="btn" id="btnBoardBack">Back</button>
   </div>
 </div>
 <div class="screen" id="diff">
@@ -266,6 +332,7 @@ p{margin:6px 0}
     <div class="rh">
       <h2 class="bad">Game over</h2>
       <div class="badge" id="oNew">New best score!</div>
+      <p class="rankline" id="oRank"></p>
       <div class="cause"><span>Cause of defeat</span><b id="oCause">&mdash;</b></div>
       <div class="stats three">
         <div class="stat">Score<b id="oScore">0</b></div>
@@ -278,7 +345,7 @@ p{margin:6px 0}
       <div class="coach"><h3>Next time, try</h3><ul id="oTips"></ul><p class="cmp" id="oCmp"></p></div>
     </div>
     <div class="rb">
-      <div class="row2"><button class="btn" id="btnRestart">Restart</button><button class="btn alt" id="btnHomeO">Home</button></div>
+      <div class="row2"><button class="btn" id="btnRestart">Restart</button><button class="btn alt" id="btnHomeO">Home</button><button class="btn alt" id="btnBoardO">Scoreboard</button></div>
       <p class="help">Enter restarts &middot; H goes home</p>
     </div>
   </div>
@@ -390,7 +457,7 @@ document.addEventListener('fullscreenchange', () => onFsChange());
 document.addEventListener('webkitfullscreenchange', () => onFsChange());
 
 // ===== STATE =====
-const G = { state: 'start', best: 0, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
+const G = { state: 'start', best: 0, boardOpen: false, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
 // ----- RUN STATS: plain counters only (a few additions per event, nothing per frame). G.rs = this run, G.ls = this level (for the level-complete row). -----
 // ACCURACY = aimed projectiles that hit something (enemy, boss, crate) / aimed projectiles fired: every main-laser bullet and every rocket. Each projectile counts once
 //   (a piercing pass or a splash is never an extra hit), so it can never exceed 100%. A projectile stopped by the boss shield is a miss ("blocked").
@@ -442,7 +509,7 @@ function resetGame() {
   G.fireCap = 7; G.dmgMul = 1; G.extraLasers = 0; G.shieldMax = 0; G.shield = 0;      // upgrades live only for this session's run
   G.boostNeed = BOOST_KILLS; G.boostLen = BOOST_T; G.boostHead = 0; G.wings = 0; G.pierceN = 0; G.steady = 0; G.util = {}; G.rushLeft = 0; G.openT = 0;
   G.themeBase = irand(0, THEMES.length - 1);                                          // which theme a run starts its rotation with
-  G.rs = newStats(); G.ls = newStats(); G.cause = G.causeD = G.defeat = null; G.sumOpen = false;       // run stats start from zero on every new game / restart / home
+  G.rs = newStats(); G.ls = newStats(); G.cause = G.causeD = G.defeat = null; G.sumOpen = false; G.boardOpen = false;       // run stats start from zero on every new game / restart / home
   G.practice = false; G.pDiff = 1; G.diffOpen = false;                                // practice is always switched off by a reset
   G.quitAsk = false; G.howOpen = false;                                               // 'Quit to home?' dialog / How-to-play panel are open
   G.effects = []; G.gone = [];                                                        // timed gate effects (fire rate): active list + just-expired (for the fade-out)
@@ -491,6 +558,7 @@ window.addEventListener('keydown', e => {
   if (ctrlHeld) ctrlClean = false;
   if (e.code === 'KeyF' && !e.repeat) { e.preventDefault(); toggleFullscreen(); return; }                 // F = fullscreen (not used by any other control)
   if (G.sumOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeSum(); return; }      // practice summary: Enter / Esc = dashboard
+  if (G.boardOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeBoard(); return; }      // scoreboard: Esc / Enter = back
   if (G.diffOpen) {                                                                          // practice difficulty chooser: 1 / 2 / 3, Enter = Normal, Esc = back
     e.preventDefault();
     if (e.code === 'Escape') closeDiff();
@@ -500,6 +568,7 @@ window.addEventListener('keydown', e => {
   }
   if (G.howOpen) { if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') { e.preventDefault(); closeHow(); } return; }   // How to play: Esc / Enter close it; nothing can start a game from here
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'Enter', 'NumpadEnter'].includes(e.code)) e.preventDefault();   // never scroll; Enter never double-fires a focused button
+  if ((e.code === 'KeyS' || e.code === 'KeyB') && G.state === 'start' && !e.repeat) { openBoard(); return; }        // S / B = scoreboard (dashboard only; S still moves back during a run)
   if (e.code === 'ArrowUp' || e.code === 'KeyW') { if (G.state === 'play' && (!e.repeat || held.up)) held.up = true; return; }       // only a fresh press in play starts movement (repeats after a pause / resume are ignored)
   if (e.code === 'ArrowDown' || e.code === 'KeyS') { if (G.state === 'play' && (!e.repeat || held.down)) held.down = true; return; }
   if (e.repeat) return;
@@ -569,7 +638,7 @@ window.addEventListener('dblclick', e => { if (e.target && e.target.closest && e
 
 // ===== SCREENS / STATE FLOW =====
 function setScreen(name) {
-  for (const id of ['start', 'how', 'diff', 'psum', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
+  for (const id of ['start', 'how', 'diff', 'psum', 'board', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
   $('btnHomeP').textContent = G.practice ? 'End practice' : 'Home'; $('pSub').textContent = G.practice ? 'Practice is on hold.' : 'Your run is on hold.';
   if (name === 'start') refreshDash();
   $('btnPause').style.visibility = (G.state === 'play' || G.state === 'pause' || G.state === 'resume') ? 'visible' : 'hidden';
@@ -606,7 +675,7 @@ function askQuit() {                                        // home icon / H key
   if (G.practice && (G.state === 'play' || G.state === 'resume' || G.state === 'pause')) { endPractice(); return; }   // practice: nothing to lose; a short summary, then the dashboard
   if (G.state === 'play' || G.state === 'resume') { G.state = 'pause'; clearDrag(); releaseKeys(); Sound.pause(); G.quitAsk = true; setScreen('quit'); }   // pause first, then ask
   else if (G.state === 'pause') { if (!G.quitAsk) { G.quitAsk = true; setScreen('quit'); } }
-  else if (G.state === 'complete') { const sc = Math.floor(scoreNow()); if (sc > G.best) G.best = sc; showHome(); }            // nothing to lose: straight home (the score so far still counts as a best)
+  else if (G.state === 'complete') { const sc = Math.floor(scoreNow()); if (sc > G.best) G.best = sc; if (!G.practice) recordRun(sc, 'Left after L' + G.level); showHome(); }            // nothing to lose: straight home (the score so far still counts as a best)
   else if (G.state === 'over') showHome();
 }
 function openDiff() { if (G.state !== 'start') return; G.diffOpen = true; setScreen('diff'); }
@@ -635,6 +704,52 @@ function endPractice() {                                 // leaving practice: sh
   const snap = (G.practice && G.t >= 10 && G.rs.shots + G.rs.kills > 0) ? { st: G.rs, t: G.t, name: PRACTICE_NAME[G.pDiff] } : null;
   showHome(); if (snap) openSum(snap);
 }
+// ===== SCOREBOARD: finished real runs of THIS page session only =====
+// A plain array in memory: nothing is written to storage, cookies or the URL, so a refresh (or closing the tab) clears it. Recorded: every GAME OVER, and a run
+// ended with Home from the level-complete screen (that path has no "this run will be lost" warning and already counted toward the session best, so the
+// scoreboard and the dashboard "Best" always agree). NOT recorded: practice, and a run quit from the middle of a level (the "this run will be lost" dialog).
+// Order: score high -> low, ties: higher level first, then the earlier run. Only the top 10 are listed; the summary counts every run.
+const board = [];
+let boardSeq = 0;
+const boardCmp = (a, b) => b.score - a.score || b.level - a.level || a.id - b.id;
+const boardSorted = () => board.slice().sort(boardCmp);
+function shortCause(d) {                                  // a few words for the table (the game-over screen has the long version)
+  if (!d) return 'Wiped out';
+  const D = d.d || {};
+  if (d.c === 'boss') return D.atk === 'beam' ? 'Boss beam' : D.atk === 'mines' ? 'Boss rings' : 'Boss slam';
+  if (d.c === 'hole') return 'Pit'; if (d.c === 'gate') return 'Bad gate'; if (d.c === 'crate') return 'Crate'; if (d.c === 'barrel') return 'Barrel';
+  if (d.c === 'enemy') { if (D.minion) return 'Minions'; if (D.wall) return 'Enemy wall'; const T = { grunt: 'Grunt', swarm: 'Swarm', tank: 'Tank', armor: 'Armored', hopper: 'Hopper', alien: 'Alien' }; return T[D.type] || 'Enemy'; }
+  return 'Wiped out';
+}
+function recordRun(score, cause) {
+  const d = new Date(), p2 = n => (n < 10 ? '0' : '') + n;
+  const e = { id: ++boardSeq, score: Math.max(0, Math.floor(score)), level: G.level, peak: G.rs.peak, acc: accOf(G.rs), aliens: G.rs.aliens, t: G.t, cause, at: p2(d.getHours()) + ':' + p2(d.getMinutes()) };
+  board.push(e); return e;
+}
+const rankText = e => { const n = board.length; return n === 1 ? 'First run this session' : '<b>#' + (boardSorted().indexOf(e) + 1) + '</b> of ' + n + ' this session'; };
+function boardRow(e, rank, latest, best) {
+  return '<li class="br' + (latest ? ' latest' : '') + (best ? ' best' : '') + '"><span class="rk">' + rank + '</span>'
+    + '<b class="sc">' + e.score + (latest ? '<em class="tg tn">NEW</em>' : '') + (best ? '<em class="tg tb">BEST</em>' : '') + '</b>'
+    + '<span class="lv">L' + e.level + '</span>'
+    + '<span class="sec"><span class="c pk" data-l="Peak">' + e.peak + '</span><span class="c ac" data-l="Acc.">' + (e.acc === null ? '\u2014' : e.acc + '%') + '</span><span class="c al" data-l="Aliens">' + e.aliens + '</span><span class="c tm" data-l="Time">' + fmtTime(e.t) + '</span><span class="c df">' + e.cause + '</span></span>'
+    + '<span class="at">' + e.at + '</span></li>';
+}
+function renderBoard() {
+  const all = boardSorted(), n = all.length, top = all.slice(0, 10), latest = board[n - 1];
+  $('bEmpty').style.display = n ? 'none' : 'block';
+  for (const id of ['bSum', 'bHead', 'bList']) $(id).style.display = n ? '' : 'none';
+  if (!n) { $('bList').innerHTML = ''; $('bSum').innerHTML = ''; return; }
+  const avg = Math.round(board.reduce((a, e) => a + e.score, 0) / n);
+  $('bSum').innerHTML = '<span>Runs<b>' + n + '</b></span><span>Best<b>' + all[0].score + '</b></span><span>Average<b>' + avg + '</b></span>' + (n > 10 ? '<span class="more">showing the top 10</span>' : '');
+  let h = top.map((e, i) => boardRow(e, i + 1, e === latest, i === 0)).join('');
+  if (top.indexOf(latest) < 0) h += '<li class="bgap" aria-hidden="true">\u22ee</li>' + boardRow(latest, all.indexOf(latest) + 1, true, false);       // the newest run is always visible, even outside the top 10
+  $('bList').innerHTML = h;
+}
+function openBoard() {                                    // from the dashboard or the game-over screen
+  if (G.state !== 'start' && G.state !== 'over') return;
+  G.boardOpen = true; renderBoard(); setScreen('board'); $('bList').scrollTop = 0;
+}
+function closeBoard() { G.boardOpen = false; if (G.state === 'start') setScreen('start'); else if (G.state === 'over') setScreen('over'); }
 function openHow() { if (G.state !== 'start') return; G.howOpen = true; setScreen('how'); }
 function closeHow() { G.howOpen = false; if (G.state === 'start') setScreen('start'); }
 function toggleMute() { Sound.unlock(); Sound.toggleMute(); refreshDash(); }              // refreshDash keeps every Sound / Music button in step
@@ -731,6 +846,8 @@ $('btnSumAgain').addEventListener('click', e => { e.currentTarget.blur(); closeS
 $('btnDiffBack').addEventListener('click', e => { e.currentTarget.blur(); closeDiff(); });
 $('dCards').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && G.diffOpen) startPractice(+b.dataset.d); });
 $('btnHowBack').addEventListener('click', e => { e.currentTarget.blur(); closeHow(); });
+for (const id of ['btnBoard', 'btnBoardO']) $(id).addEventListener('click', e => { e.currentTarget.blur(); openBoard(); });
+$('btnBoardBack').addEventListener('click', e => { e.currentTarget.blur(); closeBoard(); });
 for (const id of ['btnHome', 'btnHomeP', 'btnHomeC', 'btnHomeO']) $(id).addEventListener('click', e => { e.currentTarget.blur(); askQuit(); });
 $('btnKeep').addEventListener('click', e => { e.currentTarget.blur(); if (G.quitAsk) togglePause(); });
 $('btnQuit').addEventListener('click', e => { e.currentTarget.blur(); if (G.quitAsk) showHome(); });
@@ -2408,6 +2525,7 @@ function gameOver() {
   const s = Math.floor(G.score), isBest = s > G.best; if (isBest) G.best = s;
   $('oScore').textContent = s; $('oBest').textContent = G.best; $('oWave').textContent = G.level;
   $('oNew').style.display = isBest && s > 0 ? 'block' : 'none';
+  $('oRank').innerHTML = rankText(recordRun(s, shortCause(G.defeat)));            // scoreboard: this run's place among this session's runs
   setTimeout(() => { if (G.state === 'over') setScreen('over'); }, 700);
 }
 
