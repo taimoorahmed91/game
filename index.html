@@ -57,11 +57,38 @@ p{margin:6px 0}
 .hint{margin:8px 0 0;font-size:calc(14px*var(--s));color:#b4bfe8}
 .btn.alt.danger{border-color:var(--red);color:#ff9bb0}
 .row2{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
-/* dashboard menu: 2 columns (Practice | How to play, Scoreboard on its own row, Sound | Music); 3 columns on short landscape screens */
+/* dashboard menu: 2 columns (Practice | Custom, How to play | Scoreboard, Sound | Music); 3 columns on short landscape screens */
 #start .menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #start .menu .btn{padding:10px 8px;white-space:nowrap}
-#start #btnBoard{grid-column:1/-1;justify-self:center;min-width:62%}
-@media (max-height:520px) and (min-width:560px){#start .menu{grid-template-columns:repeat(6,1fr)}#start .menu .btn{grid-column:span 2}#start #btnBoard{grid-column:span 2;min-width:0}#start #btnMute2{grid-column:2/4}#start #btnMusic2{grid-column:4/6}#start .panel{max-width:540px}}
+@media (max-height:520px) and (min-width:560px){#start .menu{grid-template-columns:repeat(3,1fr)}#start .panel{max-width:540px}}
+/* custom start: level stepper + quick picks; the loadout screen (spend N-1 upgrade points) */
+.stepper{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0 10px}
+.stepper button{width:56px;height:56px;border-radius:16px;font:inherit;font-size:30px;font-weight:900;line-height:1;color:#fff;background:rgba(25,240,255,.1);border:2px solid rgba(25,240,255,.5);cursor:pointer;touch-action:manipulation}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper b{min-width:92px;font-size:56px;font-weight:900;line-height:1;color:#fff;text-shadow:0 0 18px rgba(25,240,255,.6);font-variant-numeric:tabular-nums}
+.quick{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:0 0 10px}
+.quick button{min-width:0;min-height:44px;padding:6px 2px;border-radius:12px;font:inherit;font-weight:900;font-size:16px;color:#dbe3ff;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.22);cursor:pointer;touch-action:manipulation}
+.quick button.sel{border-color:var(--green);background:rgba(61,255,138,.16);color:#fff}
+#loadout .panel{max-width:820px;display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
+#loadout h2{margin-bottom:2px}
+.lrows{display:grid;grid-template-columns:1fr;gap:5px;margin:6px 0 8px;overflow-y:auto;min-height:84px;flex:1 1 auto;text-align:left}
+.lr{display:flex;gap:6px;align-items:stretch}
+.la{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;font:inherit;color:#fff;padding:3px 10px;min-height:44px;border-radius:12px;background:rgba(25,240,255,.07);border:2px solid rgba(25,240,255,.3);cursor:pointer;touch-action:manipulation}
+.la.on{border-color:var(--green);background:rgba(61,255,138,.12)}
+.la i{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:rgba(25,240,255,.18);font-style:normal;font-weight:900;font-size:14px;color:#9fefff}
+.la span{flex:1;min-width:0;font-size:13.5px;line-height:1.2;color:#cfd8ff}.la span b{display:block;font-size:15.5px;color:#fff}
+.la u{flex:none;text-decoration:none;font-weight:900;font-size:18px;color:#7dffb0;min-width:34px;text-align:right}
+.lm{flex:none;width:44px;border-radius:12px;font:inherit;font-size:22px;font-weight:900;color:#ffb3c0;background:rgba(255,59,92,.1);border:2px solid rgba(255,59,92,.35);cursor:pointer;touch-action:manipulation}
+.la:disabled,.lm:disabled{opacity:.35;cursor:default}
+#loadout .row2 .btn{padding:11px 16px;font-size:calc(15px*var(--s))}
+@media (min-width:700px){.lrows{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:699px),(max-height:520px){#loadout{padding-top:calc(58px + env(safe-area-inset-top))}#loadout .panel{max-height:calc(100vh - 74px);max-height:calc(100dvh - 74px)}}
+@media (max-width:480px){#loadout .row2{flex-wrap:nowrap;gap:6px}#loadout .row2 .btn{font-size:14px;padding:10px 8px;white-space:nowrap}}
+@media (max-height:520px){#loadout .panel{padding:10px 16px 8px}#loadout h2{font-size:22px}#loadout .sub{margin:0 0 2px;font-size:14px}.la{min-height:40px;padding:3px 8px}.la span{font-size:13px}.la span b{font-size:14px}.la i{display:none}.lrows{margin:4px 0 6px;gap:4px}#loadout .row2 .btn{padding:6px 18px;font-size:16px}#loadout .help{display:none}#custom .panel{padding:10px 16px 8px}#custom h2{font-size:22px;margin-bottom:0}#custom .sub{margin:0 0 2px;font-size:14px}.stepper{margin:2px 0 4px}.stepper button{width:44px;height:44px;font-size:24px}.stepper b{font-size:40px}.quick{margin-bottom:4px}.quick button{min-height:40px}#custom .help{display:none}}
+.modeline{margin:0 0 4px;font-size:calc(14px*var(--s));font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#d9b8ff}.modeline:empty{display:none}
+h2.win{background:linear-gradient(90deg,#fff3a0,#ffd24d 45%,#3dff8a);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 16px rgba(255,210,77,.55))}
+.cause.win{background:rgba(61,255,138,.1);border-color:rgba(61,255,138,.5)}.cause.win span{color:#9fffc4}
+.tg.tc{background:#c9a2ff;color:#1a0a3a;margin-right:6px}
 /* scoreboard (this page session only): a table on wide screens, two-line rows on phones; the list scrolls inside the panel */
 #board .bd{--bs:calc(1 + (var(--s) - 1)*.4);max-width:820px;display:flex;flex-direction:column;padding:20px 16px 14px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
 #board h2{margin-bottom:6px}
@@ -235,6 +262,7 @@ p{margin:6px 0}
     <p class="hint">or press Enter</p>
     <div class="opts menu">
       <button class="btn alt" id="btnPractice">Practice</button>
+      <button class="btn alt" id="btnCustom" title="Start from any level (1-20)">Custom</button>
       <button class="btn alt" id="btnHow">How to play</button>
       <button class="btn alt" id="btnBoard" title="Scoreboard (S)">Scoreboard</button>
       <button class="btn alt" id="btnMute2">Sound: on</button>
@@ -248,11 +276,11 @@ p{margin:6px 0}
     <h2>How to play</h2>
     <ul>
       <li><i style="color:#19f0ff"></i><span><b>Steer:</b> &larr; &rarr; or swipe: lanes. &uarr; &darr; or drag: forward / back (forward = less time).</span></li>
-      <li><i style="color:#ff8a1f"></i><span><b>Jump:</b> Space, tap or JUMP to leap over holes. Enemies and boss slams still hit you in the air: step out of the way.</span></li>
+      <li><i style="color:#ff8a1f"></i><span><b>Jump:</b> Space, tap or JUMP to leap over holes and yellow road bumps (or change lane around a bump). Enemies and boss slams still hit you in the air: step out of the way.</span></li>
       <li><i style="color:#3dff8a"></i><span><b>Gates:</b> green and blue help, red hurt. The middle lane skips them.</span></li>
       <li><i style="color:#ffd24d"></i><span><b>Crates:</b> shoot to raise the number, drive in once it is positive.</span></li>
       <li><i style="color:#19f0ff"></i><span><b>Fire gates</b> are temporary: they last 15 seconds.</span></li>
-      <li><i style="color:#3dffb8"></i><span><b>Aliens</b> carry a golden core: kill 3 to charge BOOST.</span></li>
+      <li><i style="color:#3dffb8"></i><span><b>Aliens</b> carry a golden core: kill 3 to charge BOOST. Winged drones hover, then dive into a marked lane: shoot them in the air.</span></li>
       <li><i style="color:#ffd24d"></i><span><b>BOOST:</b> double-tap, double-click or tap Ctrl for 6s of super power.</span></li>
       <li><i style="color:#ff3b5c"></i><span><b>Every level</b> starts with 1 soldier. Beat the boss to finish.</span></li>
       <li><i style="color:#b4bfe8"></i><span><b>Keys:</b> Esc or P pause &middot; M sound &middot; H home</span></li>
@@ -282,6 +310,26 @@ p{margin:6px 0}
     </div>
     <button class="btn alt" id="btnDiffBack">Back</button>
     <p class="help" id="dHelp">1 &middot; 2 &middot; 3 or tap &middot; Enter = Normal &middot; Esc = back</p>
+  </div>
+</div>
+<div class="screen" id="custom">
+  <div class="panel">
+    <h2>Custom start</h2>
+    <p class="sub">Start from any level, 1 to 20.</p>
+    <div class="stepper"><button id="cMinus" aria-label="Lower level">&minus;</button><b id="cNum">6</b><button id="cPlus" aria-label="Higher level">+</button></div>
+    <div class="quick" id="cQuick"></div>
+    <p class="sub" id="cInfo"></p>
+    <div class="row2"><button class="btn" id="btnCNext">Choose upgrades</button><button class="btn alt" id="btnCBack">Back</button></div>
+    <p class="help">&larr; &rarr; or type a number &middot; Enter continues &middot; Esc back</p>
+  </div>
+</div>
+<div class="screen" id="loadout">
+  <div class="panel">
+    <h2>Loadout</h2>
+    <p class="sub" id="lSub"></p>
+    <div class="lrows" id="lRows"></div>
+    <div class="row2"><button class="btn" id="btnLStart">Start</button><button class="btn alt" id="btnLAuto">Auto-fill</button><button class="btn alt" id="btnLBack">Back</button></div>
+    <p class="help">1&ndash;9 add &middot; Backspace undo &middot; A auto-fill &middot; Enter starts &middot; Esc back</p>
   </div>
 </div>
 <div class="screen" id="pause">
@@ -330,10 +378,11 @@ p{margin:6px 0}
 <div class="screen" id="over">
   <div class="panel res">
     <div class="rh">
-      <h2 class="bad">Game over</h2>
+      <h2 class="bad" id="oTitle">Game over</h2>
+      <p class="modeline" id="oMode"></p>
       <div class="badge" id="oNew">New best score!</div>
       <p class="rankline" id="oRank"></p>
-      <div class="cause"><span>Cause of defeat</span><b id="oCause">&mdash;</b></div>
+      <div class="cause" id="oCauseBox"><span id="oCauseL">Cause of defeat</span><b id="oCause">&mdash;</b></div>
       <div class="stats three">
         <div class="stat">Score<b id="oScore">0</b></div>
         <div class="stat">Level<b id="oWave">0</b></div>
@@ -342,7 +391,7 @@ p{margin:6px 0}
     </div>
     <div class="rr">
       <div class="rgrid" id="oGrid"></div>
-      <div class="coach"><h3>Next time, try</h3><ul id="oTips"></ul><p class="cmp" id="oCmp"></p></div>
+      <div class="coach"><h3 id="oCoachH">Next time, try</h3><ul id="oTips"></ul><p class="cmp" id="oCmp"></p></div>
     </div>
     <div class="rb">
       <div class="row2"><button class="btn" id="btnRestart">Restart</button><button class="btn alt" id="btnHomeO">Home</button><button class="btn alt" id="btnBoardO">Scoreboard</button></div>
@@ -438,6 +487,7 @@ function layout() {
   L.py = Math.min(Math.round(H * 0.86), Math.round(H - SAFE.b - 34));
   L.rh = Math.min(W * 0.40, H * 0.34);                // road: wider on phones, still modest on big screens
   L.sb = (H - L.hy) / (L.py - L.hy);
+  BEND.A0 = Math.min(0.0008, 0.36 * W / (L.rh * FOCAL * BEND.zT));          // curve strength: even a bend held through the whole view moves the vanishing point by at most 36% of the screen width (a typical gentle one ~20%)
   // Lowest squad depth: feet near the bottom edge of the screen (above the bottom safe area), so the whole squad and its
   // count label stay visible. The start position (depth 0) is unchanged; only the backward range grows.
   const feetS = (H - SAFE.b - F(14) - L.hy) / (L.py - L.hy);
@@ -457,19 +507,19 @@ document.addEventListener('fullscreenchange', () => onFsChange());
 document.addEventListener('webkitfullscreenchange', () => onFsChange());
 
 // ===== STATE =====
-const G = { state: 'start', best: 0, boardOpen: false, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
+const G = { state: 'start', best: 0, custom: 0, customOpen: 0, victory: false, boardOpen: false, resumeT: 0, startAt: 0, overAt: 0, completeAt: 0, practice: false, pDiff: 1, diffOpen: false, sumOpen: false, cause: null, causeD: null, defeat: null };
 // ----- RUN STATS: plain counters only (a few additions per event, nothing per frame). G.rs = this run, G.ls = this level (for the level-complete row). -----
 // ACCURACY = aimed projectiles that hit something (enemy, boss, crate) / aimed projectiles fired: every main-laser bullet and every rocket. Each projectile counts once
 //   (a piercing pass or a splash is never an extra hit), so it can never exceed 100%. A projectile stopped by the boss shield is a miss ("blocked").
 //   Wing shots (Spread) and BOOST lasers are left out of BOTH numbers: they are not aimed.
 // Soldiers lost are attributed to the cause that set G.cause just before the squad changed: enemy contact, red gates, pits, boss attacks, crates.
-const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate', 'lost_barrel', 'barrels', 'barrel_kills', 'rk_pick', 'rk_kills', 'rk_shots'];
+const STAT_KEYS = ['shots', 'hits', 'blocked', 'kills', 'aliens', 'bosses', 'b_earned', 'b_used', 'b_wasted', 'g_good', 'g_bad', 'g_skip', 'g_fire', 'c_pos', 'c_neg', 'h_clear', 'h_fall', 'lost', 'lost_enemy', 'lost_gate', 'lost_hole', 'lost_boss', 'lost_crate', 'lost_barrel', 'lost_bump', 'bump_hit', 'bump_clear', 'drones', 'barrels', 'barrel_kills', 'rk_pick', 'rk_kills', 'rk_shots'];
 const newStats = () => { const o = { peak: 1, streak: 0, byType: {} }; for (const k of STAT_KEYS) o[k] = 0; return o; };
 G.rs = newStats(); G.ls = newStats();
 const bump = (k, n) => { n = n === undefined ? 1 : n; G.rs[k] += n; G.ls[k] += n; };
 const setCause = (c, d) => { G.cause = c; G.causeD = d || null; };
-const enemies = [], gates = [], crates = [], holes = [];
-let tipsDone = false, holeTipSeen = false, boostHintSeen = false, barrelTipSeen = false, rocketTipSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
+const enemies = [], gates = [], crates = [], holes = [], bumps = [];
+let tipsDone = false, holeTipSeen = false, boostHintSeen = false, barrelTipSeen = false, rocketTipSeen = false, bumpTipSeen = false, droneTipSeen = false;             // teaching tips: level 1 of each RUN only (re-armed by a new run); in memory only
 // ONE contact rule for gates, holes, boss slams, crates and enemies: where the squad is DRAWN (G.px / G.pz), never where it is heading.
 // G.lane is only the movement TARGET (the squad slides there in ~0.1s). playerLane() = the lane under the squad's ground centre.
 //   gates / holes / boss slams: the lane (exact drawn lane boundaries) under the centre at the moment of crossing / slam
@@ -482,6 +532,8 @@ const SQUAD_HW = 0.135, PZ_VMAX = 18;                   // MAX squad half-width 
 //   beam             : same 30% tolerance on the swept footprint
 //   gates / holes    : the CENTRE decides. Gate: the side whose half holds the centre AT THE CROSSING DEPTH wins, once per pair; the middle lane = skip.
 //                      Hole: fall only while the centre is over the pit floor for the whole step (drawn floor edge = lane edge) and the pit is under the squad's depth.
+//   road bumps       : the FOOTPRINT decides (same >30% rule as slams / mines): grounded (not jumping, no boost) while the footprint overlaps the covered lanes inside the bump's depth, for BUMP_GRACE
+//                      seconds -> ONE bounded loss per bump (flag). Airborne or boost = safe. A shield absorbs it (hurtSquad).
 const squadHW = () => 0.04 + 0.5 * (Math.min(G.squad, ROW_N) - 1) * ROW_DX;
 const GATE_Z = 0.6;                                      // a gate pair resolves when it reaches this depth ahead of the squad's ground point
 const gateSide = x => { const nb = LANES % 2 ? LANE_W / 2 : 0; return x < -nb ? 0 : x > nb ? 1 : -1; };   // 0 left gate, 1 right gate, -1 neutral middle lane
@@ -503,7 +555,7 @@ const award = n => { if (!G.practice) G.bonus += n; };                          
 const scoreNow = () => G.practice ? 0 : Math.floor(G.dist + G.bonus);
 
 function resetGame() {
-  G.t = 0; G.scroll = 0; G.dist = 0; G.speed = BASE_SPEED;
+  G.t = 0; G.scroll = 0; G.dist = 0; G.speed = BASE_SPEED; G.curve = null;
   G.score = 0; G.kills = 0; G.bonus = 0; G.banner = ''; G.bannerT = 0; G.resumeT = 0; G.laneMoved = false;
   G.lane = MID_LANE; G.px = G.pxPrev = laneX(MID_LANE); G.pz = G.pzT = G.pvk = G.pzPrev = 0; G.jumpT = -1; G.jumpQ = false; G.landAt = -9; G.tipJump = 0; G.squad = 1; G.fireRate = 3.6; G.fireAcc = 0;
   G.fireCap = 7; G.dmgMul = 1; G.extraLasers = 0; G.shieldMax = 0; G.shield = 0;      // upgrades live only for this session's run
@@ -511,6 +563,7 @@ function resetGame() {
   G.themeBase = irand(0, THEMES.length - 1);                                          // which theme a run starts its rotation with
   G.rs = newStats(); G.ls = newStats(); G.cause = G.causeD = G.defeat = null; G.sumOpen = false; G.boardOpen = false;       // run stats start from zero on every new game / restart / home
   G.practice = false; G.pDiff = 1; G.diffOpen = false;                                // practice is always switched off by a reset
+  G.custom = 0; G.customOpen = 0; G.victory = false;                                  // a reset is a normal run (Custom sets these after it)
   G.quitAsk = false; G.howOpen = false;                                               // 'Quit to home?' dialog / How-to-play panel are open
   G.effects = []; G.gone = [];                                                        // timed gate effects (fire rate): active list + just-expired (for the fade-out)
   G.muzzle = 0; G.popAt = -9; G.llost = 0; G.lkills = 0; G.upgOffer = []; G.upgPick = -1;
@@ -559,6 +612,7 @@ window.addEventListener('keydown', e => {
   if (e.code === 'KeyF' && !e.repeat) { e.preventDefault(); toggleFullscreen(); return; }                 // F = fullscreen (not used by any other control)
   if (G.sumOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeSum(); return; }      // practice summary: Enter / Esc = dashboard
   if (G.boardOpen) { e.preventDefault(); if (e.code === 'Escape' || e.code === 'Enter' || e.code === 'NumpadEnter') closeBoard(); return; }      // scoreboard: Esc / Enter = back
+  if (G.customOpen) { e.preventDefault(); customKey(e); return; }                            // custom start: level screen / loadout screen
   if (G.diffOpen) {                                                                          // practice difficulty chooser: 1 / 2 / 3, Enter = Normal, Esc = back
     e.preventDefault();
     if (e.code === 'Escape') closeDiff();
@@ -638,7 +692,7 @@ window.addEventListener('dblclick', e => { if (e.target && e.target.closest && e
 
 // ===== SCREENS / STATE FLOW =====
 function setScreen(name) {
-  for (const id of ['start', 'how', 'diff', 'psum', 'board', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
+  for (const id of ['start', 'how', 'diff', 'psum', 'board', 'custom', 'loadout', 'pause', 'quit', 'over', 'complete']) $(id).classList.toggle('show', id === name);
   $('btnHomeP').textContent = G.practice ? 'End practice' : 'Home'; $('pSub').textContent = G.practice ? 'Practice is on hold.' : 'Your run is on hold.';
   if (name === 'start') refreshDash();
   $('btnPause').style.visibility = (G.state === 'play' || G.state === 'pause' || G.state === 'resume') ? 'visible' : 'hidden';
@@ -650,6 +704,7 @@ function startGame() {
   const now = performance.now();
   if (now - G.startAt < 300) return;                   // ignore double triggers (pointer + click, key repeat)
   G.startAt = now;
+  if (G.state === 'over' && G.custom && customCfg) { const c = customCfg; G.startAt = 0; startCustom(c); return; }      // Restart after a Custom run repeats the same start level and loadout
   Sound.unlock(); Sound.resume(); resetGame(); G.state = 'play'; clearDrag(); setScreen(null);
   Sound.play('start');                                  // bright 'ta-ta-taaa!' on every start and restart
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
@@ -687,11 +742,104 @@ function startPractice(d) {                             // Practice: endless, no
   Sound.unlock(); Sound.resume(); resetGame();
   G.practice = true; G.pDiff = d;
   startLevel(PRACTICE_LV[d]);                           // a fixed level-like mix (lvlProg is constant in practice: no ramp)
-  tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; G.tips = pickTips(1); G.tipT = 0; planPod();   // practice is for learning: the level-1 teaching tips run at the start
+  tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; bumpTipSeen = false; droneTipSeen = false; G.introD = -1e9; G.tips = pickTips(1); G.tipT = 0; planPod();   // practice is for learning: the level-1 teaching tips run at the start
   G.banner = 'PRACTICE \u00b7 ' + PRACTICE_NAME[d].toUpperCase(); G.bannerBoss = false; G.bannerT = 1.0;
   G.state = 'play'; clearDrag(); setScreen(null);
   Sound.play('start');
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+// ===== CUSTOM START (any level 1-20) + the 20-LEVEL CAP =====
+// Custom: choose a start level N (1-20). N = 1 is just a New Game. Otherwise the squad still starts with 1 soldier, and because the player skipped N-1 upgrade picks, a
+// LOADOUT screen lets them spend N-1 points (one per skipped level, capped by what the upgrades can actually hold) on the nine permanent upgrades, one point = one pick.
+// "Fill rest & start" / Enter / Auto-fill spreads leftover points in a balanced order. One-level utility picks are not part of the package. A Custom run is tagged
+// "Custom (from L<N>)" on the game-over screen and the scoreboard; it counts toward the session best and the scoreboard like any other run. Restart repeats the same
+// start + loadout; Home forgets it. No teaching tips from level 2 up (the level-1-only rule is unchanged).
+const MAX_LEVEL = 20, CUSTOM_QUICK = [1, 4, 6, 8, 12, 16, 20];
+const LOADOUT = [['fire', 'Faster fire', 'Fire rate +0.8/s'], ['dmg', 'Stronger shots', 'Shot damage +20%'], ['pierce', 'Piercing core', 'Shots pass +1 target'], ['spread', 'Wider spread', '+2 side shots'], ['shield', 'Shield', '+1 charge each level'],
+  ['steady', 'Steady squad', 'Bad gates hurt less'], ['charge', 'Faster boost', '1 fewer alien needed'], ['long', 'Longer boost', 'Boost lasts +2 s'], ['ready', 'Boost head start', '+1 pip each level']];
+const AUTO_ORDER = ['fire', 'dmg', 'shield', 'pierce', 'spread', 'steady', 'charge', 'long', 'ready'];
+const UPG_FIELDS = ['fireCap', 'fireRate', 'dmgMul', 'pierceN', 'wings', 'shieldMax', 'steady', 'boostNeed', 'boostLen', 'boostHead'];
+const CU = { level: 6, alloc: {}, buf: '', undo: null };
+let customCfg = null;                                     // the last Custom start (level + loadout), for Restart; memory only
+function loadoutFeasible(alloc) {                         // would every pick apply, in order? (checked on a scratch copy of the upgrade fields; the dashboard state is a fresh reset)
+  const keep = {}; for (const f of UPG_FIELDS) keep[f] = G[f];
+  let good = true;
+  for (const [k] of LOADOUT) { for (let i = 0; i < (alloc[k] || 0) && good; i++) { if (!UPGRADES[k].ok()) good = false; else UPGRADES[k].apply(); } if (!good) break; }
+  for (const f of UPG_FIELDS) G[f] = keep[f];
+  return good;
+}
+const allocSum = a => LOADOUT.reduce((n, [k]) => n + (a[k] || 0), 0);
+const canAdd = (a, k) => { const b = Object.assign({}, a); b[k] = (b[k] || 0) + 1; return loadoutFeasible(b); };
+function loadoutCapacity() { const a = {}; let more = true; while (more) { more = false; for (const [k] of LOADOUT) if (canAdd(a, k)) { a[k] = (a[k] || 0) + 1; more = true; } } return allocSum(a); }
+const loadoutPoints = n => Math.min(Math.max(0, n - 1), loadoutCapacity());
+function autoFill(a, left) {                              // balanced: one point at a time, round robin in AUTO_ORDER, skipping anything that is maxed
+  let guard = 0; while (left > 0 && guard++ < 400) { let any = false; for (const k of AUTO_ORDER) { if (left > 0 && canAdd(a, k)) { a[k] = (a[k] || 0) + 1; left--; any = true; } } if (!any) break; }
+  return a;
+}
+function openCustom() { if (G.state !== 'start') return; G.diffOpen = false; G.customOpen = 1; CU.buf = ''; renderCustom(); setScreen('custom'); }
+function closeCustom() { G.customOpen = 0; if (G.state === 'start') setScreen('start'); }
+function setCustomLevel(n) { CU.level = clamp(Math.round(n) || 1, 1, MAX_LEVEL); renderCustom(); }
+function renderCustom() {
+  $('cNum').textContent = CU.level; $('cMinus').disabled = CU.level <= 1; $('cPlus').disabled = CU.level >= MAX_LEVEL;
+  $('cQuick').innerHTML = CUSTOM_QUICK.map(n => '<button data-n="' + n + '"' + (n === CU.level ? ' class="sel"' : '') + '>' + n + '</button>').join('');
+  const P = loadoutPoints(CU.level);
+  $('cInfo').textContent = CU.level === 1 ? 'Same as New Game: level 1, 1 soldier.' : 'Start level ' + CU.level + ' with 1 soldier and ' + P + ' upgrade point' + (P === 1 ? '' : 's') + ' to spend.';
+  $('btnCNext').textContent = CU.level === 1 ? 'Start' : 'Choose upgrades';
+}
+function customNext() {
+  if (G.customOpen !== 1) return;
+  if (CU.level === 1) { G.customOpen = 0; startGame(); return; }
+  CU.alloc = {}; CU.undo = null; G.customOpen = 2; renderLoadout(); setScreen('loadout');
+}
+function renderLoadout() {
+  const P = loadoutPoints(CU.level), left = P - allocSum(CU.alloc);
+  $('lSub').innerHTML = 'Level ' + CU.level + ' &middot; ' + (left > 0 ? '<b>' + left + '</b> of ' + P + ' points left' : 'all ' + P + ' points spent');
+  $('lRows').innerHTML = LOADOUT.map(([k, name, desc], i) => { const c = CU.alloc[k] || 0, add = left > 0 && canAdd(CU.alloc, k);
+    return '<div class="lr"><button class="la' + (c ? ' on' : '') + '" data-k="' + k + '"' + (add ? '' : ' disabled') + '><i>' + (i + 1) + '</i><span><b>' + name + '</b>' + desc + '</span><u>' + (c ? '\u00d7' + c : '') + '</u></button>'
+      + '<button class="lm" data-k="' + k + '" aria-label="Remove one ' + name + '"' + (c ? '' : ' disabled') + '>\u2212</button></div>'; }).join('');
+  $('btnLStart').textContent = left > 0 ? 'Fill rest & start' : 'Start level ' + CU.level; $('btnLAuto').disabled = left <= 0;
+}
+function loadoutAdd(k, d) {
+  if (G.customOpen !== 2) return; const c = CU.alloc[k] || 0;
+  if (d > 0) { if (allocSum(CU.alloc) < loadoutPoints(CU.level) && canAdd(CU.alloc, k)) { CU.alloc[k] = c + 1; CU.undo = k; } }
+  else if (c > 0) CU.alloc[k] = c - 1;
+  renderLoadout();
+}
+function loadoutUndo() { const k = (CU.undo && CU.alloc[CU.undo]) ? CU.undo : LOADOUT.map(x => x[0]).reverse().find(q => CU.alloc[q]); if (k) loadoutAdd(k, -1); }
+function loadoutStart() {
+  if (G.customOpen !== 2) return;
+  const P = loadoutPoints(CU.level), left = P - allocSum(CU.alloc); if (left > 0) autoFill(CU.alloc, left);
+  startCustom({ level: CU.level, alloc: Object.assign({}, CU.alloc) });
+}
+function startCustom(cfg) {
+  const now = performance.now();
+  if (now - G.startAt < 300) return;
+  G.startAt = now; const n = clamp(cfg.level | 0, 1, MAX_LEVEL);
+  Sound.unlock(); Sound.resume(); resetGame();           // a clean run: 1 soldier, default upgrades
+  for (const [k] of LOADOUT) for (let i = 0; i < (cfg.alloc[k] || 0); i++) if (UPGRADES[k].ok()) UPGRADES[k].apply();
+  customCfg = { level: n, alloc: Object.assign({}, cfg.alloc) };
+  startLevel(n); G.custom = n > 1 ? n : 0;               // startLevel(n > 1): no teaching tips, 1 soldier, shield / boost head start from the loadout
+  G.state = 'play'; clearDrag(); setScreen(null);
+  Sound.play('start');
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+function customKey(e) {
+  const enter = e.code === 'Enter' || e.code === 'NumpadEnter';
+  if (G.customOpen === 2) {
+    if (e.code === 'Escape') { G.customOpen = 1; renderCustom(); setScreen('custom'); }
+    else if (enter) { if (!e.repeat) loadoutStart(); }
+    else if (e.code === 'Backspace' || e.code === 'Delete') loadoutUndo();
+    else if (e.code === 'KeyA') { const left = loadoutPoints(CU.level) - allocSum(CU.alloc); if (left > 0) { autoFill(CU.alloc, left); renderLoadout(); } }
+    else { const m = /^(?:Digit|Numpad)([1-9])$/.exec(e.code); if (m) loadoutAdd(LOADOUT[+m[1] - 1][0], 1); }
+    return;
+  }
+  if (e.code === 'Escape') closeCustom();
+  else if (enter) { if (!e.repeat) customNext(); }
+  else if (e.code === 'ArrowLeft' || e.code === 'ArrowDown') { CU.buf = ''; setCustomLevel(CU.level - 1); }
+  else if (e.code === 'ArrowRight' || e.code === 'ArrowUp') { CU.buf = ''; setCustomLevel(CU.level + 1); }
+  else if (e.code === 'Home') { CU.buf = ''; setCustomLevel(1); } else if (e.code === 'End') { CU.buf = ''; setCustomLevel(MAX_LEVEL); }
+  else if (e.code === 'Backspace') { CU.buf = CU.buf.slice(0, -1); if (CU.buf) setCustomLevel(+CU.buf); }
+  else { const m = /^(?:Digit|Numpad)([0-9])$/.exec(e.code); if (m) { let b = CU.buf + m[1]; if (b.length > 2 || +b > MAX_LEVEL) b = m[1]; CU.buf = b; if (+b >= 1) setCustomLevel(+b); } }
 }
 function openSum(snap) {                                 // practice summary: lightweight, no score, nothing recorded
   G.sumOpen = true; $('sName').textContent = snap.name + ' \u00b7 ' + fmtTime(snap.t);
@@ -715,15 +863,17 @@ const boardCmp = (a, b) => b.score - a.score || b.level - a.level || a.id - b.id
 const boardSorted = () => board.slice().sort(boardCmp);
 function shortCause(d) {                                  // a few words for the table (the game-over screen has the long version)
   if (!d) return 'Wiped out';
+  if (d.c === 'victory') return 'Victory';
   const D = d.d || {};
   if (d.c === 'boss') return D.atk === 'beam' ? 'Boss beam' : D.atk === 'mines' ? 'Boss rings' : 'Boss slam';
-  if (d.c === 'hole') return 'Pit'; if (d.c === 'gate') return 'Bad gate'; if (d.c === 'crate') return 'Crate'; if (d.c === 'barrel') return 'Barrel';
+  if (d.c === 'hole') return 'Pit'; if (d.c === 'gate') return 'Bad gate'; if (d.c === 'crate') return 'Crate'; if (d.c === 'barrel') return 'Barrel'; if (d.c === 'bump') return 'Road bump';
   if (d.c === 'enemy') { if (D.minion) return 'Minions'; if (D.wall) return 'Enemy wall'; const T = { grunt: 'Grunt', swarm: 'Swarm', tank: 'Tank', armor: 'Armored', hopper: 'Hopper', alien: 'Alien' }; return T[D.type] || 'Enemy'; }
   return 'Wiped out';
 }
 function recordRun(score, cause) {
   const d = new Date(), p2 = n => (n < 10 ? '0' : '') + n;
   const e = { id: ++boardSeq, score: Math.max(0, Math.floor(score)), level: G.level, peak: G.rs.peak, acc: accOf(G.rs), aliens: G.rs.aliens, t: G.t, cause, at: p2(d.getHours()) + ':' + p2(d.getMinutes()) };
+  if (G.custom) e.custom = G.custom;                          // Custom run: tagged on the board
   board.push(e); return e;
 }
 const rankText = e => { const n = board.length; return n === 1 ? 'First run this session' : '<b>#' + (boardSorted().indexOf(e) + 1) + '</b> of ' + n + ' this session'; };
@@ -731,7 +881,7 @@ function boardRow(e, rank, latest, best) {
   return '<li class="br' + (latest ? ' latest' : '') + (best ? ' best' : '') + '"><span class="rk">' + rank + '</span>'
     + '<b class="sc">' + e.score + (latest ? '<em class="tg tn">NEW</em>' : '') + (best ? '<em class="tg tb">BEST</em>' : '') + '</b>'
     + '<span class="lv">L' + e.level + '</span>'
-    + '<span class="sec"><span class="c pk" data-l="Peak">' + e.peak + '</span><span class="c ac" data-l="Acc.">' + (e.acc === null ? '\u2014' : e.acc + '%') + '</span><span class="c al" data-l="Aliens">' + e.aliens + '</span><span class="c tm" data-l="Time">' + fmtTime(e.t) + '</span><span class="c df">' + e.cause + '</span></span>'
+    + '<span class="sec"><span class="c pk" data-l="Peak">' + e.peak + '</span><span class="c ac" data-l="Acc.">' + (e.acc === null ? '\u2014' : e.acc + '%') + '</span><span class="c al" data-l="Aliens">' + e.aliens + '</span><span class="c tm" data-l="Time">' + fmtTime(e.t) + '</span><span class="c df">' + (e.custom ? '<em class="tg tc">CUSTOM L' + e.custom + '</em>' : '') + e.cause + '</span></span>'
     + '<span class="at">' + e.at + '</span></li>';
 }
 function renderBoard() {
@@ -844,6 +994,17 @@ $('btnPractice').addEventListener('click', e => { e.currentTarget.blur(); openDi
 $('btnSumHome').addEventListener('click', e => { e.currentTarget.blur(); closeSum(); });
 $('btnSumAgain').addEventListener('click', e => { e.currentTarget.blur(); closeSum(); openDiff(); });
 $('btnDiffBack').addEventListener('click', e => { e.currentTarget.blur(); closeDiff(); });
+$('btnCustom').addEventListener('click', e => { e.currentTarget.blur(); openCustom(); });
+$('btnCBack').addEventListener('click', e => { e.currentTarget.blur(); closeCustom(); });
+$('btnCNext').addEventListener('click', e => { e.currentTarget.blur(); customNext(); });
+$('cMinus').addEventListener('click', e => { e.currentTarget.blur(); CU.buf = ''; setCustomLevel(CU.level - 1); });
+$('cPlus').addEventListener('click', e => { e.currentTarget.blur(); CU.buf = ''; setCustomLevel(CU.level + 1); });
+$('cQuick').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && G.customOpen === 1) { CU.buf = ''; setCustomLevel(+b.dataset.n); } });
+$('lRows').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && !b.disabled) loadoutAdd(b.dataset.k, b.classList.contains('lm') ? -1 : 1); });
+$('btnLStart').addEventListener('click', e => { e.currentTarget.blur(); loadoutStart(); });
+$('btnLAuto').addEventListener('click', e => { e.currentTarget.blur(); const left = loadoutPoints(CU.level) - allocSum(CU.alloc); if (left > 0) { autoFill(CU.alloc, left); renderLoadout(); } });
+$('btnLBack').addEventListener('click', e => { e.currentTarget.blur(); G.customOpen = 1; renderCustom(); setScreen('custom'); });
+
 $('dCards').addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && G.diffOpen) startPractice(+b.dataset.d); });
 $('btnHowBack').addEventListener('click', e => { e.currentTarget.blur(); closeHow(); });
 for (const id of ['btnBoard', 'btnBoardO']) $(id).addEventListener('click', e => { e.currentTarget.blur(); openBoard(); });
@@ -862,7 +1023,67 @@ $('cards').addEventListener('click', e => { const b = e.target.closest && e.targ
 // ===== PROJECTION + ROAD =====
 const sc = z => FOCAL / (FOCAL + z);          // perspective scale at depth z
 const gy = s => L.hy + (L.py - L.hy) * s;     // ground y at scale s
-const gx = (x, s) => L.cx + x * L.rh * s;     // screen x of road-x at scale s
+// ===== ROAD CURVES (F3) =====
+// The road bends AUTOMATICALLY and only in the screen projection: every world point (lane x, depth z) is drawn at gx(x, s) = centre + (x + bend(z)) * rh * s, where bend(z) is a
+// lateral road offset (in road units) that is 0 at the squad (z <= 0) and grows with depth, so the near road stays put and the far road swings first. Lane coordinates, collisions,
+// aiming, spawning and every other gameplay number never see it. gx is the ONE world->screen x mapping (road, curbs, dashes, fences, scenery, units, shots, particles, telegraphs).
+// The offset comes from a curvature schedule driven by ROAD DISTANCE (G.ldist), never by the clock: k(d) = sign * mag * A * ease(d), bend(z) = double integral of k(ldist + u) over
+// 0..z (computed once per frame into a 5-unit table; beyond it the road simply carries on straight in the direction it has reached, so the horizon meets the road at a shifted vanishing point
+// instead of snapping back). Segments use smoothstep ramps, never overlap and
+// are generated from their own seeded generator (gameplay randomness is untouched, so curves on / off give identical outcomes). Level 1: nothing visible in its first 25% (the one gentle bend starts 110+ units after that mark, so it only appears ahead once that distance is reached);
+// later levels start after 120-200 units; no curve starts in the last 150 units of a level, so the road is straight before the boss, through the boss and the flag run, and again when
+// the next level starts. Amplitude A is limited per screen (even a bend held through the whole view moves the vanishing point by at most 36% of the screen width, a typical one ~20%; Reduced effects halves it).
+// Practice: gentle, endless.
+const BEND = { on: false, a: new Float32Array(34), inv: 0.2, zT: 165, wT: 0, dT: 0, A0: 0.0008, n: 10 };
+let CURVES = true;
+const setCurves = v => { CURVES = !!v; };
+function bendW(z) {                                    // lateral road offset at depth z (road units)
+  if (z <= 0) return 0;
+  if (z >= BEND.zT) return BEND.wT + BEND.dT * (z - BEND.zT);
+  const f = z * BEND.inv, i = f | 0; return BEND.a[i] + (BEND.a[i + 1] - BEND.a[i]) * (f - i);
+}
+const gx = (x, s) => L.cx + x * L.rh * s + (BEND.on ? bendPx(s) : 0);     // screen x of road-x at scale s (follows the bend)
+const bendPx = s => { const se = s > 1e-4 ? s : 1e-4; return bendW(FOCAL / se - FOCAL) * L.rh * se; };     // the bend's pixel shift at scale s (at the horizon: the vanishing-point shift)
+function trace(x, sa, sb, h, first, n) {              // a line along road-x from scale sa to sb (raised by h): 2 points on a straight road, a polyline while it bends
+  if (n === undefined) n = BEND.on ? (sb < 1e-4 || sa < 1e-4 ? BEND.n : Math.max(1, Math.min(BEND.n, Math.ceil(Math.abs(FOCAL / sb - FOCAL / sa) / 9)))) : 1;
+  for (let k = 0; k <= n; k++) {
+    const s = sa + (sb - sa) * k / n, X = gx(x, s), Y = gy(s) - h * L.rh * s;
+    if (k === 0 && first) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  }
+}
+const SMOOTH = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
+function curvePlan(level, practice) {                  // the deterministic curve schedule of one level (own seeded generator: the gameplay random numbers are never touched)
+  const r = mulb((0x9E3779B1 ^ Math.imul(level + 1, 0x85EBCA6B) ^ (practice ? 0x5bd1e995 : 0)) >>> 0), first = level === 1 && !practice;
+  return { r, segs: [], d: first ? 1100 * 0.25 + 110 + r() * 60 : 120 + r() * 80, last: r() < 0.5 ? -1 : 1, limit: practice ? Infinity : Math.min(1500, 1100 + 80 * (level - 1)) - 150, first, practice, gentle: first ? 0.6 : practice ? 0.7 : level <= 3 ? 0.8 : 1 };
+}
+function extendCurves(P, upTo) {
+  while (P.d < upTo) {
+    const len = (P.first ? 300 : 240) + P.r() * 160, mag = (0.5 + P.r() * 0.5) * P.gentle, sign = P.r() < 0.7 ? -P.last : P.last, gap = 110 + P.r() * 180;
+    if (P.d + len > P.limit) { P.d = Infinity; return; }                           // nothing may start (or still be running) in the last 150 units of the level
+    P.segs.push({ d0: P.d, d1: P.d + len, r: len * 0.3, k: sign * mag }); P.last = sign; P.d += len + gap;
+  }
+}
+function curvK(P, d) {                                // schedule value at road distance d (units: 1 = the amplitude A)
+  for (const s of P.segs) {
+    if (d <= s.d0 || d >= s.d1) continue;
+    const u = d - s.d0, w = s.d1 - s.d0; return s.k * (u < s.r ? SMOOTH(u / s.r) : u > w - s.r ? SMOOTH((w - u) / s.r) : 1);
+  }
+  return 0;
+}
+function updateBend() {                                // once per frame, before anything is drawn
+  const P = G.curve, B = BEND;
+  if (!CURVES || !P || G.phase !== 'run' || G.state === 'start') { B.on = false; return; }
+  const d0 = G.ldist || 0; extendCurves(P, d0 + B.zT + 20);
+  if (P.practice && P.segs.length > 3 && P.segs[0].d1 < d0 - 50) P.segs.shift();                         // endless practice: forget old segments
+  const A = B.A0 * (FX.reduced ? 0.5 : 1), n = 33, dz = 1 / B.inv;
+  let dsl = 0, w = 0, any = false, kPrev = curvK(P, d0) * A;
+  B.a[0] = 0;
+  for (let i = 1; i <= n; i++) {
+    const k1 = curvK(P, d0 + i * dz) * A, dsl1 = dsl + (kPrev + k1) * 0.5 * dz;                          // slope = integral of k, offset = integral of slope
+    w += (dsl + dsl1) * 0.5 * dz; dsl = dsl1; kPrev = k1; B.a[i] = w; if (Math.abs(w) > 1e-3) any = true;
+  }
+  B.wT = B.a[n - 1] + (B.a[n] - B.a[n - 1]) * (B.zT - (n - 1) * dz) / dz; B.dT = dsl; B.on = any;
+}
 const STARS = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + 0.4, p: Math.random() * 6 }));
 const CITY = [];
 (function buildCity() {
@@ -1122,7 +1343,8 @@ function sceneDrawGround() {                                                    
   const gR = ctx.createLinearGradient(0, hy, 0, H);
   gR.addColorStop(0, 'rgba(' + col + ',0)'); gR.addColorStop(0.4, 'rgba(' + col + ',.12)'); gR.addColorStop(1, 'rgba(' + col + ',.36)');
   ctx.strokeStyle = gR; ctx.lineWidth = 1; ctx.beginPath();
-  for (let x = 1.1; x < 16; x += x < 4 ? 0.5 : 0.9) { const xb = L.rh * b * x; ctx.moveTo(L.cx - xb, H); ctx.lineTo(L.cx, hy); ctx.moveTo(L.cx + xb, H); ctx.lineTo(L.cx, hy); }
+  if (BEND.on) { for (let x = 1.1; x < 16; x += x < 4 ? 0.5 : 1.8) { trace(-x, b, 0, 0, true, 5); trace(x, b, 0, 0, true, 5); } }     // the floor grid bends with the road (fewer, coarser rays while it does)
+  else for (let x = 1.1; x < 16; x += x < 4 ? 0.5 : 0.9) { const xb = L.rh * b * x; ctx.moveTo(L.cx - xb, H); ctx.lineTo(L.cx, hy); ctx.moveTo(L.cx + xb, H); ctx.lineTo(L.cx, hy); }
   ctx.stroke();
   const i0 = Math.floor(G.scroll / SEG) - 1, i1 = i0 + Math.ceil(ZMAX / SEG) + 3;
   for (const [zLo, zHi, aN, aB, lw] of [[-9, 20, 0.26, 0.55, 1.6], [20, 55, 0.16, 0.34, 1.1], [55, 999, 0.08, 0.2, 1]]) {
@@ -1138,8 +1360,8 @@ function sceneDrawGround() {                                                    
   ctx.globalCompositeOperation = 'source-over';
 }
 function gquad(xa, xb, z0, z1) {                                                // a flat quad on the floor between two lateral positions and two depths
-  const s0 = sc(z0), s1 = sc(z1), y0 = gy(s0), y1 = gy(s1);
-  ctx.beginPath(); ctx.moveTo(gx(xa, s0), y0); ctx.lineTo(gx(xb, s0), y0); ctx.lineTo(gx(xb, s1), y1); ctx.lineTo(gx(xa, s1), y1); ctx.closePath();
+  const s0 = sc(z0), s1 = sc(z1);
+  ctx.beginPath(); trace(xa, s0, s1, 0, true); trace(xb, s1, s0, 0, false); ctx.closePath();             // (a polygon whose long sides follow the bend)
 }
 function sceneDrawObjects() {                                                    // far to near, all before the road so the road always wins
   const S = SCN.spr; if (!S || !SCN.inited) return;
@@ -1199,10 +1421,10 @@ function sceneDrawObjects() {                                                   
 function sceneDrawFence() {                                                      // low holographic barrier fence along each road edge, just outside the curb (never over the road)
   const b = L.sb, P = SCN.pal, hF = 0.17, xF = 1.25, sFar = sc(ZMAX), red = FX.reduced, zb = FOCAL / b - FOCAL - 0.05;
   for (const side of [-1, 1]) {
-    const col = side < 0 ? P.a : P.b, x = side * xF, x0 = gx(x, b), y0 = gy(b), x1 = gx(x, sFar), y1 = gy(sFar);
-    ctx.fillStyle = hexA(col, 0.12); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.lineTo(x1, y1 - hF * L.rh * sFar); ctx.lineTo(x0, y0 - hF * L.rh * b); ctx.fill();
-    ctx.strokeStyle = hexA(col, 0.9); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x0, y0 - hF * L.rh * b); ctx.lineTo(x1, y1 - hF * L.rh * sFar); ctx.stroke();      // top rail
-    ctx.strokeStyle = hexA(col, 0.45); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();                                        // ground rail
+    const col = side < 0 ? P.a : P.b, x = side * xF;
+    ctx.fillStyle = hexA(col, 0.12); ctx.beginPath(); trace(x, b, sFar, 0, true); trace(x, sFar, b, hF, false); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = hexA(col, 0.9); ctx.lineWidth = 1.6; ctx.beginPath(); trace(x, b, sFar, hF, true); ctx.stroke();      // top rail
+    ctx.strokeStyle = hexA(col, 0.45); ctx.lineWidth = 1; ctx.beginPath(); trace(x, b, sFar, 0, true); ctx.stroke();                                        // ground rail
     const off = G.scroll % 4; ctx.strokeStyle = hexA(col, 0.7); ctx.lineWidth = 1; ctx.beginPath();
     for (let z = -off; z < ZMAX; z += 4) { if (z < zb) continue; const s = sc(z), X = gx(x, s), Y = gy(s); ctx.moveTo(X, Y); ctx.lineTo(X, Y - hF * L.rh * s); }          // posts scroll with the road
     ctx.stroke();
@@ -1264,10 +1486,9 @@ function drawRoad() {
   sceneDrawGround(); sceneDrawObjects();                                                // neon grid floor + roadside world (the road surface is drawn over them)
   let g;
 
-  const xl = gx(-1, b), xr = gx(1, b);                                                  // road surface
-  g = ctx.createLinearGradient(0, hy, 0, H);
+  g = ctx.createLinearGradient(0, hy, 0, H);                                            // road surface
   g.addColorStop(0, '#4a1a8c'); g.addColorStop(0.35, '#2b1262'); g.addColorStop(1, '#170a3a');
-  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(xl, H); ctx.lineTo(xr, H); ctx.lineTo(L.cx, hy); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = g; ctx.beginPath(); trace(-1, b, 0, 0, true); trace(1, 0, b, 0, false); ctx.closePath(); ctx.fill();
   let z0 = -off - SEG * 2;                                                              // subtle moving bands
   ctx.fillStyle = 'rgba(255,255,255,.035)';
   for (let j = 0; z0 < ZMAX; j++, z0 += SEG) {
@@ -1278,9 +1499,9 @@ function drawRoad() {
   }
   const pl = laneX(playerLane()), hl = LANE_W / 2, sn = sc(Math.max(zb, G.pz - 2)), sf = sc(60);   // highlight = the lane that counts for gates, crates and enemies
   g = ctx.createLinearGradient(0, gy(sn), 0, gy(sf)); g.addColorStop(0, 'rgba(25,240,255,.16)'); g.addColorStop(1, 'rgba(25,240,255,0)');
-  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(gx(pl - hl, sn), gy(sn)); ctx.lineTo(gx(pl + hl, sn), gy(sn)); ctx.lineTo(gx(pl + hl, sf), gy(sf)); ctx.lineTo(gx(pl - hl, sf), gy(sf)); ctx.fill();
+  ctx.fillStyle = g; ctx.beginPath(); trace(pl - hl, sn, sf, 0, true); trace(pl + hl, sf, sn, 0, false); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = 'rgba(25,240,255,.45)'; ctx.lineWidth = 1.5; ctx.beginPath();                   // lane edges + moving chevrons
-  for (const ex of [pl - hl, pl + hl]) { ctx.moveTo(gx(ex, sn), gy(sn)); ctx.lineTo(gx(ex, sf), gy(sf)); }
+  for (const ex of [pl - hl, pl + hl]) trace(ex, sn, sf, 0, true);
   ctx.stroke();
   ctx.strokeStyle = 'rgba(180,255,255,.38)'; ctx.lineWidth = Math.max(1.5, L.rh * 0.014); ctx.beginPath();
   for (let k = 0; k < 5; k++) {
@@ -1303,8 +1524,8 @@ function drawRoad() {
   for (const [side, c1, c2, c3] of [[-1, 'rgba(25,240,255,.14)', 'rgba(25,240,255,.4)', '#b6fbff'], [1, 'rgba(255,43,214,.14)', 'rgba(255,43,214,.4)', '#ffb3f4']]) {
     const xe = gx(side, b), xo = gx(side * 1.18, b);                                    // glowing edge + outer curb
     g = ctx.createLinearGradient(xe, 0, xo, 0); g.addColorStop(0, c2); g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(xe, H); ctx.lineTo(xo, H); ctx.lineTo(L.cx, hy); ctx.lineTo(L.cx, hy); ctx.closePath(); ctx.fill();
-    for (const [w, c] of [[16, c1], [6, c2], [2.5, c3]]) { ctx.lineWidth = w; ctx.strokeStyle = c; ctx.beginPath(); ctx.moveTo(xe, H); ctx.lineTo(L.cx, hy); ctx.stroke(); }
+    ctx.fillStyle = g; ctx.beginPath(); trace(side, b, 0, 0, true); trace(side * 1.18, 0, b, 0, false); ctx.closePath(); ctx.fill();
+    for (const [w, c] of [[16, c1], [6, c2], [2.5, c3]]) { ctx.lineWidth = w; ctx.strokeStyle = c; ctx.beginPath(); trace(side, b, 0, 0, true); ctx.stroke(); }
   }
   sceneDrawFence();
   for (let z = -off; z < ZMAX; z += SEG * 2) {                                           // neon side pylons
@@ -1361,7 +1582,7 @@ function setSquad(n) {
   if (d < 0) noteLoss(-d); else { if (n > G.rs.peak) G.rs.peak = n; if (n > G.ls.peak) G.ls.peak = n; }
   if (n <= 0) { G.defeat = { c: G.cause || 'other', d: G.causeD }; G.cause = G.causeD = null; gameOver(); }
 }
-function drawSoldier(X, Y, k, ph, tA, tCol, lift, shS) {
+function drawSoldier(X, Y, k, ph, tA, tCol, lift, shS, mode) {            // mode: undefined = normal, 1 = cheering (flag run), 2 = flag bearer
   const bob = Math.abs(Math.sin(ph)) * k * 0.12, sw = Math.sin(ph) * k * 0.25, ol = Math.max(1, k * 0.13);
   const sh = shS === undefined ? 1 : shS;                                     // in the air the shadow stays on the ground, smaller and lighter
   ctx.fillStyle = 'rgba(0,0,0,' + 0.45 * sh + ')'; ctx.beginPath(); ctx.ellipse(X, Y, k * 0.95 * sh, k * 0.28 * sh, 0, 0, 6.2832); ctx.fill();
@@ -1377,10 +1598,32 @@ function drawSoldier(X, Y, k, ph, tA, tCol, lift, shS) {
   ctx.fillStyle = '#d6f7ff'; ctx.beginPath(); ctx.arc(X, Y - k * 2.4, k * 0.56, 0, 6.2832); ctx.fill(); ctx.stroke();    // helmet
   ctx.fillStyle = '#0a1a3a'; ctx.fillRect(X - k * 0.42, Y - k * 2.52, k * 0.84, k * 0.3);
   ctx.fillStyle = '#19f0ff'; ctx.fillRect(X - k * 0.42, Y - k * 2.46, k * 0.84, k * 0.1);
-  ctx.fillStyle = '#2a3552'; ctx.fillRect(X + k * 0.5, Y - k * 2.3, k * 0.3, k * 1.25); ctx.strokeRect(X + k * 0.5, Y - k * 2.3, k * 0.3, k * 1.25);   // gun
-  ctx.fillStyle = '#ffd24d'; ctx.fillRect(X + k * 0.44, Y - k * 2.46, k * 0.42, k * 0.22);
+  if (!mode) {
+    ctx.fillStyle = '#2a3552'; ctx.fillRect(X + k * 0.5, Y - k * 2.3, k * 0.3, k * 1.25); ctx.strokeRect(X + k * 0.5, Y - k * 2.3, k * 0.3, k * 1.25);   // gun
+    ctx.fillStyle = '#ffd24d'; ctx.fillRect(X + k * 0.44, Y - k * 2.46, k * 0.42, k * 0.22);
+  } else {                                                                  // flag run: guns away, arms up (the bearer holds the pole with the right hand)
+    const w = Math.sin(ph * 0.9) * k * 0.25, up = Y - k * 3.0;
+    ctx.lineCap = 'round'; ctx.beginPath();
+    ctx.moveTo(X - k * 0.62, Y - k * 1.8); ctx.lineTo(X - k * 1.15 - w * 0.4, up + w);
+    if (mode === 1) { ctx.moveTo(X + k * 0.62, Y - k * 1.8); ctx.lineTo(X + k * 1.15 + w * 0.4, up - w); } else { ctx.moveTo(X + k * 0.62, Y - k * 1.8); ctx.lineTo(X + k * 0.95, Y - k * 2.55); }
+    ctx.strokeStyle = '#04101c'; ctx.lineWidth = k * 0.62; ctx.stroke(); ctx.strokeStyle = '#17d4ff'; ctx.lineWidth = k * 0.4; ctx.stroke(); ctx.lineCap = 'butt';
+    ctx.fillStyle = '#eaffff'; ctx.beginPath(); ctx.arc(X - k * 1.15 - w * 0.4, up + w, k * 0.24, 0, 6.2832); ctx.fill();
+    if (mode === 1) { ctx.beginPath(); ctx.arc(X + k * 1.15 + w * 0.4, up - w, k * 0.24, 0, 6.2832); ctx.fill(); }
+  }
   ctx.lineJoin = 'miter';
   if (tA > 0.02) { ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = tCol + tA + ')'; ctx.fillRect(X - k * 0.95, Y - k * 2.95, k * 1.9, k * 3); ctx.globalCompositeOperation = 'source-over'; }
+}
+function drawFlag(xh, yh, k, dir) {                        // checkered flag on a pole held at (xh, yh): a wavy cloth (6 columns x 3 rows), black squares in one path
+  const poleTop = yh - k * 6.4, W = k * 4.8, Hh = k * 3.0, N = 6, R3 = 3, t = G.t * 9;
+  ctx.strokeStyle = '#04101c'; ctx.lineWidth = Math.max(3, k * 0.34); ctx.beginPath(); ctx.moveTo(xh, yh + k * 0.5); ctx.lineTo(xh, poleTop - k * 0.2); ctx.stroke();
+  ctx.strokeStyle = '#e6edff'; ctx.lineWidth = Math.max(1.8, k * 0.18); ctx.stroke();
+  const px = i => xh + dir * W * i / N, py = (i, r) => poleTop + k * 0.1 + Math.sin(t - i * 0.85) * k * 0.3 * (i / N) + Hh * r / R3;
+  ctx.beginPath(); for (let i = 0; i <= N; i++) ctx.lineTo(px(i), py(i, 0)); for (let i = N; i >= 0; i--) ctx.lineTo(px(i), py(i, R3));
+  ctx.closePath(); ctx.fillStyle = '#ffffff'; ctx.fill();
+  ctx.fillStyle = '#10121c'; ctx.beginPath();
+  for (let i = 0; i < N; i++) for (let r = 0; r < R3; r++) if (((i + r) & 1) === 0) { ctx.moveTo(px(i), py(i, r)); ctx.lineTo(px(i + 1), py(i + 1, r)); ctx.lineTo(px(i + 1), py(i + 1, r + 1)); ctx.lineTo(px(i), py(i, r + 1)); ctx.closePath(); }
+  ctx.fill();
+  ctx.lineWidth = Math.max(1, k * 0.1); ctx.strokeStyle = '#04101c'; ctx.beginPath(); for (let i = 0; i <= N; i++) ctx.lineTo(px(i), py(i, 0)); for (let i = N; i >= 0; i--) ctx.lineTo(px(i), py(i, R3)); ctx.closePath(); ctx.stroke();
 }
 function drawPlayer() {
   const n = Math.min(G.squad, MAX_VISUAL); if (n <= 0) return;
@@ -1400,6 +1643,7 @@ function drawPlayer() {
   const ja = G.t - G.joinAt, joining = ja < 0.45;
   const air = jumpHeight(), airU = G.jumpT >= 0 ? G.jumpT / JUMP_T : 0, shS = 1 - 0.45 * (air / JUMP_H), lift0 = air * L.rh * sp;
   const lq = G.t - G.landAt, sqa = lq >= 0 && lq < 0.18 ? 1 - lq / 0.18 : 0;                    // short landing squash
+  const flagRun = G.phase === 'finish'; let flagX = 0, flagY = 0, flagK = 0;                       // the flag run (after the boss)
   const scX = 1 + 0.16 * sqa - 0.05 * Math.sin(Math.PI * airU), scY = 1 - 0.22 * sqa + 0.08 * Math.sin(Math.PI * airU);   // stretch while rising / falling
   for (let r = rows - 1; r >= 0; r--) {                    // back rows first
     const c = Math.min(ROW_N, n - r * ROW_N), s = sc(G.pz + r * ROW_DZ), Y = gy(s), k = L.rh * s * 0.062;
@@ -1409,11 +1653,15 @@ function drawPlayer() {
         const q = 1 - Math.pow(1 - ja / 0.45, 3);
         Yy -= (1 - q) * k * 9; X += (gx(G.px, s) - X) * (1 - q); ctx.globalAlpha = q;
       }
-      const lift = air * L.rh * s;
-      if (sqa > 0 || air > 0) { ctx.save(); ctx.translate(X, Yy); ctx.scale(scX, scY); drawSoldier(0, 0, k, ph + (r * 3 + j) * 1.7, tA, tCol, lift / scY, shS); ctx.restore(); }
-      else drawSoldier(X, Yy, k, ph + (r * 3 + j) * 1.7, tA, tCol);
+      const lift = air * L.rh * s, bearer = flagRun && r === 0 && j === ((c - 1) >> 1);
+      const md = flagRun ? (bearer ? 2 : 1) : undefined;
+      if (flagRun && !FX.reduced) Yy -= Math.abs(Math.sin(G.t * 7 + (r * 3 + j) * 1.3)) * k * 0.5;                    // little victory hops
+      if (bearer) { flagX = X; flagY = Yy; flagK = k; }
+      if (sqa > 0 || air > 0) { ctx.save(); ctx.translate(X, Yy); ctx.scale(scX, scY); drawSoldier(0, 0, k, ph + (r * 3 + j) * 1.7, tA, tCol, lift / scY, shS, md); ctx.restore(); }
+      else drawSoldier(X, Yy, k, ph + (r * 3 + j) * 1.7, tA, tCol, undefined, undefined, md);
       ctx.globalAlpha = 1;
     }
+    if (flagK && r === 0) drawFlag(flagX + flagK * 0.95, flagY - flagK * 2.55 - air * L.rh * s, flagK, flagX > L.cx + 8 ? -1 : 1);       // the flag over the front row
     topY = Math.min(topY, Y - k * 2.95 - air * L.rh * s);
   }
   if (G.shield > 0) {                                                          // shield bubble (one ring per charge)
@@ -1431,12 +1679,13 @@ function drawPlayer() {
   }
   const sha = G.t - G.shieldHitAt;
   if (sha < 0.25) { ctx.strokeStyle = 'rgba(255,255,255,' + (1 - sha / 0.25) + ')'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(X0, (topY + Y0 - lift0) / 2, L.rh * sp * 0.3, (Y0 - lift0 - topY) / 2 + k0 * 2, 0, 0, 6.2832); ctx.stroke(); }
-  if (G.muzzle > 0) {                                                           // one small additive flash at the gun height; radius capped, label drawn after it
+  if (G.muzzle > 0 && !flagRun) {                                               // one small additive flash at the gun height; radius capped, label drawn after it
     const r = Math.min(k0 * 0.24, F(4.5)) * (FX.reduced ? 0.65 : 1), my = Y0 - lift0 - k0 * 1.95, mx = X0 + k0 * 0.82;
     ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = G.muzzle * (FX.reduced ? 0.3 : 0.7); ctx.fillStyle = TIER_COL[weaponTier()][2];
     ctx.beginPath(); ctx.ellipse(mx, my, r, r * 0.65, 0, 0, 6.2832); ctx.fill();
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
   }
+  if (flagRun) return;                                                         // flag run: no count badge (the pole stands there; the HUD still shows the squad size)
   const full = G.squad >= SQUAD_MAX, pop = 1 + 0.35 * Math.max(0, 1 - (G.t - G.popAt) / 0.25);   // number above the squad
   const size = clamp(L.rh * 0.2 * Math.max(sp, 0.8), 20, 34) * pop, label = full ? 'MAX' : String(G.squad);
   ctx.font = '900 ' + size + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -1459,9 +1708,10 @@ function fxBuildBands() {
   fxBandN = 0; const add = (a, b) => { const o = fxBands[fxBandN] || (fxBands[fxBandN] = [0, 0]); o[0] = a; o[1] = b; fxBandN++; };
   for (const g of gates) if (!g.used) add(g.z - 16, g.z + 8);                          // in front of a gate too: pop texts float up over its labels
   for (const h of holes) add(h.z - 8, h.z + h.len + 4);
+  for (const b of bumps) add(b.z - 8, b.z + b.len + 4);
   for (const e of enemies) {
     if (e.type === 'boss') { if (e.tele || e.atk || e.mineSt || e.shield > 0) add(G.pz - 2, e.z + 2); }
-    else if (e.tele || (e.type === 'alien' && e.dest != null)) add(e.z - 8, e.z + 8);
+    else if (e.tele || (e.type === 'alien' && e.dest != null)) { add(e.z - 8, e.z + 8); if (e.drone && e.drone.zl) add(e.drone.zl - 8, e.drone.zl + 8); }
   }
 }
 const fxProt = z => { for (let i = 0; i < fxBandN; i++) if (z >= fxBands[i][0] && z <= fxBands[i][1]) return true; return false; };
@@ -1524,7 +1774,7 @@ function chargeBoost(e) {                                                       
 const holeXa = h => laneEdge(h.l0), holeXb = h => laneEdge(h.l1 + 1);
 function onCoveredHole() { return holes.some(h => G.pz >= h.z && G.pz <= h.z + h.len && G.px >= holeXa(h) && G.px <= holeXb(h)); }
 function activateBoost() {
-  if (G.state !== 'play' || !G.boostReady || G.boostT > 0) return false;
+  if (G.state !== 'play' || !G.boostReady || G.boostT > 0 || G.phase === 'finish') return false;
   G.boostReady = false; G.charge = 0; G.boostT = G.boostLen; G.boostAt = G.t; G.boostHint = 0; bump('b_used');
   FX.shake(12); FX.flash('#ffd24d', 0.45); FX.ring(G.px, G.pz + 1, '#ffd24d', 2.6); FX.ring(G.px, G.pz + 1, '#fff4b0', 1.6);
   FX.burst(G.px, G.pz + 1.2, '#ffd24d', 36, true); FX.pop(G.px, G.pz + 2.7, 'BOOST!', '#ffd24d', 1.7); Sound.play('boost');
@@ -1571,6 +1821,7 @@ function volley() {
 function updatePlayer(dt) {
   if (G.state !== 'play') return;
   G.muzzle = Math.max(0, G.muzzle - dt * 12);
+  if (G.phase === 'finish') { G.aimTarget = null; G.fireAcc = 0; return; }                // flag run: the squad has stopped firing
   if (G.openT > 0) G.openT = Math.max(0, G.openT - dt);                      // utility: Opening volley (+50% damage, first 20 s of the level)
   G.aimTarget = aimCandidate(G.px);
   if (G.rocketT > 0) {                                       // ROCKETS replace the lasers while they last
@@ -1612,14 +1863,14 @@ function tryPod() {                                        // place the planned 
   if (G.podPlan < 0 || G.ldist < G.podPlan || G.phase !== 'run' || pods.length) return;
   if (!G.practice && G.ldist > levelLen() - 220) { G.podPlan = -1; return; }
   const z = ZMAX + 6, free = l => !enemies.some(e => e.type !== 'boss' && e.lane === l && Math.abs(e.z - z) < 22) && !crates.some(c => c.lane === l && Math.abs(c.z - z) < 14)
-    && !holes.some(h => l >= h.l0 && l <= h.l1 && Math.abs(h.z - z) < 24) && !gates.some(g => Math.abs(g.z - z) < 16);
+    && !holes.some(h => l >= h.l0 && l <= h.l1 && Math.abs(h.z - z) < 24) && !bumps.some(h => l >= h.l0 && l <= h.l1 && Math.abs(h.z - z) < 24) && !gates.some(g => Math.abs(g.z - z) < 16);
   const ls = shuffled(LANES).filter(free); if (!ls.length) return;                                // try again next frame
   pods.push({ x: laneX(ls[0]), lane: ls[0], z, t: 0 }); G.podPlan = G.practice ? G.ldist + rand(1200, 2200) : -1; G.nextAt = Math.max(G.nextAt, G.ldist + 22);   // the next pattern starts after it has moved clear
 }
 function collectPod() {
   const fresh = !(G.rocketT > 0); G.rocketT = ROCKET_T; G.rocketAt = G.t; if (fresh) G.rockAcc = 0.7; bump('rk_pick');
   FX.ring(G.px, G.pz + 1, '#ff7a3d', 1.8); FX.burst(G.px, G.pz + 1.2, '#ff8a1f', 12, false); FX.pop(G.px, G.pz + 2.6, 'ROCKETS!', '#ff9a4d', 1.4); Sound.play('pod');
-  if (tipLv() === 1 && !rocketTipSeen) { rocketTipSeen = true; G.tipRocket = 2; }                  // level 1 teaches it once; later pickups: chip + notice only
+  if (tipLv() === 1 && !rocketTipSeen) { rocketTipSeen = true; G.tipRocket = 2; G.introD = G.ldist; }                  // level 1 teaches it once; later pickups: chip + notice only
 }
 function updatePods(dt) {
   if (G.state !== 'play') return;
@@ -1642,11 +1893,11 @@ function rocketNext(r, t) {                                    // is there anoth
   return false;
 }
 function rocketImpact(r, t, isEnemy) {                         // returns true when the rocket flies on (a Piercing pass), false when it exploded
-  const x = r.x, z = t.z, col = r.boost ? '#ffd24d' : '#ff8a1f'; r.hits = r.hits || []; let landed = true;
-  if (isEnemy) { t.byRocket = true; landed = damageEnemy(t, { dmg: r.dmg, x }) !== false; if (!t.dead) t.byRocket = false; } else damageCrate(t, { x, dmg: r.dmg });
+  const fdv = isEnemy ? frontDepth(t, 0.22) : 0, x = r.x, z = t.z, zv = fdv > 0 ? t.z - fdv : z, col = r.boost ? '#ffd24d' : '#ff8a1f'; r.hits = r.hits || []; let landed = true;   // zv = visible contact depth (splash maths keep using z)
+  if (isEnemy) { t.byRocket = true; landed = damageEnemy(t, { dmg: r.dmg, x, iz: zv }) !== false; if (!t.dead) t.byRocket = false; } else damageCrate(t, { x, dmg: r.dmg });
   if (landed && !r.cn) { r.cn = true; bump('hits'); }          // accuracy: one hit per rocket, however many things it pierces or splashes
   r.hits.push(t);
-  if (isEnemy && landed && (r.pl || 0) > 0 && t.type !== 'boss' && rocketNext(r, t)) { r.pl--; r.dmg *= PASS_F; FX.burst(x, z, col, 3, false); return true; }      // Piercing: on to the next one at exactly 60%
+  if (isEnemy && landed && (r.pl || 0) > 0 && t.type !== 'boss' && rocketNext(r, t)) { r.pl--; r.dmg *= PASS_F; FX.burst(x, zv, col, 3, false); return true; }      // Piercing: on to the next one at exactly 60%
   const near = [], rx0 = SPLASH_RX, rxw = splashRX();
   for (const o of enemies) {
     if (r.hits.includes(o) || o.dead || o.fuse || o.solid === false) continue;
@@ -1655,8 +1906,13 @@ function rocketImpact(r, t, isEnemy) {                         // returns true w
   }
   near.sort((a, b) => a.d - b.d);
   for (let i = 0; i < Math.min(splashMax(), near.length); i++) { const o = near[i].o; o.byRocket = true; damageEnemy(o, { dmg: r.dmg * (near[i].inner ? SPLASH_F : SPLASH_OUT_F), x, blast: true }); if (!o.dead) o.byRocket = false; }
-  FX.fireball(x, z, 0.3); FX.burst(x, z, col, 7, false); FX.ring(x, z, col, 0.3); Sound.play('rocketHit', panOf(x));       // small explosion puff
+  FX.fireball(x, zv, 0.3); FX.burst(x, zv, col, 7, false); FX.ring(x, zv, col, 0.3); Sound.play('rocketHit', panOf(x));       // small explosion puff
   return false;
+}
+function rocketReach(r, z0, e) {                           // big targets: the rocket NOSE meets the drawn surface; everything else as before
+  if (e.drone && e.h > 0.05) return r.z + ROCKET_NOSE >= e.z - 0.4 && e.z >= z0 - 1.4 && Math.abs(0.22 + (r.yo || 0) + (r.rise || 0) - bodyH(e)) < 0.3;
+  const fd = frontDepth(e, 0.22);
+  return fd > 0 ? (r.z + ROCKET_NOSE >= e.z - fd && e.z >= z0 - 1.4) : (e.z <= r.z + 1.4 && e.z >= z0 - 1.4);
 }
 function updateRockets(dt) {
   if (G.state !== 'play') return;
@@ -1667,14 +1923,16 @@ function updateRockets(dt) {
     if (r.yo > 0.001) r.yo *= Math.max(0, 1 - 9 * dt);
     const z0 = r.z; r.z += ROCKET_SPEED * dt;
     if (r.z > ZMAX * 0.95) { r.on = false; continue; }
+    r.rise = airDrones.length ? shotRise(r, 0.22 + r.yo, r.z + ROCKET_NOSE) : 0;
     let best = null, bz = 1e9, isEnemy = false;
-    for (const e of enemies) if (e.solid !== false && !e.dead && !e.fuse && !r.hits.includes(e) && e.z <= r.z + 1.4 && e.z >= z0 - 1.4 && Math.abs(r.x - e.x) < e.r + 0.05 && e.z < bz) { best = e; bz = e.z; isEnemy = true; }
+    for (const e of enemies) if (e.solid !== false && !e.dead && !e.fuse && !r.hits.includes(e) && rocketReach(r, z0, e) && Math.abs(r.x - e.x) < bodyHW(e) + 0.05 && e.z < bz) { best = e; bz = e.z; isEnemy = true; }
     for (const c of crates) if (c.z <= r.z + 1.4 && c.z >= z0 - 1.4 && Math.abs(r.x - c.x) < 0.2 && c.z < bz) { best = c; bz = c.z; isEnemy = false; }
     if (best) { if (!rocketImpact(r, best, isEnemy)) r.on = false; if (G.state !== 'play') return; }
   }
 }
 function updateBullets(dt) {
   if (G.state !== 'play') return;
+  refreshAirDrones();
   for (const b of bullets) {
     if (!b.on) continue;
     if (!b.pierce && aimLive(b.aim) && b.aim.z > b.z && Math.abs(aimX(b.aim) - b.originX) <= LANE_W) b.x += clamp(clamp(aimX(b.aim), b.originX - LANE_W, b.originX + LANE_W) - b.x, -AIM_SPEED * dt, AIM_SPEED * dt);   // lean toward the target (capped)
@@ -1682,6 +1940,7 @@ function updateBullets(dt) {
     if (b.yo > 0.001) b.yo *= Math.max(0, 1 - 9 * dt);                                  // a shot fired in the air drops to body height at once (it is drawn where it can hit)
     b.z += BULLET_SPEED * dt;
     if (b.z > ZMAX * 0.95) { b.on = false; continue; }
+    b.rise = airDrones.length ? shotRise(b, 0.2 + b.yo, b.z + BULLET_LEN) : 0;
     if (hitTarget(b)) { b.on = false; if (G.state !== 'play') return; }
   }
 }
@@ -1698,7 +1957,7 @@ function drawBullets() {
       for (const b of bullets) {
         if (!b.on || b.tier !== t) continue;
         const s0 = sc(b.z), s1 = sc(b.z + BULLET_LEN);
-        ctx.moveTo(gx(b.x, s0), gy(s0) - (0.2 + b.yo) * L.rh * s0); ctx.lineTo(gx(b.x, s1), gy(s1) - (0.2 + b.yo) * L.rh * s1);
+        const hh = 0.2 + b.yo + (b.rise || 0); ctx.moveTo(gx(b.x, s0), gy(s0) - hh * L.rh * s0); ctx.lineTo(gx(b.x, s1), gy(s1) - hh * L.rh * s1);
       }
       ctx.lineWidth = (pass === 0 ? Math.max(5, 0.075 * L.rh) : Math.max(2, 0.024 * L.rh)) * wk;
       ctx.strokeStyle = pass === 0 ? col[0] : col[1]; ctx.stroke();
@@ -1706,7 +1965,7 @@ function drawBullets() {
     ctx.fillStyle = col[2]; ctx.globalAlpha = 0.6; ctx.beginPath();                // bright head of each laser
     for (const b of bullets) {
       if (!b.on || b.tier !== t) continue;
-      const s1 = sc(b.z + BULLET_LEN), r = Math.max(3, 0.05 * L.rh * s1) * wk, x = gx(b.x, s1), y = gy(s1) - (0.2 + b.yo) * L.rh * s1;
+      const s1 = sc(b.z + BULLET_LEN), r = Math.max(3, 0.05 * L.rh * s1) * wk, x = gx(b.x, s1), y = gy(s1) - (0.2 + b.yo + (b.rise || 0)) * L.rh * s1;
       ctx.moveTo(x + r, y); ctx.arc(x, y, r, 0, 6.2832);
     }
     ctx.fill(); ctx.globalAlpha = 1;
@@ -1737,16 +1996,16 @@ function shuffled(n) {
   return a;
 }
 function startLevel(n) {
-  if (n === 1) { tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; } else tipsDone = true;      // teaching happens in level 1 of a run only (resetGame -> startLevel(1) re-arms it)
+  if (n === 1) { tipsDone = false; holeTipSeen = false; boostHintSeen = false; barrelTipSeen = false; rocketTipSeen = false; bumpTipSeen = false; droneTipSeen = false; } else tipsDone = true;      // teaching happens in level 1 of a run only (resetGame -> startLevel(1) re-arms it)
   dbl = null; G.tips = pickTips(n); G.tipT = 0; G.tipJump = 0; G.readyNoticeSeen = false; G.boostHintDur = 0; G.hitStop = 0; G.aimTarget = null;
   G.ls = newStats();                                                                // level subtotals restart with every level
-  G.level = n; G.phase = 'run'; G.ldist = 0; G.phaseT = 0; G.finish = null; G.supplied = false;
+  G.level = n; G.phase = 'run'; G.ldist = 0; G.phaseT = 0; G.finish = null; G.supplied = false; G.curve = curvePlan(n, G.practice); extendCurves(G.curve, 700);
   G.llost = 0; G.lkills = 0; G.streak = 0; G.lbestMult = 1; G.lev = 0; G.jumpT = -1; G.jumpQ = false; G.hist = []; G.nextKind = null; G.nextAt = 12; G.shield = G.shieldMax;
   G.squad = 1; G.joinFrom = 0; G.effects.length = 0; G.gone.length = 0;            // EVERY level starts with one soldier: the squad is built again inside each level
   G.boostT = 0; G.charge = 0; G.boostReady = false; G.boostAt = -9; G.readyAt = -9; G.boostEndAt = -9; G.boostHint = 0; G.pipAt = -9; G.lalien = 0;
   G.charge = Math.min(G.boostHead || 0, G.boostNeed - 1);       // upgrade: a head start of 1-2 boost pips (never a free boost)
   const U = G.util || {}; G.rushLeft = U.rush ? 2 : 0; G.openT = U.open ? 20 : 0; if (U.shield1) G.shield += 1; if (U.boostfull) setReady(); G.util = {}; G.squad = 1;      // one-level utility picks (taken once, for this level only)
-  enemies.length = 0; gates.length = 0; crates.length = 0; holes.length = 0; pendingBlasts.length = 0; G.celebT = 0; G.bar = { n: 0, last: -9 }; G.tipBarrel = 0; G.tipRocket = 0; G.rocketT = 0; pods.length = 0; resetRockets(); planPod();
+  enemies.length = 0; gates.length = 0; crates.length = 0; holes.length = 0; bumps.length = 0; pendingBlasts.length = 0; G.celebT = 0; G.bar = { n: 0, last: -9 }; G.tipBarrel = 0; G.tipRocket = 0; G.tipBump = 0; G.tipDrone = 0; G.lbump = 0; G.ldrone = 0; G.introD = -1e9; G.rocketT = 0; pods.length = 0; resetRockets(); planPod();
   for (const b of bullets) b.on = false;
   G.theme = themeFor(n); G.lopp = 0; G.banner = 'LEVEL ' + n + (G.theme ? ' \u00b7 ' + G.theme.name : ''); G.bannerBoss = false; G.bannerT = 1.0;
   spawnGatePair(true, 36);                              // every level: the first pair always has a recruit gate (you start with 1 soldier)
@@ -1775,7 +2034,7 @@ function spawnBarrel(lane, z) {
   const hp = Math.max(3, Math.round(Math.min(4 * dmgPerLaser(G.squad), 0.9 * consDps())));      // ~4 hits, never more than ~1 s of permanent fire
   enemies.push({ type: 'barrel', lane, x: laneX(lane), bx: laneX(lane), z, hp, maxhp: hp, armor: 0, maxarmor: 0, hopsLeft: 0, hopT: 1, tele: null, r: ETYPE.barrel.r, vz: 0, flash: 0, ph: rand(0, 6.28), fuse: 0, depth: 0 });
   const b = enemies[enemies.length - 1];
-  if (tipLv() === 1 && !barrelTipSeen) { barrelTipSeen = true; G.tipBarrel = 2; }               // level-1 teaching: one short tip before the first barrel
+  if (tipLv() === 1 && !barrelTipSeen) { barrelTipSeen = true; G.tipBarrel = 2; G.introD = G.ldist; }               // level-1 teaching: one short tip before the first barrel
   return b;
 }
 function armBarrel(b, depth) {                                  // destroyed: telegraph, then explode
@@ -1785,7 +2044,7 @@ function armBarrel(b, depth) {                                  // destroyed: te
 const inBlast = (o, x, z) => { const dx = (o.x - x) / BLAST_RX, dz = (o.z - z) / BLAST_RZ; return dx * dx + dz * dz <= 1; };
 function explode(x, z, depth) {
   bump('barrels'); const dmg = blastDmg(); FX.explosion(x, z);
-  const targets = []; for (const o of enemies) if (!o.dead && inBlast(o, x, z) && (o.solid !== false || o.type === 'barrel')) targets.push(o);
+  const targets = []; for (const o of enemies) if (!o.dead && inBlast(o, x, z) && (o.solid !== false || o.type === 'barrel') && !isAir(o)) targets.push(o);   // a ground shockwave does not reach an airborne drone
   for (const o of targets) {
     if (o.type === 'barrel') { if (depth === 0 && !o.fuse) armBarrel(o, 1); continue; }         // chain depth 1: a secondary barrel does not set off a third
     o.byBlast = true;
@@ -1811,13 +2070,14 @@ function barrelCount(kind) {
 }
 function addBarrels(kind, e0) {                                 // in front of an enemy of the new pattern, so shooting it is useful; never on gates / crates / holes
   let n = barrelCount(kind); if (!n) return;
+  if (tipLv() === 1 && !barrelTipSeen && G.ldist - G.introD < INTRO_GAP) return;            // the first barrel (its tip) keeps its distance from the first hole / bump / rocket tips
   const group = enemies.slice(e0).filter(o => o.type !== 'barrel' && o.type !== 'boss' && o.z > 30), made = [];
   const lanes = shuffled(group.length);
   for (const gi of lanes) {
     if (made.length >= n) break;
     const t = group[gi], z = t.z - 3.5;
     if (z < 30 || enemies.some(o => o.lane === t.lane && Math.abs(o.z - z) < 2.5) || crates.some(c => c.lane === t.lane && Math.abs(c.z - z) < 6) || gates.some(g => Math.abs(g.z - z) < 12)
-        || holes.some(h => t.lane >= h.l0 && t.lane <= h.l1 && z > h.z - 10 && z < h.z + h.len + 10)) continue;
+        || holes.some(h => t.lane >= h.l0 && t.lane <= h.l1 && z > h.z - 10 && z < h.z + h.len + 10) || bumps.some(h => t.lane >= h.l0 && t.lane <= h.l1 && z > h.z - 10 && z < h.z + h.len + 10)) continue;
     made.push(spawnBarrel(t.lane, z));
   }
   if (made.length && !routeOk()) { for (const b of made) enemies.splice(enemies.indexOf(b), 1); made.length = 0; }     // a barrel counts as a blocker (its few HP): never close the last way through
@@ -1845,17 +2105,32 @@ function alienReachable(e) {                           // can the lasers really 
   for (const c of crates) if (c.lane === e.lane && c.z < e.z && c.val < 0) cost += 1 - c.val;
   return cost <= consDps() * 3;
 }
+// ROAD BUMPS: allowed only in the 'run' phase, never right after a hole / bump, only with a free spawn zone. Level 1 is gentle: after the scripted opening,
+// at most 2 bumps, one lane each, and the FIRST one (it carries the level-1 tip) keeps INTRO_GAP road units from the hole / barrel / rocket / drone tips and from running tips.
+const INTRO_GAP = 200;
+function bumpAllowed(last) {
+  if (last === 'hole' || last === 'bump' || G.phase !== 'run' || G.ldist > levelLen() - 200 || !spawnZoneFree(ZMAX - 40)) return false;
+  if (G.practice) return !(tipLv() === 1 && !bumpTipSeen && (G.ldist - G.introD < INTRO_GAP || tipsActive() || G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || G.tipDrone > 0));
+  if (G.level === 1) {
+    if (G.lev < 5 || G.lbump >= 2 || G.ldist < 330) return false;
+    return bumpTipSeen || (G.ldist - G.introD >= INTRO_GAP && !tipsActive() && !(G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || G.tipDrone > 0));
+  }
+  return G.lev >= 3 && G.lbump < Math.min(4, 1 + Math.floor(LV(G.level) / 2));
+}
 function pickEncounter() {
   const lv = LV(G.level), h = G.hist, last = h[h.length - 1], low = G.squad <= 3 + 2 * lv;
   if (G.nextKind) { const k = G.nextKind; G.nextKind = null; return k; }
   if (G.level === 1 && G.lev < 4) return ['few', 'gates', 'crates', 'swarm'][G.lev];   // gentle scripted opening
   if (G.level > 1 && G.lev < 3) return ['few', 'gates', 'gates'][G.lev];               // later levels start from 1 soldier too: shoot a little, then recruit
   if (low && last !== 'gates' && last !== 'recovery') return Math.random() < 0.7 ? 'gates' : 'recovery';
+  if (G.level === 1 && !G.practice && G.lbump === 0 && G.ldist > levelLen() * 0.42 && bumpAllowed(last)) return 'bump';   // level 1 always meets its (single) first bump, in the second half
+  if (G.level === 1 && !G.practice && G.ldrone === 0 && G.ldist > levelLen() * 0.5 && last !== 'aliens' && droneL1Ready()) return 'aliens';   // ... and its first drone (droneChoice turns it into a drone)
   const goal = G.level === 1 ? 4 : 6, heavy2 = h.length >= 2 && HEAVY[last] && HEAVY[h[h.length - 2]];     // boost carriers: a steady supply of aliens, spread over the level
   if (last !== 'aliens' && !heavy2 && G.lopp < goal * lvlProg() * 1.15 - 0.2 && G.ldist < levelLen() - 200) return 'aliens';      // opportunities = aliens PRESENTED and reachable, not just spawned
   const early = lvlProg() < 0.4;                                                          // first part of a level: more recruit gates and crates (you start from 1)
   const w = { gates: Math.max(4, 14 - 1.8 * (lv - 1)) * (early ? 1.7 : 1), crates: G.squad <= 3 ? 0 : early ? 8 : 5, few: 16, swarm: 22, tank: lv >= 2 ? 9 : 0, aliens: G.lopp > goal * lvlProg() + 3 ? 0 : lv >= 2 ? 11 : 7, wall: (lv >= 2 && dpsNow() >= 12) ? 6 + 4 * (lv - 2) : 0, guarded: lv >= 2 ? 11 : 0, recovery: low ? 8 : 3,
-    hole: (G.ldist < levelLen() - 160 && last !== 'hole' && spawnZoneFree(ZMAX - 40)) ? (lv >= 2 ? 9 : 6) : 0 };
+    hole: (G.ldist < levelLen() - 160 && last !== 'hole' && last !== 'bump' && spawnZoneFree(ZMAX - 40) && !(tipLv() === 1 && !holeTipSeen && G.ldist - G.introD < INTRO_GAP)) ? (lv >= 2 ? 9 : G.level === 1 && !holeTipSeen && !G.practice ? 12 : 6) : 0,
+    bump: bumpAllowed(last) ? (G.practice ? 7 : lv >= 2 ? 13 : 5) : 0 };
   const th = themeFor(G.level); if (th) for (const k in th.w) if (w[k]) w[k] *= th.w[k];                               // the level's theme re-weights the deck
   if (h.length >= 2 && HEAVY[last] && HEAVY[h[h.length - 2]]) { w.few = w.swarm = w.tank = w.wall = w.guarded = w.aliens = 0; w.gates += 20; }
   if (last === 'gates') w.gates = 3;
@@ -1882,8 +2157,8 @@ function runEncounter(kind) {                           // returns the distance 
   const wallT = Math.max(1, (95 - PZ_MAX - 1) / (G.speed + 2.2)), wallB = Math.floor(0.75 * consDps() * wallT);     // a wall's breakthrough lane must be clearable (permanent power, 25% headroom)
   if (kind === 'wall' && (load * 0.6 > laneCap() * 0.95 || wallB < 3)) kind = 'few';
   if (kind === 'crates' && G.squad <= 3) kind = 'gates';                               // a negative crate would wipe out a tiny squad
-  if (kind === 'hole' && !spawnZoneFree(ZMAX - 40)) kind = 'gates';
-  if (kind !== 'gates' && kind !== 'recovery' && kind !== 'hole' && holes.some(h => h.z + h.len > ZMAX - PIT_CLEAR)) kind = 'gates';   // landing zone: nothing hostile (enemies, negative crates) within ~2s beyond a pit's far edge
+  if ((kind === 'hole' || kind === 'bump') && !spawnZoneFree(ZMAX - 40)) kind = 'gates';
+  if (kind !== 'gates' && kind !== 'recovery' && kind !== 'hole' && kind !== 'bump' && (holes.some(h => h.z + h.len > ZMAX - PIT_CLEAR) || bumps.some(h => h.z + h.len > ZMAX - PIT_CLEAR))) kind = 'gates';   // landing zone: nothing hostile (enemies, negative crates) within ~2s beyond a pit's / bump's far edge
   if ((kind === 'few' || kind === 'swarm' || kind === 'tank' || kind === 'wall' || kind === 'guarded' || kind === 'aliens') && !routeOk()) { kind = 'gates'; G.routeBenign = (G.routeBenign || 0) + 1; }   // the road already has no way through: nothing hostile is added until it clears                       // never on top of other obstacles                  // cannot shoot through it: do not send it
   if (kind === 'gates') { spawnGatePair(false, ZMAX); gap = 42; }
   else if (kind === 'crates') { spawnCrates(); gap = 38; }
@@ -1892,6 +2167,10 @@ function runEncounter(kind) {                           // returns the distance 
     const full = lv >= 2 && Math.random() < 0.3 + 0.05 * Math.min(lv, 6);
     const wl = full ? LANES : irand(2, Math.min(LANES - 1, lv === 1 ? 3 : 4)), l0 = full ? 0 : irand(0, LANES - wl);
     spawnHole(l0, l0 + wl - 1); gap = 62;
+  }
+  else if (kind === 'bump') {                                                            // 1 lane (level 1: always 1 lane), 2 adjacent lanes from level 2 (practice: Normal / Hard); NEVER the whole road
+    const two = (G.practice ? lv >= 3 : lv >= 2) && Math.random() < 0.15 + 0.07 * Math.min(lv, 6), wl = two ? 2 : 1, l0 = irand(0, LANES - wl);
+    spawnBump(l0, l0 + wl - 1); G.lbump++; gap = 58;
   }
   else if (kind === 'guarded') {                        // the better gate is guarded: shoot through, take the other gate, or skip in the middle
     spawnGatePair(false, ZMAX); const g = gates[gates.length - 1];
@@ -1909,7 +2188,11 @@ function runEncounter(kind) {                           // returns the distance 
   } else if (kind === 'aliens') {                       // lane-changing aliens: weavers from level 1 (one, gentle), teleporters from 2, dancing trios from 3
     let mode = lv === 1 ? 'weaver' : pick(lv >= 3 ? ['weaver', 'weaver', 'teleporter', 'dancer'] : ['weaver', 'teleporter']);
     if (mode === 'dancer' && G.lopp > (G.level === 1 ? 4 : 6) * lvlProg()) mode = 'weaver';          // a trio (3 aliens at once) only when the level is not already ahead of its alien schedule
-    if (mode === 'dancer') {
+    const nd = droneChoice();
+    if (nd) {                                                                                      // winged drones instead: 1 (level 1: always 1), 2 staggered from level 3
+      for (let i = 0; i < nd; i++) spawnDrone(lanes[i], ZMAX + i * 8, hp(lv === 1 ? 0.15 : 0.2), rand(0.8, 1.4) + i * 0.9);
+      G.ldrone += nd;
+    } else if (mode === 'dancer') {
       const grp = newAlienGroup('dancer');
       for (let i = 0; i < 3; i++) spawnAlien(grp, lanes[i], ZMAX + i * 2.5, hp(0.15));
     } else {
@@ -1927,11 +2210,11 @@ function runEncounter(kind) {                           // returns the distance 
     const n = first ? 2 : tank ? irand(1, 2) : irand(1, Math.min(LANES - 2, 2 + Math.floor(d / 1.8)));
     for (let i = 0; i < n; i++) { const z = ZMAX + i * 5; if (tank) heavy(lanes[i], z, 0.6); else light(lanes[i], z, 0.35, first); }
   }
-  for (let i = e0; i < enemies.length; i++) if (enemies[i].type === 'alien' && alienReachable(enemies[i])) G.lopp++;      // count alien OPPORTUNITIES that really are reachable
+  for (let i = e0; i < enemies.length; i++) if (enemies[i].type === 'alien' && alienReachable(enemies[i])) { G.lopp++; enemies[i].counted = true; }      // count alien OPPORTUNITIES that really are reachable
   repairRoute(e0, c0);                                  // never leave a pattern (together with what is already on the road) without a way through
   addBarrels(kind, e0);                                 // explosive barrels in front of some enemy groups
   G.hist.push(kind); if (G.hist.length > 4) G.hist.shift(); G.lev++;
-  return Math.max(kind === 'hole' ? 48 : 26, gap * (1 - 0.07 * (LV(G.level) - 1)));   // spacing tightens each level (never below 26; 48 after a hole so nothing catches up with it)
+  return Math.max(kind === 'hole' || kind === 'bump' ? 48 : 26, gap * (1 - 0.07 * (LV(G.level) - 1)));   // spacing tightens each level (never below 26; 48 after a hole so nothing catches up with it)
 }
 function spawnSupplyPair() {                            // last gates before the boss: both sides are good
   const a = makeGate('add', 3), b = makeGate(pick(['add', 'fr_up', 'mul']));
@@ -1973,7 +2256,7 @@ function killEnemy(e) {
   e.dead = true;
   const T = ETYPE[e.type], big = e.type === 'boss', m = streakMult(), pts = (big ? 150 + 50 * LV(G.level) : T.pts) * m;
   if (e.byBlast) bump('barrel_kills'); if (e.byRocket) bump('rk_kills');
-  award(pts); bump('kills'); G.rs.byType[e.type] = (G.rs.byType[e.type] || 0) + 1; if (e.type === 'alien') bump('aliens'); else if (big) bump('bosses'); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult()); if (G.streak > G.rs.streak) G.rs.streak = G.streak; if (G.streak > G.ls.streak) G.ls.streak = G.streak;
+  award(pts); bump('kills'); G.rs.byType[e.type] = (G.rs.byType[e.type] || 0) + 1; if (e.type === 'alien') { bump('aliens'); if (e.drone) bump('drones'); } else if (big) bump('bosses'); G.kills++; G.lkills++; G.streak++; G.lbestMult = Math.max(G.lbestMult, streakMult()); if (G.streak > G.rs.streak) G.rs.streak = G.streak; if (G.streak > G.ls.streak) G.ls.streak = G.streak;
   if (big) { if (!G.practice) FX.pop(e.x, e.z, '+' + pts + (m > 1 ? ' \u00d7' + m : ''), m > 1 ? '#ffd24d' : '#ffe14d', 1.4); startBossDeath(e); return; }      // credited once above; the boss stays on screen for the defeat sequence
   const heavy = e.type === 'tank' || e.type === 'armor';
   if (e.type === 'alien') { FX.coreImplode(e.x, e.z); FX.burst(e.x, e.z, T.col, 5, false); }                    // golden core implodes, then a small burst
@@ -1989,17 +2272,17 @@ function killEnemy(e) {
 }
 function damageEnemy(e, b) {                              // returns false when the boss shield blocked the shot (or the target is already dead)
   if (e.dead || e.fuse) return false;
-  const q = !b.blast;                                      // a barrel blast hits many things at once: no per-hit sounds / sparks
-  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); if (q) { FX.hit(b.x, e.z, '#8fd8ff'); Sound.play('hit'); } if (b.main) bump('blocked'); return false; }       // shield: only the glowing lane gets through
-  e.flash = 1; e.hitAt = G.t;
+  const q = !b.blast, iz = b.iz !== undefined ? b.iz : e.z;  // a barrel blast hits many things at once: no per-hit sounds / sparks; iz = where the shot touched the sprite
+  if (e.type === 'boss' && bossShielded(e) && Math.abs(b.x - e.weakX) > WEAK_HW) { e.flash = Math.max(e.flash, 0.3); e.hitAt = G.t; e.hitX = b.x; e.hitZ = iz; e.domeHit = true; if (q) { FX.hit(b.x, iz, '#8fd8ff'); Sound.play('hit'); } if (b.main) bump('blocked'); return false; }       // shield: only the glowing lane gets through
+  e.flash = 1; e.hitAt = G.t; e.hitX = b.x; e.hitZ = iz; e.domeHit = false;
   if (e.armor > 0) {                                     // armored: the front shield takes the hit, the body only a chip (20%)
     e.armor -= b.dmg; e.hp -= b.dmg * 0.2;
-    if (q) FX.hit(b.x, e.z, '#bfeaff');
+    if (q) FX.hit(b.x, iz, '#bfeaff');
     if (e.armor <= EPS) {
       e.armor = 0; FX.plateBreak(e.x, e.z); FX.pop(e.x, e.z, 'BROKEN', '#bfeaff', 1); Sound.play('armorClang', panOf(e.x));      // shards + flying plate pieces + metallic clang
     } else if (q) Sound.play('hit', panOf(e.x));
   } else {
-    e.hp -= b.dmg; if (q) { FX.hit(b.x, e.z, ETYPE[e.type].col); Sound.play('hit', panOf(e.x)); }
+    e.hp -= b.dmg; if (q) { FX.hit(b.x, iz, e.type === 'boss' && bossShielded(e) ? '#ffffff' : ETYPE[e.type].col, e.type === 'boss' && bossShielded(e) ? 0.55 : (e.drone && e.h > 0.05) ? bodyH(e) - 0.15 : undefined); Sound.play('hit', panOf(e.x)); }   // weak-point hit: the spark pops at the glowing slot
   }
   if (e.hp <= EPS) { if (e.type === 'barrel') armBarrel(e, 0); else killEnemy(e); }
   return true;
@@ -2040,7 +2323,104 @@ function nearLane(x) { let b = 0, bd = 9; for (let l = 0; l < LANES; l++) { cons
 function laneBlocked(l, z, ex) {                          // another enemy (or its reserved destination), crate or hole in that lane near that depth; ex = the mover (an enemy or an alien group) to ignore
   if (enemies.some(o => o !== ex && !(o.grp && o.grp === ex) && (o.lane === l || o.dest === l) && Math.abs(o.z - z) < 7)) return true;
   if (crates.some(c => c.lane === l && Math.abs(c.z - z) < 5)) return true;
-  return holes.some(h => l >= h.l0 && l <= h.l1 && z > h.z - 6 && z < h.z + h.len + 6);
+  return holes.some(h => l >= h.l0 && l <= h.l1 && z > h.z - 6 && z < h.z + h.len + 6) || bumps.some(h => l >= h.l0 && l <= h.l1 && z > h.z - 6 && z < h.z + h.len + 6);
+}
+// ===== DRONES: winged aliens, ONE behaviour = HOVER -> TELEGRAPH -> DIVE -> GROUND =====
+// HOVER   flies DRONE_H above the road (its shadow stays on the road at its depth), drifts a little inside its lane, advances slower than the road (vz < 0). In the air:
+//         NO contact damage, only shots / rockets / rocket splash hurt it (barrel blasts are ground-level shockwaves: they do not reach an airborne drone).
+// TELEGRAPH  starts only while the squad still has room: the landing point (depth zl) stays >= DRONE_SAFE (24) units ahead and the drone is >= DRONE_MINGAP (35) ahead; the destination
+//         lane is picked and RESERVED here (e.dest, hopper-style: other movers and the escape-route check see it), marked on the road (reticle + lane glow) for >= 0.9 s
+//         (1.5 s in level 1, longer the further forward the squad stands: x(1 + 0.3 * depth fraction)). The lane is never changed afterwards; if it became unsafe the dive is CANCELLED.
+// DIVE    0.5 s: swoops sideways + down into the locked lane and lands exactly on the marker.
+// GROUND  a normal ground alien (contact damage per the usual enemy rules; boost carrier).
+// Never: in the boss / clear / finish phases, onto holes / bumps / barrels / crates / gates / other reserved lanes, or into a lane that closes the last escape route.
+// SHOTS: lasers and rockets rise toward an airborne drone in their lane (RISE_D units before it, only when nothing else is in the way) and hit when their tip reaches its body plane at
+//        its body height, so what you see meeting the body is what hits; elsewhere shots pass under it.
+const DRONE_H = 0.95, DRONE_BODY = 0.21, DRONE_DIVE_T = 0.5, DRONE_SAFE = 24, DRONE_MINGAP = 35, DRONE_VZ = -1.6, RISE_D = 16;
+const droneL1Ready = () => G.ldrone < 2 && G.ldist >= levelLen() * 0.35 && G.ldist <= levelLen() * 0.8
+  && (droneTipSeen || (G.ldist - G.introD >= INTRO_GAP && !tipsActive() && !(G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || G.tipBump > 0 || G.tipDrone > 0)));
+const droneTele = () => (G.level === 1 && !G.practice ? 1.5 : 1.1) * (1 + 0.3 * clamp(G.pz / PZ_MAX, 0, 1));
+const bodyH = e => (e.h || 0) + DRONE_BODY;                // body-centre height above the road
+const isAir = e => !!e.drone && e.h > 0.25;
+function spawnDrone(lane, z, hp, delay) {
+  const grp = newAlienGroup('drone'); grp.cool = 1e9; spawnAlien(grp, lane, z, hp); const e = enemies[enemies.length - 1];
+  e.vz = DRONE_VZ; e.h = DRONE_H; e.air = true; e.drone = { st: 'hover', t: 0, t0: 1, cd: delay === undefined ? rand(0.8, 1.4) : delay, dest: -1, zl: 0, x0: e.x, h0: DRONE_H };
+  if (tipLv() === 1 && !droneTipSeen) { droneTipSeen = true; G.tipDrone = 2; G.introD = G.ldist; }      // level-1 tip, once, spaced from the hole / barrel / bump / rocket tips
+  return e;
+}
+function droneLaneBlocked(l, zL, Tt, ex) {              // is lane l unsafe at the predicted landing depth zL (everything moved on by the flight time Tt)?
+  for (const o of enemies) { if (o === ex || o.type === 'boss') continue; if ((o.lane === l || o.dest === l) && Math.abs(o.z - Tt * (G.speed + o.vz) - zL) < 9) return true; }
+  for (const c of crates) if (c.lane === l && Math.abs(c.z - Tt * G.speed - zL) < 6) return true;
+  for (const h of holes) if (l >= h.l0 && l <= h.l1 && zL > h.z - Tt * G.speed - 7 && zL < h.z - Tt * G.speed + h.len + 7) return true;
+  for (const h of bumps) if (l >= h.l0 && l <= h.l1 && zL > h.z - Tt * G.speed - 7 && zL < h.z - Tt * G.speed + h.len + 7) return true;
+  for (const g of gates) if (!g.used && Math.abs(g.z - Tt * G.speed - zL) < 14) return true;
+  for (const p of pods) if (p.lane === l && Math.abs(p.z - Tt * G.speed - zL) < 8) return true;
+  return false;
+}
+function planDrone(e, Ttot) {                           // a destination lane, or -1 when no lane is safe right now
+  const zL = e.z - Ttot * (G.speed + e.vz), cands = [];
+  for (let l = Math.max(0, e.lane - 2); l <= Math.min(LANES - 1, e.lane + 2); l++) if (!droneLaneBlocked(l, zL, Ttot, e)) cands.push(l);
+  while (cands.length) {
+    const l = cands.splice(irand(0, cands.length - 1), 1)[0], used = new Set([l]);
+    for (const o of enemies) if (o !== e && Math.abs(o.z - e.z) < 14) used.add(o.dest != null ? o.dest : o.lane);
+    for (const c of crates) if (Math.abs(c.z - e.z) < 14) used.add(c.lane);
+    if (used.size <= LANES - 2 && escapeOkIf(e, l)) return l;                    // never close the last way through (the reservation counts like a hopper's)
+  }
+  return -1;
+}
+function droneCancel(e, giveUp) { const D = e.drone; D.st = 'hover'; D.dest = -1; e.dest = null; D.cd = giveUp ? 1e9 : 1.2; e.h = DRONE_H; }
+function updateDrone(e, dt) {
+  const D = e.drone;
+  if (D.st === 'hover' || D.st === 'tele') {
+    e.x = e.bx + Math.sin(G.t * 1.3 + e.ph) * 0.06; e.h = DRONE_H + Math.sin(G.t * 3 + e.ph) * 0.04; e.air = true;
+  }
+  if (D.st === 'hover') {
+    D.cd -= dt;
+    if (D.cd <= 0 && G.phase === 'run' && G.celebT <= 0 && e.z < ZMAX - 6) {
+      const T = droneTele(), Ttot = T + DRONE_DIVE_T, gap = e.z - G.pz, need = Math.max(DRONE_MINGAP, DRONE_SAFE + Ttot * (G.speed + e.vz + PZ_SPEED * 0.5) + 4);
+      if (gap < need) { D.cd = 1e9; return; }                                  // too late to dive safely: it just flies by (and can still be shot)
+      if (gap > need + 20) return;                                            // hover a while longer: the telegraph starts closer in, where the marker is big enough to read
+      const l = planDrone(e, Ttot);
+      if (l < 0) { D.cd = 0.5; return; }
+      D.st = 'tele'; D.t = D.t0 = T; D.dest = l; e.dest = l; D.zl = e.z - Ttot * (G.speed + e.vz); Sound.play('droneWarn', panOf(e.x));
+    }
+  } else if (D.st === 'tele') {
+    D.t -= dt; D.zl = e.z - (D.t + DRONE_DIVE_T) * (G.speed + e.vz);
+    if (G.phase !== 'run' || D.zl - G.pz < 14) { droneCancel(e, true); return; }       // the squad pushed forward / the level moved on: no dive
+    if (D.t <= 0) {
+      if (droneLaneBlocked(D.dest, D.zl, 0, e) || G.phase !== 'run') { droneCancel(e, true); return; }   // revalidated once, never re-targeted
+      D.st = 'dive'; D.t = D.t0 = DRONE_DIVE_T; D.x0 = e.x; D.h0 = e.h; Sound.play('droneDive', panOf(e.x));
+    }
+  } else if (D.st === 'dive') {
+    D.t -= dt; const p = clamp(1 - D.t / D.t0, 0, 1), sm = p * p * (3 - 2 * p); D.zl = e.z - Math.max(0, D.t) * (G.speed + e.vz);
+    e.x = D.x0 + (laneX(D.dest) - D.x0) * sm; e.h = D.h0 * (1 - p * p); e.air = e.h > 0.25;
+    if (D.t <= 0) {                                                            // landed: a normal ground alien in the locked lane
+      e.lane = D.dest; e.x = e.bx = laneX(D.dest); e.dest = null; e.h = 0; e.air = false; e.vz = 1.2; D.st = 'ground';
+      FX.ring(e.x, e.z, '#3dffb8', 0.9); FX.burst(e.x, e.z, '#3dffb8', 6, false); Sound.play('hop', panOf(e.x));
+    }
+  }
+}
+const airDrones = [];
+function shotRise(b, base, head) {                      // how far a shot is lifted toward an airborne drone ahead of it in its own lane (0 when something else is in the way)
+  if (!airDrones.length) return 0;
+  let tgt = null, tz = 1e9;
+  for (const e of airDrones) if (e.z > head - 0.3 && e.z < tz && Math.abs(b.x - e.x) < e.r * 1.3 + 0.1) { tgt = e; tz = e.z; }
+  if (!tgt) return 0;
+  for (const o of enemies) if (o !== tgt && !o.dead && o.solid !== false && !isAir(o) && o.z > b.z - 1.4 && o.z < tz && Math.abs(b.x - o.x) < o.r + 0.05) return 0;      // anything the shot has not passed yet blocks the lift
+  for (const c of crates) if (c.z > b.z - 1.4 && c.z < tz && Math.abs(b.x - c.x) < 0.18) return 0;
+  return Math.max(0, bodyH(tgt) - base) * clamp(1 - (tz - head) / RISE_D, 0, 1);
+}
+function refreshAirDrones() { airDrones.length = 0; for (const e of enemies) if (e.drone && e.h > 0.05 && !e.dead) airDrones.push(e); }
+function droneChoice() {                                // how many drones the next 'aliens' pattern is made of (0 = the usual lane-changing aliens)
+  if (G.phase !== 'run') return 0;
+  const lv = LV(G.level);
+  if (G.practice) return Math.random() < 0.3 ? (lv >= 3 && Math.random() < 0.35 ? 2 : 1) : 0;
+  if (G.level === 1) {                                   // gentle: 1-2 per level, in the middle, only after the intro spacing, long telegraph
+    if (!droneL1Ready()) return 0;
+    return !droneTipSeen || Math.random() < 0.5 ? 1 : 0;
+  }
+  if (G.ldrone >= Math.min(3, 1 + Math.floor((lv + 1) / 3))) return 0;
+  return Math.random() < Math.min(0.4, 0.08 + 0.08 * lv) ? (lv >= 3 && Math.random() < 0.25 ? 2 : 1) : 0;
 }
 // ----- ESCAPE ROUTE rule: everything on the road or coming (enemies + their reserved destinations, negative crates) must leave at least one
 // way through. Rows are ordered by arrival time measured from the squad's most forward depth (PZ_MAX = the least reaction time); the squad
@@ -2056,7 +2436,7 @@ function routeOk() {
     items.push({ t, tr, hp, a: e.lane, b: e.dest != null ? e.dest : e.lane });
   }
   for (const c of crates) if (c.val < 0 && c.z >= G.pz - 1.2) { const t = Math.max(0, (c.z - PZ_MAX - 0.7) / G.speed); items.push({ t, tr: Math.max(0, (c.z - 95) / G.speed), hp: 1 - c.val, a: c.lane, b: c.lane }); }
-  const pits = holes.filter(h => h.z + h.len >= G.pz - 0.5).map(h => ({ t: Math.max(0, (h.z - PZ_MAX) / G.speed), h }));   // a pit lane is only a way through if the squad can JUMP it and land in a clear lane
+  const pits = holes.concat(bumps).filter(h => h.z + h.len >= G.pz - 0.5).map(h => ({ t: Math.max(0, (h.z - PZ_MAX) / G.speed), h }));   // a pit lane is only a way through if the squad can JUMP it and land in a clear lane
   if (!items.length && !pits.length) return true;
   items.sort((x, y) => x.t - y.t);
   const cum = new Array(LANES).fill(0), first = new Array(LANES).fill(-1), rows = [];
@@ -2160,10 +2540,34 @@ function updateAlienGroup(g, dt) {
     }
   }
 }
+// ----- BIG TARGETS (boss, tank, armor): the hit volume follows the DRAWN sprite -----
+// Enemies are flat sprites standing on the road at depth e.z. A laser / rocket is drawn ~0.2 road units above the ground, so its tip reaches the sprite's lower
+// edge BEFORE it gets to e.z. frontDepth() = how far in front of e.z a projectile tip (at height h) first touches the drawn silhouette, from the real layout.
+// Big targets are hit from there (the shot stops at the visible surface and its spark spawns on it); the shield dome is wider and reaches lower than the body.
+// Width = the drawn body half-width (boss 1.3 r, its shield dome 1.75 r). Damage, HP and fire rates are untouched: only shots that visibly touch now connect.
+const BODY_BOTTOM = { boss: 0.15, tank: 0.4, armor: 0.4 };        // lowest drawn edge of the sprite above its ground point, in units of its radius
+function frontDepth(e, h) {
+  const bb = (e.type === 'boss' && bossShielded(e)) ? -0.2 : BODY_BOTTOM[e.type]; if (bb === undefined) return 0;
+  const D = L.py - L.hy, den = D - h * L.rh; if (den <= 1) return 0;
+  const sh = sc(e.z) * (D - bb * e.r * L.rh) / den;
+  return clamp(e.z - (FOCAL / sh - FOCAL), 0.25, 3.2);
+}
+const bodyHW = e => e.type === 'boss' ? e.r * (bossShielded(e) ? 1.75 : 1.3) : isAir(e) ? e.r * 1.3 : e.r;
+const ROCKET_NOSE = 2.2;
+function shotReach(b, e) {                                // does this laser (tail b.z, tip b.z + BULLET_LEN) touch the enemy's drawn surface? -> sets b.iz = contact depth
+  if (e.drone && e.h > 0.05) {                            // airborne drone: the tip reaches its body plane AT its body height (shots rise toward it, see shotRise)
+    const hb = 0.2 + (b.yo || 0) + (b.rise || 0);
+    if (b.z + BULLET_LEN >= e.z - 0.4 && b.z <= e.z + 1.4 && Math.abs(hb - bodyH(e)) < 0.3) { b.iz = e.z - 0.4; return true; }
+    return false;
+  }
+  const fd = frontDepth(e, 0.2 + (b.yo || 0));
+  if (fd > 0) { if (b.z + BULLET_LEN >= e.z - fd && b.z <= e.z + 1.4) { b.iz = e.z - fd; return true; } return false; }
+  if (Math.abs(b.z - e.z) < 1.4) { b.iz = e.z; return true; } return false;
+}
 function hitPierce(b) {                                  // boost lasers: wide, go through up to 4 things, each is hit once
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
-    if (e.solid !== false && Math.abs(b.z - e.z) < 1.4 && Math.abs(b.x - e.x) < e.r + 0.13 && b.hits.indexOf(e) < 0) { b.hits.push(e); damageEnemy(e, b); }
+    if (e.solid !== false && Math.abs(b.x - e.x) < bodyHW(e) + 0.13 && b.hits.indexOf(e) < 0 && shotReach(b, e)) { b.hits.push(e); damageEnemy(e, b); }
   }
   for (let i = crates.length - 1; i >= 0; i--) {
     const c = crates[i];
@@ -2174,16 +2578,18 @@ function hitPierce(b) {                                  // boost lasers: wide, 
 function hitTarget(b) {   // one test across enemies AND crates: the nearest thing in the laser's path takes the hit
   if (b.pierce) return hitPierce(b);
   let best = null, bz = 1e9, isEnemy = false; const hs = b.hits && b.hits.length ? b.hits : null;
-  for (const e of enemies) if (e.solid !== false && Math.abs(b.z - e.z) < 1.4 && Math.abs(b.x - e.x) < e.r + 0.03 && e.z < bz && !(hs && hs.indexOf(e) >= 0)) { best = e; bz = e.z; isEnemy = true; }
+  let iz = 0;
+  for (const e of enemies) if (e.solid !== false && Math.abs(b.x - e.x) < bodyHW(e) + 0.03 && e.z < bz && !(hs && hs.indexOf(e) >= 0) && shotReach(b, e)) { best = e; bz = e.z; isEnemy = true; iz = b.iz; }
   for (const c of crates) if (Math.abs(b.z - c.z) < 1.4 && Math.abs(b.x - c.x) < 0.18 && c.z < bz && !(hs && hs.indexOf(c) >= 0)) { best = c; bz = c.z; isEnemy = false; }
   if (!best) return false;
+  b.iz = isEnemy ? iz : undefined;                       // where the spark appears: the visible contact point
   let landed = true; if (isEnemy) landed = damageEnemy(best, b) !== false; else damageCrate(best, b);
   if (landed && b.main && !b.cn) { b.cn = true; bump('hits'); }                          // a bullet connects once, however many things it pierces
   if (b.pl > 0) { b.hits.push(best); b.pl--; b.dmg *= 0.6; return false; }      // Piercing core: the shot goes on (60% damage), each target is hit once
   return true;
 }
 function hurtSquad(loss, big, cause, detail) {
-  if (G.celebT > 0) return;                                  // boss-defeat sequence: the squad cannot be hurt
+  if (G.celebT > 0 || G.phase === 'finish') return;           // boss-defeat sequence and the flag run: the squad cannot be hurt
                          // enemy hits go through here; a shield blocks one hit; boost blocks everything
   if (G.boostT > 0) { FX.ring(G.px, G.pz + 1, '#ffd24d', 1.8); FX.burst(G.px, G.pz + 1.2, '#ffe680', 10, false); return; }
   if (G.shield > 0) {
@@ -2338,9 +2744,10 @@ function updateEnemies(dt) {
     if (e.type === 'swarm') e.x = e.bx + Math.sin(G.t * 3 + e.ph) * 0.045;     // small wobble inside the lane
     else if (e.type === 'grunt' || e.type === 'tank' || e.type === 'armor') e.x = e.bx + Math.sin(G.t * 1.7 + e.ph) * (e.type === 'grunt' ? 0.04 : 0.025);   // slight sway, looks only (the lane never changes)
     else if (e.type === 'hopper') updateHopper(e, dt);
+    else if (e.type === 'alien' && e.drone) updateDrone(e, dt);
     else if (e.type === 'alien' && e.grp.stamp !== alienTick) { e.grp.stamp = alienTick; updateAlienGroup(e.grp, dt); }
     else if (e.type === 'barrel' && e.fuse > 0) { e.fuse -= dt; if (e.fuse <= 0) { e.fuse = -1; pendingBlasts.push(e); } }      // telegraph over: it goes off after this pass
-    if (e.solid !== false && depthHit(zb, e.z, -1.5, 0.9) && nearX(e.x, e.r + squadHW())) {      // contact = the enemy's drawn footprint overlaps the squad's, at the same depth (swept); a dematerialised teleporter never touches
+    if (e.solid !== false && !(e.drone && e.air) && depthHit(zb, e.z, -1.5, 0.9) && nearX(e.x, e.r + squadHW())) {      // contact = the enemy's drawn footprint overlaps the squad's, at the same depth (swept); a dematerialised teleporter never touches
       if (e.type === 'barrel') {                                                  // touching a barrel: it goes off right here, once (same footprint / swept contact as enemies)
         enemies.splice(i, 1); pendingBlasts.push({ x: e.x, z: e.z, depth: 0 }); FX.pop(e.x, e.z + 0.5, 'BARREL!', '#ffb13d', 1.1);
         if (G.boostT > 0) FX.ring(G.px, G.pz + 1, '#ffd24d', 1.5);               // boost plows through: harmless for the squad (the blast still hits enemies)
@@ -2357,7 +2764,7 @@ function updateEnemies(dt) {
       if (G.state !== 'play') return;
       continue;
     }
-    if (e.z < behind(3)) enemies.splice(i, 1);
+    if (e.z < behind(3)) { if (e.drone && e.drone.st === 'hover' && e.counted && G.lopp > 0) G.lopp--; enemies.splice(i, 1); }      // a drone that only flew by (never dived, never shot down) was no boost opportunity after all: the schedule makes up for it
   }
   if (pendingBlasts.length) processBlasts();
   if (G.bannerT > 0) G.bannerT -= dt;
@@ -2369,6 +2776,7 @@ function fieldClear() {
   for (const c of crates) if (c.z > G.pz) return false;
   for (const g of gates) if (!g.used) return false;
   for (const h of holes) if (h.z + h.len > G.pz - 1) return false;
+  for (const h of bumps) if (h.z + h.len > G.pz - 1) return false;
   return true;
 }
 // Boss HP follows the LEVEL and the squad built in it, measured with a reference squad power (default fire rate, no upgrades, no timed buffs):
@@ -2385,7 +2793,7 @@ const bossHp = () => Math.round(Math.max(8.2 * bossRefSec(), refDps(G.squad) * b
 function dissolveResidual() {
   for (let i = enemies.length - 1; i >= 0; i--) { const e = enemies[i]; if (e.type !== 'boss') { FX.burst(e.x, e.z, ETYPE[e.type].col, 8, false); FX.ring(e.x, e.z, '#bfeaff', 0.8); enemies.splice(i, 1); } }
   for (const c of crates) FX.burst(c.x, c.z, '#bfeaff', 6, false);
-  crates.length = 0; holes.length = 0; for (const g of gates) g.used = true;
+  crates.length = 0; holes.length = 0; bumps.length = 0; for (const g of gates) g.used = true;
 }
 function startBoss() {
   spawnEnemy('boss', 1 + irand(0, LANES - 3), ZMAX, bossHp());                    // tuned to the squad built inside THIS level (never to a carried-over one)
@@ -2394,6 +2802,17 @@ function startBoss() {
   b.btype = plan.type; b.bname = bt.name; b.bcol = bt.col; b.horns = bt.horns; b.pats = plan.pats.filter(q => q !== 'shield'); b.patIdx = 0;
   b.hasShield = plan.pats.indexOf('shield') >= 0; b.shield = 0; b.shieldCd = 5; b.weakX = 0;
   G.phase = 'boss'; G.phaseT = 0; G.banner = 'BOSS \u00b7 ' + bt.name; G.bannerBoss = true; G.bannerT = 1.4; Sound.play('boss');
+}
+// ===== FLAG RUN (the finish phase after the boss) =====
+// The squad stops firing for good (no lasers, rockets or boost; any boost / rocket / fire-rate timers and bullets in flight are cleared), cannot be hurt, nothing spawns
+// (the director only runs in the 'run' phase), and the lead soldier carries a waving checkered flag while the others cheer. Lane keys still shift the squad (cosmetic, nothing can hit it);
+// BOOST cannot be started. The phase is exactly as long as before: the finish line still arrives with the road.
+function startFinish() {
+  G.phase = 'finish'; G.phaseT = 0; G.finish = { z: ZMAX }; G.banner = 'FINISH LINE'; G.bannerBoss = false; G.bannerT = 1.0;
+  G.fireAcc = 0; G.rocketT = 0; G.rockAcc = 0; resetRockets(); for (const b of bullets) b.on = false; pods.length = 0;
+  if (G.boostT > 0) { G.boostT = 0; G.charge = 0; G.boostEndAt = G.t; }
+  G.boostHint = 0; G.effects.length = 0; G.gone.length = 0; G.muzzle = 0; G.aimTarget = null; G.flagAt = G.t;
+  FX.burst(G.px, G.pz + 2.4, '#ffd24d', 18, false); FX.burst(G.px, G.pz + 2.4, '#ffffff', 10, false);
 }
 function updateLevel(dt) {
   if (G.state !== 'play') return;
@@ -2406,7 +2825,7 @@ function updateLevel(dt) {
   }
   else if (G.phase === 'boss') {
     if (G.celebT > 0) { G.celebT = Math.max(0, G.celebT - dt); return; }                 // the defeat sequence plays out first
-    if (!bossAlive() && !bossDying()) { G.phase = 'finish'; G.phaseT = 0; G.finish = { z: ZMAX }; G.banner = 'FINISH LINE'; G.bannerBoss = false; G.bannerT = 1.0; }
+    if (!bossAlive() && !bossDying()) { startFinish(); }
   } else if (G.phase === 'finish') {
     G.finish.z -= G.speed * dt;
     if (G.finish.z <= G.pz + 0.5) completeLevel();
@@ -2426,6 +2845,7 @@ function completeLevel() {
   if (G.boostReady) bump('b_wasted');                    // a ready BOOST does not carry into the next level
   G.lsDone = G.ls;
   G.lvStats = { level: G.level, score: G.score, lost: G.llost, kills: G.lkills, medal, bonus, streak: G.lbestMult, acc: accOf(G.ls), aliens: G.ls.aliens, best: G.ls.streak };
+  if (G.level >= MAX_LEVEL && !G.practice) { winRun(); return; }          // the last level: victory instead of the upgrade screen
   G.upgOffer = pickUpgrades(); G.upgPick = -1;
   FX.burst(G.px, G.pz + 1.5, '#ffd24d', 40, true); FX.flash('#ffd24d', 0.3); Sound.play('fanfare');
   showComplete();
@@ -2435,18 +2855,20 @@ let prevRun = null;                                      // summary of the previ
 const accOf = st => st.shots >= 10 ? Math.round(100 * st.hits / st.shots) : null;
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 const fmtTime = t => { const m = Math.floor(t / 60), sec = Math.floor(t % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; };
-const LOST_NAMES = { enemy: 'enemies', gate: 'red gates', hole: 'pits', boss: 'boss attacks', crate: 'crates', barrel: 'barrels' };
-const LOST_SHORT = { enemy: 'enemies', gate: 'gates', hole: 'pits', boss: 'boss', crate: 'crates', barrel: 'barrels' };
+const LOST_NAMES = { enemy: 'enemies', gate: 'red gates', hole: 'pits', boss: 'boss attacks', crate: 'crates', barrel: 'barrels', bump: 'road bumps' };
+const LOST_SHORT = { enemy: 'enemies', gate: 'gates', hole: 'pits', boss: 'boss', crate: 'crates', barrel: 'barrels', bump: 'bumps' };
 function topCause(st) { let best = null, v = 0; for (const k in LOST_NAMES) if (st['lost_' + k] > v) { v = st['lost_' + k]; best = k; } return best; }
 function runSummary(st, t) { return { score: Math.floor(G.score), level: G.level, acc: accOf(st), aliens: st.aliens, lost: st.lost, peak: st.peak, time: t === undefined ? G.t : t, streak: st.streak }; }
 function defeatText(d) {                                  // what finished the run
   if (!d) return 'The squad was wiped out';
+  if (d.c === 'victory') return 'You beat all ' + MAX_LEVEL + ' levels';
   const D = d.d || {}, nm = D.name ? ' \u2014 ' + D.name : '';
   if (d.c === 'boss') return (D.atk === 'beam' ? 'Sweep beam' : D.atk === 'mines' ? 'Shock rings' : 'Boss slam') + nm;
   if (d.c === 'hole') return 'Fell into a pit';
   if (d.c === 'gate') return 'Bad gate' + (D.big ? ' (' + String(D.big).replace('-', '\u2212') + ')' : '');
   if (d.c === 'crate') return 'Negative crate';
   if (d.c === 'barrel') return 'Barrel explosion';
+  if (d.c === 'bump') return 'Road bump';
   if (d.c === 'enemy') {
     if (D.minion) { const b = bossAlive(); return 'Boss minions' + (b && b.bname ? ' \u2014 ' + b.bname : ''); }
     if (D.wall) return 'Enemy wall';
@@ -2464,6 +2886,7 @@ function coachTips(st, d, o) {
     else if (d.c === 'gate') add('gate', 'Red gates cost you ' + st.lost_gate + ' soldiers: the middle lane skips a pair.');
     else if (d.c === 'crate') add('crate', 'A negative crate finished you: shoot it until it turns green before you drive in.');
     else if (d.c === 'barrel') add('barrel', 'Barrels hurt on contact: shoot them first, a few hits pop them.');
+    else if (d.c === 'bump') add('bump', 'Road bump: press Space just before it, or slide into a free lane.');
     else if (d.c === 'enemy') {
       if (D.minion) add('boss', 'Boss minions: slide into the gap lane, or shoot the row down.');
       else if (D.wall) add('wall', 'Enemy wall: aim for the lane with the smallest number and keep shooting it.');
@@ -2475,6 +2898,7 @@ function coachTips(st, d, o) {
   if (!o.practice && st.b_wasted >= 1) add('boost', 'BOOST was ready and unused ' + plural(st.b_wasted, 'time') + ': use it before the boss.');
   if (acc !== null && acc < 45) add('acc', 'Accuracy ' + acc + '%: stay in one lane longer so your shots connect.');
   if ((o.time || 0) >= (o.practice ? 30 : 45) && st.aliens <= 2) add('alien', (st.aliens === 0 ? 'No aliens down' : 'Only ' + plural(st.aliens, 'alien') + ' down') + ': they carry BOOST, aim for the golden core.');
+  if (st.bump_hit >= 2 && st.lost_bump * 100 >= 20 * st.lost) add('bump', plural(st.bump_hit, 'road bump') + ' hit: press Space just before a bump, or slide into a free lane.');
   if (st.lost_barrel >= 4 && st.lost_barrel * 5 >= st.lost) add('barrel', 'Barrels cost you ' + st.lost_barrel + ' soldiers on contact: shoot them first, a few hits pop them.');
   if (st.lost_crate >= 6) add('crate', 'Negative crates cost ' + st.lost_crate + ' soldiers: shoot them green before you drive in.');
   if (st.lost_enemy >= 10 && st.lost_enemy * 100 >= 35 * st.lost) add('contact', 'Enemies that reached you cost ' + st.lost_enemy + ' soldiers: shoot the nearest lane or step aside.');
@@ -2495,7 +2919,7 @@ function compareText(cur, p) {                           // small comparison wit
 const rc = (label, val, sub) => '<div class="rc"><b>' + val + '</b><span>' + label + '</span><em>' + (sub || '') + '</em></div>';
 function resultCells(st, t, practice) {
   const acc = accOf(st), tc = topCause(st), cells = [rc('Accuracy', acc === null ? '\u2014' : acc + '%', st.shots ? st.hits + ' of ' + st.shots + ' shots' : '')];
-  cells.push(rc('Aliens killed', st.aliens, ''));
+  cells.push(rc('Aliens killed', st.aliens, st.drones ? st.drones + ' drone' + (st.drones === 1 ? '' : 's') : ''));
   if (!practice) cells.push(rc('Boosts', st.b_used + ' / ' + st.b_earned, 'used / earned'));
   cells.push(rc('Gates', st.g_good + ' \u00b7 ' + st.g_bad + ' \u00b7 ' + st.g_skip, 'good/bad/skip'));
   cells.push(rc('Best streak', st.streak, ''));
@@ -2514,6 +2938,24 @@ function fillResults() {                                 // game-over screen (ca
   prevRun = sum;
 }
 function fillLevelRow(ls) { const a = accOf(ls); $('cRow').innerHTML = '<span>Accuracy<b>' + (a === null ? '\u2014' : a + '%') + '</b></span><span>Aliens<b>' + ls.aliens + '</b></span><span>Streak<b>' + ls.streak + '</b></span>'; }
+function overHeader(win) {                               // the shared results screen: Game over (red) or Victory (gold / green); the Custom tag
+  $('oTitle').textContent = win ? 'Victory!' : 'Game over'; $('oTitle').className = win ? 'win' : 'bad';
+  $('oCauseL').textContent = win ? 'Result' : 'Cause of defeat'; $('oCauseBox').className = win ? 'cause win' : 'cause'; $('oCoachH').textContent = win ? 'To go even further' : 'Next time, try';
+  $('oMode').textContent = G.custom ? 'Custom (from L' + G.custom + ')' : '';
+}
+function winRun() {                                      // level MAX_LEVEL cleared: the run is won (shown once, results like game over but celebratory)
+  if (G.victory) return;
+  G.hitStop = 0; G.victory = true; G.state = 'over'; G.overAt = performance.now(); G.defeat = { c: 'victory', d: {} };
+  FX.burst(G.px, G.pz + 1.5, '#ffd24d', 40, true); FX.burst(G.px, G.pz + 2.5, '#3dff8a', 24, false); FX.flash('#ffd24d', 0.4); Sound.play('fanfare');
+  G.score = scoreNow(); if (G.boostReady) bump('b_wasted');
+  fillResults(); clearDrag(); tipsDone = true; $('btnPause').style.visibility = 'hidden';
+  const s = Math.floor(G.score), isBest = s > G.best; if (isBest) G.best = s;
+  overHeader(true);
+  $('oScore').textContent = s; $('oBest').textContent = G.best; $('oWave').textContent = G.level;
+  $('oNew').style.display = isBest && s > 0 ? 'block' : 'none';
+  $('oRank').innerHTML = rankText(recordRun(s, 'Victory'));
+  setTimeout(() => { if (G.state === 'over') setScreen('over'); }, 900);
+}
 function gameOver() {
   if (G.state !== 'play' || G.practice) return;
   G.hitStop = 0; G.state = 'over'; G.overAt = performance.now();
@@ -2523,6 +2965,7 @@ function gameOver() {
   fillResults();
   clearDrag(); tipsDone = true; $('btnPause').style.visibility = 'hidden';
   const s = Math.floor(G.score), isBest = s > G.best; if (isBest) G.best = s;
+  overHeader(false);
   $('oScore').textContent = s; $('oBest').textContent = G.best; $('oWave').textContent = G.level;
   $('oNew').style.display = isBest && s > 0 ? 'block' : 'none';
   $('oRank').innerHTML = rankText(recordRun(s, shortCause(G.defeat)));            // scoreboard: this run's place among this session's runs
@@ -2595,10 +3038,11 @@ function drawEnemy(e) {
     const by = Y - R * 1.3; ctx.save(); ctx.translate(X, by); ctx.scale(1 + 0.06 * reaction, 1 - 0.05 * reaction); ctx.translate(-X, -by - R * 0.08 * reaction);
   }
   const fade = clamp((ZMAX - e.z) / 12, 0, 1) * (e.solid === false ? Math.min(0.5, e.fx) : 1), col = (e.type === 'boss' && e.bcol) || T.col, fl = e.flash > 0.35 || (e.tele && ((G.t * 12) | 0) % 2 === 0), lw = Math.max(1.5, R * 0.13), boss = e.type === 'boss';
-  const cy = Y - R * (boss ? 1.45 : 1.3) + Math.sin(G.t * 6 + e.ph) * R * 0.08;
+  const lift = e.drone && e.h > 0 ? e.h * L.rh * s : 0;                                // drones: the body floats above its ground shadow
+  const cy = Y - lift - R * (boss ? 1.45 : 1.3) + Math.sin(G.t * 6 + e.ph) * R * 0.08;
   const body = fl ? '#ffffff' : (boss ? '#2a0e08' : e.type === 'armor' ? '#12314d' : e.type === 'tank' ? '#1d1240' : e.type === 'hopper' ? '#3a2208' : '#240a24');
   const hi = fl ? '#ffffff' : (boss ? '#4f2010' : e.type === 'armor' ? '#2a6a9a' : e.type === 'tank' ? '#3a2878' : e.type === 'hopper' ? '#7a4a10' : '#4a1a44');
-  ctx.globalAlpha = fade; ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(X, Y, R * 1.1, R * 0.3, 0, 0, 6.2832); ctx.fill();
+  ctx.globalAlpha = fade; ctx.fillStyle = lift > 0 ? 'rgba(0,0,0,.34)' : 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(X, Y, R * (lift > 0 ? 0.95 : 1.1), R * (lift > 0 ? 0.26 : 0.3), 0, 0, 6.2832); ctx.fill();   // (a drone's shadow stays on the road at its depth)
   ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * 0.2; ctx.fillStyle = col;
   ctx.beginPath(); ctx.arc(X, cy, R * 1.9, 0, 6.2832); ctx.fill();
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
@@ -2636,8 +3080,18 @@ function drawEnemy(e) {
     }
   } else if (e.type === 'alien') {                                                  // green hover-alien: big head, big eyes, antennae, saucer + tentacles
     const ac = alienCol(e.mode), wob = Math.sin(G.t * 3 + e.ph), warn = e.dest != null && e.grp.state === 'tele' && ((G.t * 12) | 0) % 2 === 0;
-    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * 0.22; ctx.fillStyle = ac; ctx.beginPath(); ctx.ellipse(X, cy + R * 1.3, R * 1.1, R * 0.35, 0, 0, 6.2832); ctx.fill();   // hover glow on the road
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * 0.22; ctx.fillStyle = ac; ctx.beginPath(); ctx.ellipse(X, cy + R * 1.3 + lift, R * 1.1, R * 0.35, 0, 0, 6.2832); ctx.fill();   // hover glow on the road
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = fade;
+    if (e.mode === 'drone') {                                                                                                                    // wings: flapping while flying, folded back once it has landed
+      const wf = e.air ? Math.sin(G.t * 17 + e.ph) * 0.28 * (FX.reduced ? 0.5 : 1) : 0, ws = e.air ? 1 : 0.55;
+      ctx.fillStyle = fl ? '#fff' : 'rgba(150,255,236,.5)'; ctx.strokeStyle = '#c4fff4'; ctx.lineWidth = lw * 0.7; ctx.lineJoin = 'round';
+      for (const sx of [-1, 1]) {
+        ctx.beginPath(); ctx.moveTo(X + sx * R * 0.5, cy - R * 0.15); ctx.quadraticCurveTo(X + sx * R * 1.5 * ws, cy - R * (1.1 + wf) * ws, X + sx * R * 2.1 * ws, cy - R * (0.55 + wf) * ws);
+        ctx.lineTo(X + sx * R * 1.5 * ws, cy + R * 0.3 * ws); ctx.quadraticCurveTo(X + sx * R * 0.95, cy + R * 0.1, X + sx * R * 0.5, cy - R * 0.15); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(X + sx * R * 0.6, cy - R * 0.1); ctx.lineTo(X + sx * R * 1.8 * ws, cy - R * (0.45 + wf) * ws); ctx.stroke();                 // a wing vein
+      }
+      ctx.lineJoin = 'miter'; ctx.strokeStyle = col;
+    }
     ctx.strokeStyle = fl ? '#fff' : '#27c79a'; ctx.lineWidth = lw * 0.8; ctx.beginPath();                                                       // tentacles
     for (let k = -2; k <= 2; k++) { const bx = X + k * R * 0.3, w2 = Math.sin(G.t * 6 + e.ph + k) * R * 0.2; ctx.moveTo(bx, cy + R * 0.75); ctx.quadraticCurveTo(bx + w2, cy + R * 1.1, bx - w2 * 0.6, cy + R * 1.45); }
     ctx.stroke(); ctx.strokeStyle = col; ctx.lineWidth = lw;
@@ -2693,6 +3147,13 @@ function drawEnemy(e) {
     ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
   }
   if (deform) ctx.restore();
+  if ((boss || e.type === 'tank' || e.type === 'armor') && e.hitZ !== undefined && G.t - e.hitAt < 0.14) {       // impact flare ON the visible surface where the shot touched (white; pale blue on the shield dome)
+    const k = 1 - (G.t - e.hitAt) / 0.14, hs = sc(e.hitZ), hxp = gx(e.hitX, hs), hyp = gy(hs) - 0.2 * L.rh * hs, rr0 = Math.max(4, R * 0.2) * (1.6 - 0.8 * k);
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * k * (FX.reduced ? 0.5 : 0.9); ctx.fillStyle = e.domeHit ? '#bfeaff' : '#fff3c0';
+    ctx.beginPath(); ctx.arc(hxp, hyp, rr0, 0, 6.2832); ctx.fill();
+    if (e.domeHit) { ctx.strokeStyle = '#8fd8ff'; ctx.lineWidth = Math.max(1.5, R * 0.04); ctx.beginPath(); ctx.arc(hxp, hyp, rr0 * 2.1, 0, 6.2832); ctx.stroke(); }
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  }
   if (!boss && (e.type !== 'swarm' ? e.z < 75 : R * 0.9 >= 15)) {     // HP label: never under 14px (swarm labels only when close enough not to clutter)                                           // HP label (pill) + boss bar
     const fs = Math.max(F(14), clamp(R * (boss ? 0.5 : 0.8), 14, 38)) * (1 + (FX.reduced ? 0.04 : 0.1) * reaction), txt = e.armor > EPS ? hpShow(e.armor) + '+' + hpShow(e.hp) : String(hpShow(e.hp)), ty = cy - R * (boss ? 2.55 : e.type === 'alien' ? 2.2 : 1.62);
     ctx.font = '900 ' + fs + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -2700,7 +3161,31 @@ function drawEnemy(e) {
     rr(X - tw / 2, ty - th / 2, tw, th, th * 0.4); ctx.fillStyle = 'rgba(8,4,28,.82)'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = col; ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.fillText(txt, X, ty + 1);
   }
+  if (e.drone && (e.drone.st === 'hover' || e.drone.st === 'tele')) {                    // "still flying" chevron above the HP label (never over the number); gone once it dives
+    const fs = Math.max(F(14), clamp(R * 0.8, 14, 38)), th = fs * 1.15, ty = cy - R * 2.2, cyv = ty - th / 2 - fs * 0.42 - Math.sin(G.t * 5 + e.ph) * fs * 0.08, cw = fs * 0.5;
+    ctx.globalAlpha = fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(X - cw, cyv + cw * 0.55); ctx.lineTo(X, cyv - cw * 0.45); ctx.lineTo(X + cw, cyv + cw * 0.55);
+    ctx.strokeStyle = 'rgba(8,4,28,.85)'; ctx.lineWidth = Math.max(4, fs * 0.3); ctx.stroke(); ctx.strokeStyle = '#3dffb8'; ctx.lineWidth = Math.max(2.4, fs * 0.17); ctx.stroke(); ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+  }
   ctx.globalAlpha = 1; ctx.lineJoin = 'miter';
+}
+function drawDroneTeles() {                                // road layer: the marked landing lane (glow + reticle) of every drone that has picked its lane
+  let any = false; for (const e of enemies) if (e.drone && (e.drone.st === 'tele' || e.drone.st === 'dive')) { any = true; break; }
+  if (!any) return;
+  const zb = FOCAL / L.sb - FOCAL - 0.05, pulse = FX.reduced ? 0.75 : 0.6 + 0.4 * Math.sin(G.t * 9);
+  for (const e of enemies) {
+    const D = e.drone; if (!D || (D.st !== 'tele' && D.st !== 'dive') || D.zl < zb || D.zl > ZMAX + 8) continue;
+    const p = D.st === 'dive' ? 1 : 1 - D.t / D.t0, x = laneX(D.dest), sz = sc(D.zl), cx = gx(x, sz), cyy = gy(sz), rx = Math.max(LANE_W * 0.42 * L.rh * sz, F(14)), ry = rx * 0.34, fade = clamp((ZMAX + 8 - D.zl) / 10, 0, 1);
+    const sa = sc(Math.max(D.zl - 2.8, zb)), sb = sc(D.zl + 2.8), xa = x - LANE_W / 2 + 0.02, xb = x + LANE_W / 2 - 0.02;
+    ctx.globalAlpha = fade * (0.16 + 0.12 * pulse + 0.12 * p); ctx.fillStyle = '#3dffb8';                                       // lane glow around the landing point
+    ctx.beginPath(); ctx.moveTo(gx(xa, sa), gy(sa)); ctx.lineTo(gx(xb, sa), gy(sa)); ctx.lineTo(gx(xb, sb), gy(sb)); ctx.lineTo(gx(xa, sb), gy(sb)); ctx.fill();
+    ctx.globalAlpha = fade * (0.6 + 0.35 * pulse); ctx.strokeStyle = pulse > 0.8 ? '#ffffff' : '#3dffb8'; ctx.lineWidth = Math.max(2.5, rx * 0.12);
+    ctx.beginPath(); ctx.ellipse(cx, cyy, rx, ry, 0, 0, 6.2832); ctx.stroke();                                                   // outer ring
+    ctx.lineWidth = Math.max(2, rx * 0.09); ctx.beginPath(); ctx.ellipse(cx, cyy, rx * (1 - 0.55 * p), ry * (1 - 0.55 * p), 0, 0, 6.2832); ctx.stroke();   // closing ring
+    ctx.beginPath(); ctx.moveTo(cx - rx * 1.25, cyy); ctx.lineTo(cx - rx * 0.55, cyy); ctx.moveTo(cx + rx * 0.55, cyy); ctx.lineTo(cx + rx * 1.25, cyy);
+    ctx.moveTo(cx, cyy - ry * 1.4); ctx.lineTo(cx, cyy - ry * 0.6); ctx.moveTo(cx, cyy + ry * 0.6); ctx.lineTo(cx, cyy + ry * 1.4); ctx.stroke();                          // cross-hair ticks
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(cx, cyy, Math.max(2.5, rx * 0.08), 0, 6.2832); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
 }
 function drawHole(h, zb) {                              // dark pit: floor, far inner wall, side walls, glowing lips, warning marks on the road before it
   const zf = h.z + h.len; if (zf <= zb || h.z > ZMAX + 8) return;
@@ -2763,16 +3248,15 @@ function drawBossTele() {                               // every boss warning is
     const k = 1 - e.tele.t / e.tele.t0, a = 0.2 + 0.3 * k + 0.1 * Math.sin(G.t * 30);
     for (const ln of e.tele.lanes) {
       const x0 = laneX(ln) - LANE_W / 2, x1 = x0 + LANE_W;
-      ctx.fillStyle = 'rgba(255,59,92,' + a + ')'; ctx.beginPath();
-      ctx.moveTo(gx(x0, sn), gy(sn)); ctx.lineTo(gx(x1, sn), gy(sn)); ctx.lineTo(gx(x1, sf), gy(sf)); ctx.lineTo(gx(x0, sf), gy(sf)); ctx.fill();
+      ctx.fillStyle = 'rgba(255,59,92,' + a + ')'; gquad(x0, x1, zn, e.z); ctx.fill();
       ctx.strokeStyle = 'rgba(255,120,140,.8)'; ctx.lineWidth = 2; ctx.beginPath();
-      ctx.moveTo(gx(x0, sn), gy(sn)); ctx.lineTo(gx(x0, sf), gy(sf)); ctx.moveTo(gx(x1, sn), gy(sn)); ctx.lineTo(gx(x1, sf), gy(sf)); ctx.stroke();
+      trace(x0, sn, sf, 0, true); trace(x1, sn, sf, 0, true); ctx.stroke();
     }
   }
   if (e.shield > 0) {                                   // the glowing weak-point lane (flickers while the shield is still rising)
     const rising = e.shield > SHIELD_T, a = rising ? 0.25 + 0.25 * Math.sin(G.t * 30) : 0.4 + 0.15 * Math.sin(G.t * 8);
     ctx.globalCompositeOperation = gl; ctx.globalAlpha = a; ctx.fillStyle = '#dff8ff'; gquad(e.weakX - WEAK_HW, e.weakX + WEAK_HW, zn, e.z); ctx.fill();
-    ctx.globalAlpha = Math.min(1, a * 1.6); ctx.strokeStyle = '#8fd8ff'; ctx.lineWidth = 2; ctx.beginPath(); for (const sx of [-1, 1]) { ctx.moveTo(gx(e.weakX + sx * WEAK_HW, sn), gy(sn)); ctx.lineTo(gx(e.weakX + sx * WEAK_HW, sf), gy(sf)); } ctx.stroke();
+    ctx.globalAlpha = Math.min(1, a * 1.6); ctx.strokeStyle = '#8fd8ff'; ctx.lineWidth = 2; ctx.beginPath(); for (const sx of [-1, 1]) trace(e.weakX + sx * WEAK_HW, sn, sf, 0, true); ctx.stroke();
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
   }
   const a = e.atk;
@@ -2844,6 +3328,7 @@ function drawWorld() {
   for (const g of gates) dwPush(g.z, 1, g);
   for (const c of crates) dwPush(c.z, 2, c);
   for (const p of pods) dwPush(p.z, 5, p);
+  for (const b of bumps) dwPush(b.z + b.len * 0.5, 6, b);                      // raised block: sorted with the squad and the enemies
   if (G.finish) dwPush(G.finish.z, 3, G.finish);
   dwPush(G.pz, 4, null);                                                       // the squad itself
   for (let i = 1; i < dwN; i++) {                                              // far (large z) first
@@ -2854,7 +3339,7 @@ function drawWorld() {
   for (let i = 0; i < dwN; i++) {
     const it = dwList[i];
     if (it.z > ZMAX + 14 || it.z < behind(3.2)) continue;
-    if (it.k === 0) drawEnemy(it.o); else if (it.k === 1) drawGate(it.o); else if (it.k === 2) drawCrate(it.o); else if (it.k === 3) drawFinish(it.o); else if (it.k === 5) drawPod(it.o); else drawPlayer();
+    if (it.k === 0) drawEnemy(it.o); else if (it.k === 1) drawGate(it.o); else if (it.k === 2) drawCrate(it.o); else if (it.k === 3) drawFinish(it.o); else if (it.k === 5) drawPod(it.o); else if (it.k === 6) drawBump(it.o); else drawPlayer();
   }
 }
 
@@ -2864,7 +3349,7 @@ function drawWorld() {
 const HOLE_TIME = 0.26, HOLE_GRACE = 0.08;
 function spawnHole(l0, l1) {
   holes.push({ z: ZMAX, len: HOLE_TIME * (G.speed + 1.5), l0, l1, hit: false, cover: false, safe: false, cleared: false, grace: 0 });
-  if (tipLv() === 1 && !holeTipSeen) { holeTipSeen = true; G.tipJump = 2; }   // jump tip: before the first hole of level 1 only (the orange JUMP! cue in the preview strip warns in every level)
+  if (tipLv() === 1 && !holeTipSeen) { holeTipSeen = true; G.tipJump = 2; G.introD = G.ldist; }   // jump tip: before the first hole of level 1 only (the orange JUMP! cue in the preview strip warns in every level)
 }
 function holeFall(h) {
   h.hit = true; G.landAt = G.t;
@@ -2874,11 +3359,12 @@ function holeFall(h) {
   bump('h_fall'); setCause('hole');
   setSquad(G.squad - loss);                                   // delta pop, tint, streak reset, game over at 0
 }
-// A hole is jumpable only if crossing it takes <= ~0.45s (a jump lasts 0.66s). While retreating the crossing would stretch, so near a pit
+// (Bumps use the same clamp.) A hole is jumpable only if crossing it takes <= ~0.45s (a jump lasts 0.66s). While retreating the crossing would stretch, so near a pit
 // the backward depth speed is limited to what keeps the crossing time at 0.45s (forward movement only shortens it).
 function holeBackLimit() {
   let lim = 1e9;
   for (const h of holes) if (G.pz >= h.z - 2.5 && G.pz <= h.z + h.len + 1.5) lim = Math.min(lim, Math.max(0, G.speed - h.len / 0.45));
+  for (const h of bumps) if (G.pz >= h.z - 2.5 && G.pz <= h.z + h.len + 1.5) lim = Math.min(lim, Math.max(0, G.speed - h.len / 0.45));   // bumps: same crossing-time clamp
   return lim;
 }
 function updateHoles(dt) {
@@ -2901,7 +3387,42 @@ function updateHoles(dt) {
     if (h.z + h.len < behind(4)) holes.splice(i, 1);
   }
 }
-const spawnZoneFree = bound => !(enemies.some(e => e.z > bound) || gates.some(g => g.z > bound) || crates.some(c => c.z > bound) || holes.some(h => h.z + h.len > bound));
+// ===== ROAD BUMPS (low raised barriers over 1-2 adjacent lanes: jump them or change lane) =====
+// Depth: BUMP_TIME seconds at road speed (< a hole), so the whole barrier is always inside one jump (0.66 s): the retreat clamp (holeBackLimit) keeps the crossing <= 0.45 s
+// even while the squad backs off. CONTACT (documented rule): the squad is GROUNDED (no jump, no boost), its swept FOOTPRINT overlaps the covered lanes by > 30% of the
+// half-width (footHit) while it is inside the bump's depth, for BUMP_GRACE s -> ONE loss of 12% of the squad (min 1, max 6), once per bump (b.hit). A shield absorbs the hit
+// (it still uses the bump up); BOOST runs over it. A jump lasts 0.66 s, so jumping up to ~0.4 s before the front face clears it; landing inside the barrier counts as contact.
+const BUMP_TIME = 0.22, BUMP_GRACE = 0.08, BUMP_H = 0.2;
+const bumpLoss = () => clamp(Math.ceil(G.squad * 0.12), 1, 6);
+const bumpXa = b => laneEdge(b.l0), bumpXb = b => laneEdge(b.l1 + 1);
+function spawnBump(l0, l1) {
+  const b = { z: ZMAX, len: BUMP_TIME * (G.speed + 1.5), l0, l1, hit: false, air: false, safe: false, cleared: false, grace: 0 };
+  bumps.push(b);
+  if (tipLv() === 1 && !bumpTipSeen) { bumpTipSeen = true; G.tipBump = 2; G.introD = G.ldist; }   // level-1 tip, once (the preview strip says JUMP / MOVE in every level)
+  return b;
+}
+function bumpHit(b) {
+  b.hit = true; G.landAt = G.t; const hadShield = G.shield > 0 && G.celebT <= 0;
+  bump('bump_hit'); FX.burst(G.px, G.pz, '#ffd24d', 14, false); FX.burst(G.px, G.pz, '#ffffff', 6, false);
+  if (!hadShield) FX.pop(G.px, G.pz + 1.2, 'BUMP!', '#ffd24d', 1.3);
+  hurtSquad(bumpLoss(), false, 'bump', {});                    // shield absorbs it; the cause / soldiers lost / game over all go through the usual path
+}
+function updateBumps(dt) {
+  if (G.state !== 'play') return;
+  for (let i = bumps.length - 1; i >= 0; i--) {
+    const b = bumps[i], bzb = b.z; b.z -= G.speed * dt;
+    const r0 = bzb - G.pzPrev, r1 = b.z - G.pz;                                     // swept depth of the barrier relative to the squad over this step
+    const over = Math.min(r0, r1) <= 0 && Math.max(r0, r1) + b.len >= 0;
+    if (over && footHit(bumpXa(b), bumpXb(b))) {
+      if (G.jumpT >= 0) { b.air = true; b.grace = 0; }                              // in the air = over it
+      else if (G.boostT > 0) { b.safe = true; b.grace = 0; }                        // boost runs over it
+      else if (!b.hit) { b.grace += dt; if (b.grace >= BUMP_GRACE) { bumpHit(b); if (G.state !== 'play') return; } }   // a press right at the edge still counts
+    } else b.grace = 0;                                                             // stepping out sideways resets the grace
+    if (!b.cleared && !b.hit && b.air && G.pz > b.z + b.len) { b.cleared = true; bump('bump_clear'); FX.pop(G.px, G.pz + 1.6, 'HOP!', '#fff3a0', 1.1); }
+    if (b.z + b.len < behind(4)) bumps.splice(i, 1);
+  }
+}
+const spawnZoneFree = bound => !(enemies.some(e => e.z > bound) || gates.some(g => g.z > bound) || crates.some(c => c.z > bound) || holes.some(h => h.z + h.len > bound) || bumps.some(h => h.z + h.len > bound));
 
 // ===== GATES =====
 // A pair = left gate over the left half of the road, right gate over the right half.
@@ -3089,7 +3610,7 @@ function drawRockets() {                                   // a rocket body with
   ctx.lineCap = 'round';
   for (const r of rockets) {
     if (!r.on) continue;
-    const s0 = sc(r.z), s1 = sc(r.z + 2.2), s2 = sc(r.z - 3.4), x0 = gx(r.x, s0), yb = gy(s0) - (0.22 + r.yo) * L.rh * s0, yn = gy(s1) - (0.22 + r.yo) * L.rh * s1, yt = gy(s2) - (0.22 + r.yo) * L.rh * s2;
+    const rh0 = 0.22 + r.yo + (r.rise || 0), s0 = sc(r.z), s1 = sc(r.z + 2.2), s2 = sc(r.z - 3.4), x0 = gx(r.x, s0), yb = gy(s0) - rh0 * L.rh * s0, yn = gy(s1) - rh0 * L.rh * s1, yt = gy(s2) - rh0 * L.rh * s2;
     const w = Math.max(3.5, L.rh * s0 * 0.09), hot = r.boost ? '#ffd24d' : '#ff8a1f', core = r.boost ? '#fff4b0' : '#ffd9b8';
     ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.55; ctx.strokeStyle = hot; ctx.lineWidth = w * 1.5; ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x0, yt); ctx.stroke();    // exhaust trail
     ctx.globalAlpha = 0.9; ctx.strokeStyle = '#fff'; ctx.lineWidth = w * 0.5; ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x0, yb + (yt - yb) * 0.4); ctx.stroke();
@@ -3156,8 +3677,8 @@ const FX = {
     this.shakeAmt *= Math.exp(-dt * 8); if (this.shakeAmt < 0.3) this.shakeAmt = 0;
     this.flashA = Math.max(0, this.flashA - dt * 2.2);
   },
-  hit(x, z, col) {
-    for (let i = 0, n = this.reduced ? 3 : 6; i < n; i++) addPart(x, z, feelRand(0.1, 0.4), feelRand(-1.6, 1.6), feelRand(-4, 6), feelRand(1, 5), feelRand(0.15, 0.35), i < 2 ? '#fff' : col, feelRand(2, 4));
+  hit(x, z, col, hh) {
+    for (let i = 0, n = this.reduced ? 3 : 6; i < n; i++) addPart(x, z, hh === undefined ? feelRand(0.1, 0.4) : hh + feelRand(0, 0.3), feelRand(-1.6, 1.6), feelRand(-4, 6), feelRand(1, 5), feelRand(0.15, 0.35), i < 2 ? '#fff' : col, feelRand(2, 4));
   },
   burst(x, z, col, n, big) {
     const m = big ? 1.6 : 1; if (this.reduced) n = Math.ceil(n * 0.4);
@@ -3240,7 +3761,7 @@ const Sound = (() => {
   let ac = null, master = null, sfx = null, mus = null, noiseBuf = null, hasPan = false;
   let muted = false, musicOn = true, active = true, musicTimer = null, nextTime = 0, step = 0;
   const VOL = { master: 0.8, sfx: 0.9, music: 0.28 };
-  const lastT = {}, gap = { zap: 0.07, hit: 0.045, kill: 0.04, tick: 0.05, hop: 0.2, armorClang: 0.06, crateFlip: 0.08, barrel: 0.05, barrelArm: 0.1, rocket: 0.06, rocketHit: 0.05, killHeavy: 0.08, killAlien: 0.05 };
+  const lastT = {}, gap = { zap: 0.07, hit: 0.045, kill: 0.04, tick: 0.05, hop: 0.2, droneWarn: 0.35, droneDive: 0.35, armorClang: 0.06, crateFlip: 0.08, barrel: 0.05, barrelArm: 0.1, rocket: 0.06, rocketHit: 0.05, killHeavy: 0.08, killAlien: 0.05 };
   const hz = m => 440 * Math.pow(2, (m - 69) / 12);
 
   function wake() {                                     // resume the context; a rejected promise is fine (needs another gesture)
@@ -3367,6 +3888,8 @@ const Sound = (() => {
       case 'break': noise(0.2, 0.14, 5000, 0, pan); tone('triangle', 1200, 300, 0.2, 0.07, 0, pan); break;
       case 'boss': for (let i = 0; i < 2; i++) { tone('sawtooth', 300, 520, 0.26, 0.1, i * 0.56); tone('sawtooth', 520, 300, 0.26, 0.1, i * 0.56 + 0.28); } break;   // siren
       case 'hop': tone('square', 640, 640, 0.05, 0.03, 0, pan); break;
+      case 'droneWarn': tone('triangle', 520, 520, 0.07, 0.05, 0, pan); tone('triangle', 780, 780, 0.09, 0.05, 0.09, pan); break;                          // two rising blips: a drone has picked its lane
+      case 'droneDive': noise(0.28, 0.07, 2200, 0, pan); tone('sawtooth', 1300, 220, 0.34, 0.05, 0, pan, 0.03); tone('sine', 900, 160, 0.36, 0.06, 0.02, pan, 0.03); break;   // falling swoop
       case 'tick': tone('triangle', 900, 700, 0.03, 0.03, 0, pan); break;
       case 'expire': tone('sine', 760, 420, 0.14, 0.05); break;
       case 'jump': tone('square', 280, 720, 0.14, 0.05, 0, pan); tone('triangle', 560, 1100, 0.12, 0.04, 0.02, pan); break;
@@ -3513,11 +4036,85 @@ function drawJumpCue(h) {                               // the nearest obstacle 
   for (let i = 0; i < LANES; i++) { ctx.fillStyle = i === cur ? '#19f0ff' : 'rgba(255,255,255,.3)'; ctx.beginPath(); ctx.arc(X + (i + 0.5) * lw, Y + Hh + 4, i === cur ? 3 : 2, 0, 6.2832); ctx.fill(); }
   ctx.globalAlpha = 1;
 }
+// ----- ROAD BUMP visuals: a low raised block (shadow, dark side faces, lit pale-yellow top face, navy front face with bright yellow / white chevrons) so it never reads as a pit
+// (dark hole with hazard stripes), a crate (value badge box) or a barrel (orange cylinder). The warning on the road before it is two solid white bars and white "v" chevrons. -----
+function drawBumpMarks() {
+  if (!bumps.length) return;
+  const zb = FOCAL / L.sb - FOCAL - 0.05, pulse = FX.reduced ? 0.7 : 0.6 + 0.4 * Math.sin(G.t * 8);
+  for (let i = bumps.length - 1; i >= 0; i--) {
+    const b = bumps[i]; if (b.z - 0.4 <= zb || b.z > ZMAX + 8) continue;
+    const xa = bumpXa(b), xb = bumpXb(b), fade = clamp((ZMAX + 10 - b.z) / 14, 0, 1);
+    ctx.globalAlpha = fade * (0.55 + 0.3 * pulse); ctx.fillStyle = '#ffffff';
+    for (const dz of [0.3, 1.2]) {                                                   // two solid white bars across the covered lanes
+      const z0 = Math.max(b.z - dz - 0.45, zb), z1 = b.z - dz; if (z1 <= zb) continue; const s0 = sc(z0), s1 = sc(z1);
+      ctx.beginPath(); ctx.moveTo(gx(xa + 0.02, s0), gy(s0)); ctx.lineTo(gx(xb - 0.02, s0), gy(s0)); ctx.lineTo(gx(xb - 0.02, s1), gy(s1)); ctx.lineTo(gx(xa + 0.02, s1), gy(s1)); ctx.fill();
+    }
+    ctx.globalAlpha = fade * 0.9; ctx.strokeStyle = '#fff3a0'; ctx.lineWidth = Math.max(2, 0.028 * L.rh * sc(Math.max(b.z - 3, zb))); ctx.beginPath();
+    for (let k = 0; k < 2; k++) {                                                    // two rows of "v" chevrons pointing at you
+      const zc = b.z - 3 - k * 2.6; if (zc < zb) continue; const sa = sc(zc + 1.1), sn = sc(zc);
+      for (let ln = b.l0; ln <= b.l1; ln++) { const x = laneX(ln); ctx.moveTo(gx(x - 0.11, sa), gy(sa)); ctx.lineTo(gx(x, sn), gy(sn)); ctx.lineTo(gx(x + 0.11, sa), gy(sa)); }
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+function drawBump(b) {
+  const zb = FOCAL / L.sb - FOCAL - 0.05, zf = b.z + b.len; if (zf <= zb || b.z > ZMAX + 8) return;
+  const zn = Math.max(b.z, zb), zfc = Math.min(zf, ZMAX * 1.3), sn = sc(zn), sf = sc(zfc), yN = gy(sn), yF = gy(sf);
+  const xa = bumpXa(b), xb = bumpXb(b), fade = clamp((ZMAX + 10 - b.z) / 14, 0, 1), hN = BUMP_H * L.rh * sn, hF = BUMP_H * L.rh * sf, pulse = FX.reduced ? 0.7 : 0.6 + 0.4 * Math.sin(G.t * 8);
+  const xan = gx(xa, sn), xbn = gx(xb, sn), xaf = gx(xa, sf), xbf = gx(xb, sf), lw = Math.max(1.5, 0.02 * L.rh * sn);
+  ctx.globalAlpha = fade;
+  const ss = sc(Math.min(zfc + 1.2, ZMAX * 1.3)), yS = gy(ss);                         // ground shadow (a little wider, falling behind it)
+  ctx.fillStyle = 'rgba(0,0,0,.42)'; ctx.beginPath(); ctx.moveTo(gx(xa - 0.05, sn), yN); ctx.lineTo(gx(xb + 0.05, sn), yN); ctx.lineTo(gx(xb + 0.05, ss), yS); ctx.lineTo(gx(xa - 0.05, ss), yS); ctx.fill();
+  ctx.fillStyle = '#8f6a0c';                                                          // side face(s) that face the middle of the road
+  if (xa > 0.001) { ctx.beginPath(); ctx.moveTo(xan, yN); ctx.lineTo(xaf, yF); ctx.lineTo(xaf, yF - hF); ctx.lineTo(xan, yN - hN); ctx.fill(); }
+  if (xb < -0.001) { ctx.beginPath(); ctx.moveTo(xbn, yN); ctx.lineTo(xbf, yF); ctx.lineTo(xbf, yF - hF); ctx.lineTo(xbn, yN - hN); ctx.fill(); }
+  let g = ctx.createLinearGradient(0, yF - hF, 0, yN - hN); g.addColorStop(0, '#fff8c8'); g.addColorStop(1, '#ffe14d');   // lit top face
+  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(xan, yN - hN); ctx.lineTo(xbn, yN - hN); ctx.lineTo(xbf, yF - hF); ctx.lineTo(xaf, yF - hF); ctx.fill();
+  if (b.z >= zb) {                                                                    // front face with chevrons (skipped once its bottom edge is behind the squad's screen row)
+    ctx.fillStyle = '#241a44'; ctx.fillRect(xan, yN - hN, xbn - xan, hN);
+    const cwid = (xbn - xan) / (b.l1 - b.l0 + 1);
+    for (let k = 0; k < 2; k++) {
+      ctx.strokeStyle = k ? '#ffffff' : '#ffd24d'; ctx.lineWidth = Math.max(2, hN * 0.15); ctx.lineJoin = 'miter'; ctx.beginPath();
+      const ay = yN - hN * (0.8 - 0.32 * k), ey = ay + hN * 0.3;
+      for (let ln = b.l0; ln <= b.l1; ln++) { const cx = xan + (ln - b.l0 + 0.5) * cwid; ctx.moveTo(cx - cwid * 0.27, ey); ctx.lineTo(cx, ay); ctx.lineTo(cx + cwid * 0.27, ey); }
+      ctx.stroke();
+    }
+  }
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = lw; ctx.beginPath();                    // bright rim: near-top edge, far-top edge and the outer vertical edges
+  ctx.moveTo(xan, yN - hN); ctx.lineTo(xbn, yN - hN); ctx.moveTo(xaf, yF - hF); ctx.lineTo(xbf, yF - hF);
+  ctx.moveTo(xan, yN - hN); ctx.lineTo(xaf, yF - hF); ctx.moveTo(xbn, yN - hN); ctx.lineTo(xbf, yF - hF); ctx.stroke();
+  if (!FX.reduced) {                                                                  // soft glow on the lit edge
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = fade * 0.28 * pulse; ctx.strokeStyle = '#ffe680'; ctx.lineWidth = lw * 4; ctx.beginPath();
+    ctx.moveTo(xan, yN - hN); ctx.lineTo(xbn, yN - hN); ctx.stroke(); ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.globalAlpha = 1;
+}
+function drawBumpCue(b) {                                 // the nearest obstacle is a road bump: covered lanes + "JUMP / MOVE" (yellow / white, not the orange pit cue)
+  const X = UI.pvX, Y = UI.pvY, Hh = UI.pvH, lw = UI.pvW / LANES, cur = playerLane(), blink = ((G.t * 5) | 0) % 2 === 0;
+  ctx.globalAlpha = clamp((ZMAX + 8 - b.z) / 10, 0, 1);
+  for (let i = 0; i < LANES; i++) {
+    const cov = i >= b.l0 && i <= b.l1, x0 = X + i * lw + 2, w = lw - 4;
+    rr(x0, Y, w, Hh, 10); ctx.fillStyle = cov ? 'rgba(255,226,90,.5)' : 'rgba(255,255,255,.07)'; ctx.fill();
+    ctx.lineWidth = cov ? 2.5 : 1; ctx.strokeStyle = cov ? (blink ? '#ffffff' : '#ffe14d') : 'rgba(255,255,255,.3)'; ctx.stroke();
+  }
+  let fs = F(UI.short ? 16 : 19), cx = X + UI.pvW / 2;
+  ctx.font = '900 ' + fs + 'px ' + FONT; while (fs > 14 && ctx.measureText('JUMP / MOVE').width > UI.pvW - fs * 3.4) { fs--; ctx.font = '900 ' + fs + 'px ' + FONT; }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round'; ctx.lineWidth = fs * 0.2; ctx.strokeStyle = 'rgba(8,4,28,.95)'; ctx.strokeText('JUMP / MOVE', cx + fs * 0.5, Y + Hh / 2 + 1);
+  ctx.fillStyle = '#fff'; ctx.fillText('JUMP / MOVE', cx + fs * 0.5, Y + Hh / 2 + 1); ctx.lineJoin = 'miter';
+  drawIcon('bolt', cx - ctx.measureText('JUMP / MOVE').width / 2 - fs * 0.5, Y + Hh / 2, fs * 0.9, '#ffe14d');
+  ctx.fillStyle = '#ffe14d'; ctx.fillRect(X + 8, Y + Hh - 6, (UI.pvW - 16) * clamp(1 - b.z / ZMAX, 0, 1), 3);
+  for (let i = 0; i < LANES; i++) { ctx.fillStyle = i === cur ? '#19f0ff' : 'rgba(255,255,255,.3)'; ctx.beginPath(); ctx.arc(X + (i + 0.5) * lw, Y + Hh + 4, i === cur ? 3 : 2, 0, 6.2832); ctx.fill(); }
+  ctx.globalAlpha = 1;
+}
 function drawGatePreview() {
-  let g = null, hz = null;
+  let g = null, hz = null, bz = null;
   for (const q of gates) if (!q.used && (!g || q.z < g.z)) g = q;
   for (const h of holes) if (h.z + h.len > G.pz - 0.5 && h.z < ZMAX + 8 && (!hz || h.z < hz.z)) hz = h;
-  if (hz && (!g || hz.z <= g.z) && G.boostT <= 0) { drawJumpCue(hz); return; }   // (no jump cue while BOOST carries the squad over holes)
+  for (const h of bumps) if (h.z + h.len > G.pz - 0.5 && h.z < ZMAX + 8 && (!bz || h.z < bz.z)) bz = h;
+  const hzd = hz && bz ? (hz.z <= bz.z ? hz : bz) : (hz || bz);                       // the nearest floor hazard (pit or bump)
+  if (hzd && (!g || hzd.z <= g.z) && G.boostT <= 0) { if (hzd === bz) drawBumpCue(hzd); else drawJumpCue(hzd); return; }   // (no jump cue while BOOST carries the squad over them)
   if (!g) return;
   const X = UI.pvX, Y = UI.pvY, Hh = UI.pvH, lw = UI.pvW / LANES, cur = playerLane(), gs = gateSide(G.px), fs = F(UI.short ? 18 : 21);
   ctx.globalAlpha = clamp((ZMAX + 8 - g.z) / 10, 0, 1);
@@ -3573,15 +4170,17 @@ const TIP_INTRO = { 1: ['steer', 'crates', 'charge'] };
 function pickTips(lv) { return lv === 1 ? TIP_INTRO[1].slice() : []; }
 const tipsActive = () => tipLv() === 1 && !tipsDone && G.phase === 'run' && G.tipT < G.tips.length * TIP_SECS + 0.05;      // the tip sequence is still running (or about to)
 function drawTips() {            // this level's tips (see pickTips); not during the boss fight, not while paused
-  const jt = G.tipJump > 0, bt = !jt && G.tipBarrel > 0, rt = !jt && !bt && G.tipRocket > 0;   // the jump tip (shown before the first hole of each level) takes priority
-  if (tipLv() !== 1 || (tipsDone && !jt && !bt && !rt) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
+  const jt = G.tipJump > 0, bt = !jt && G.tipBarrel > 0, rt = !jt && !bt && G.tipRocket > 0, xt = !jt && !bt && !rt && G.tipBump > 0, dt2 = !jt && !bt && !rt && !xt && G.tipDrone > 0;   // the jump tip (shown before the first hole of each level) takes priority; one tip at a time
+  if (tipLv() !== 1 || (tipsDone && !jt && !bt && !rt && !xt && !dt2) || (G.state !== 'play' && G.state !== 'resume') || G.phase !== 'run') return;
   if (UI.short && G.bannerT > 0) return;                   // banner has the shared row right now
-  if (G.bannerT > 0 && !jt && !bt && !rt) return;                        // the sequence starts once the "LEVEL n" banner has cleared
+  if (G.bannerT > 0 && !jt && !bt && !rt && !xt && !dt2) return;                        // the sequence starts once the "LEVEL n" banner has cleared
   const touch = 'ontouchstart' in window;
   let text, ph, dur = TIP_SECS;
   if (jt) { text = touch ? 'Tap to jump holes' : 'Space to jump holes'; ph = 2 - G.tipJump; dur = 2; }
   else if (bt) { text = 'Shoot barrels to blast enemies'; ph = 2 - G.tipBarrel; dur = 2; }
   else if (rt) { text = 'Rockets! Slower but they explode'; ph = 2 - G.tipRocket; dur = 2; }
+  else if (xt) { text = 'Jump or dodge road bumps'; ph = 2 - G.tipBump; dur = 2; }
+  else if (dt2) { text = 'Drones dive \u2014 watch the target'; ph = 2 - G.tipDrone; dur = 2; }
   else {
     let i = Math.floor(G.tipT / TIP_SECS);
     if (i === 0 && G.tips[0] === 'steer' && G.laneMoved && G.tipT > 2) i = 1;
@@ -3608,7 +4207,7 @@ function drawPill(text, alpha) {                         // the small hint pill 
   ctx.globalAlpha = 1;
 }
 function drawBoostHint() {                               // level 1: the teaching hint; later levels: a short "BOOST READY" notice (once per level)
-  if (G.boostHint <= 0 || G.state !== 'play' || G.boostT > 0 || G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || tipsActive() || bossCueOn() || (UI.short && G.bannerT > 0)) return;   // never on top of another tip or a boss warning (it also works during the boss fight)
+  if (G.boostHint <= 0 || G.state !== 'play' || G.boostT > 0 || G.tipJump > 0 || G.tipBarrel > 0 || G.tipRocket > 0 || G.tipBump > 0 || G.tipDrone > 0 || tipsActive() || bossCueOn() || (UI.short && G.bannerT > 0)) return;   // never on top of another tip or a boss warning (it also works during the boss fight)
   const ph = (G.boostHintDur || 2.4) - G.boostHint; drawPill(tipLv() === 1 ? 'Double-tap or Ctrl for BOOST' : 'BOOST READY', 0.9 * clamp(Math.min(ph / 0.2, G.boostHint / 0.3), 0, 1));
 }
 function drawCountdown() {       // 3-2-1 after unpausing
@@ -3737,9 +4336,12 @@ function update(dt) {
   updateCrates(dt);   if (G.state !== 'play') return;
   updatePods(dt);     if (G.state !== 'play') return;
   updateHoles(dt);    if (G.state !== 'play') return;
+  updateBumps(dt);    if (G.state !== 'play') return;
   if (G.tipJump > 0) G.tipJump -= dt;
   else if (G.tipBarrel > 0) G.tipBarrel -= dt;
   else if (G.tipRocket > 0) G.tipRocket -= dt;
+  else if (G.tipBump > 0) G.tipBump -= dt;
+  else if (G.tipDrone > 0) G.tipDrone -= dt;
   else if (G.bannerT <= 0 && G.phase === 'run') G.tipT += dt;               // tip clock: starts after the LEVEL banner, pauses with the game, waits during the jump tip
   updateLevel(dt);    if (G.state !== 'play') return;
   G.score = scoreNow();
@@ -3777,13 +4379,15 @@ function drawBoostScreenFx() {                           // BOOST: golden glow a
   ctx.stroke(); ctx.lineCap = 'butt'; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
 }
 function render() {
-  fxBuildBands();
+  updateBend(); fxBuildBands();
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.fillStyle = '#05020f'; ctx.fillRect(0, 0, W, H);
   ctx.save();
   const sh = FX.shakeAmt; if (sh > 0) ctx.translate(rand(-sh, sh), rand(-sh, sh));
   drawRoad();
   drawHoles();
+  drawBumpMarks();
+  drawDroneTeles();
   drawBossTele();
   drawWorld();
   drawBullets(); drawRockets();
